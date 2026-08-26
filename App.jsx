@@ -9,6 +9,8 @@ import {
 
 /* ---------------------------------------------------------
    CONFIG & DESIGN TOKENS
+
+   abhijit
 --------------------------------------------------------- */
 const API_BASE = "http://localhost:5000/api";
 
@@ -1060,186 +1062,186 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
         <main className="admin-content">
           {adminMessage && <div role="status" style={{ marginBottom: 20, padding: "11px 14px", border: `1px solid ${C.verifiedDim}`, background: `${C.verifiedDim}55`, color: C.verified, borderRadius: 10, fontSize: 13 }}>{adminMessage}</div>}
 
-      {tab === "overview" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-            {[
-              ["Registry records", brokers.length, "Live database"],
-              ["Review queue", exposures.filter(e => e.status === "pending").length, "Needs triage"],
-              ["Published alerts", exposures.filter(e => e.status === "published").length, "Publicly visible"],
-              ["Risk watches", riskWatch.length, "Critical markers"],
-            ].map(([label, value, note]) => (
-              <GlassCard key={label} style={{ padding: 18 }}>
-                <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>{label}</div>
-                <div style={{ fontSize: 30, fontWeight: 700, margin: "12px 0 6px" }}>{value}</div>
-                <div style={{ color: C.paperDim, fontSize: 12 }}>{note}</div>
-              </GlassCard>
-            ))}
-          </div>
+          {tab === "overview" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+                {[
+                  ["Registry records", brokers.length, "Live database"],
+                  ["Review queue", exposures.filter(e => e.status === "pending").length, "Needs triage"],
+                  ["Published alerts", exposures.filter(e => e.status === "published").length, "Publicly visible"],
+                  ["Risk watches", riskWatch.length, "Critical markers"],
+                ].map(([label, value, note]) => (
+                  <GlassCard key={label} style={{ padding: 18 }}>
+                    <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>{label}</div>
+                    <div style={{ fontSize: 30, fontWeight: 700, margin: "12px 0 6px" }}>{value}</div>
+                    <div style={{ color: C.paperDim, fontSize: 12 }}>{note}</div>
+                  </GlassCard>
+                ))}
+              </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 24 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 24 }}>
+                <GlassCard style={{ padding: 22 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Signal feed</h3>
+                    <Badge tone="reg">Live</Badge>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    {[...exposures].slice(0, 4).map((item) => (
+                      <div key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 12, borderBottom: `1px solid ${C.line}`, paddingBottom: 10 }}>
+                        <div>
+                          <div style={{ fontWeight: 700 }}>{item.brokerName}</div>
+                          <div style={{ color: C.paperDim, fontSize: 12 }}>{item.title}</div>
+                        </div>
+                        <Badge tone={item.status === "pending" ? "pending" : item.status === "rejected" ? "warn" : "reg"}>{item.status}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </GlassCard>
+
+                <GlassCard style={{ padding: 22 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Risk watch</h3>
+                    <AlertTriangle size={18} color={C.alert} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {riskWatch.map((broker) => (
+                      <div key={broker.id} style={{ background: "rgba(255,94,91,0.05)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: 12 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <strong>{broker.name}</strong>
+                          <Badge tone="warn">{Number(broker.score).toFixed(1)}</Badge>
+                        </div>
+                        <div style={{ color: C.paperDim, fontSize: 12, marginTop: 6 }}>{(broker.flags || []).join(" • ") || "Due for review"}</div>
+                      </div>
+                    ))}
+                  </div>
+                </GlassCard>
+              </div>
+              <AdminOverview brokers={brokers} exposures={exposures} news={news} />
+            </div>
+          )}
+
+          {tab === "brokers" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32 }}>
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 16, marginBottom: 16 }}>Insert New Broker File</h3>
+                <form onSubmit={handleAddBroker}>
+                  <Field label="Broker Name"><input required style={inputStyle} value={newBroker.name} onChange={e => setNewBroker({ ...newBroker, name: e.target.value })} /></Field>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <Field label="Years"><input type="number" style={inputStyle} value={newBroker.years} onChange={e => setNewBroker({ ...newBroker, years: e.target.value })} /></Field>
+                    <Field label="Score (0-10)"><input type="number" step="0.1" style={inputStyle} value={newBroker.score} onChange={e => setNewBroker({ ...newBroker, score: e.target.value })} /></Field>
+                  </div>
+                  <Field label="Regulators"><input required style={inputStyle} value={newBroker.regulator} onChange={e => setNewBroker({ ...newBroker, regulator: e.target.value })} placeholder="FCA, ASIC" /></Field>
+                  <Field label="License Number"><input required style={inputStyle} value={newBroker.license} onChange={e => setNewBroker({ ...newBroker, license: e.target.value })} /></Field>
+                  <Field label="Jurisdiction Country"><input required style={inputStyle} value={newBroker.country} onChange={e => setNewBroker({ ...newBroker, country: e.target.value })} /></Field>
+                  <Field label="Infringement Flags (CSV)"><input style={inputStyle} value={newBroker.flags} onChange={e => setNewBroker({ ...newBroker, flags: e.target.value })} placeholder="Offshore, Withdrawal issues" /></Field>
+                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}>Insert Record into DB</Button>
+                </form>
+              </GlassCard>
+
+              <GlassCard style={{ padding: 22 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+                  <h3 style={{ fontSize: 16 }}>Registry roster</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, background: C.ink, border: `1px solid ${C.lineStrong}`, borderRadius: 10, minWidth: 220, padding: "8px 12px" }}>
+                    <Search size={14} color={C.muted} />
+                    <input value={brokerSearch} onChange={(e) => setBrokerSearch(e.target.value)} placeholder="Search broker" style={{ background: "transparent", border: "none", outline: "none", color: C.paper, flex: 1 }} />
+                  </div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {filteredBrokers.map((b) => (
+                    <div key={b.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: 16, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                      <div>
+                        <div style={{ fontWeight: 700 }}>{b.name} <span style={{ color: C.muted, fontWeight: 500 }}>({Number(b.score).toFixed(1)}/10)</span></div>
+                        <div style={{ fontSize: 12, color: C.muted }}>{b.regulator} · {b.country}</div>
+                      </div>
+                      <Button variant="danger" onClick={() => handleDeleteBroker(b.id)}><Trash2 size={14} /></Button>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            </div>
+          )}
+
+          {tab === "exposures" && (
             <GlassCard style={{ padding: 22 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Signal feed</h3>
-                <Badge tone="reg">Live</Badge>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
+                <h3 style={{ fontSize: 16 }}>Exposure queue</h3>
+                <select value={exposureFilter} onChange={(e) => setExposureFilter(e.target.value)} style={{ ...inputStyle, width: "auto", minWidth: 160 }}>
+                  <option value="all">All statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="published">Published</option>
+                  <option value="rejected">Rejected</option>
+                </select>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {[...exposures].slice(0, 4).map((item) => (
-                  <div key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 12, borderBottom: `1px solid ${C.line}`, paddingBottom: 10 }}>
+                {filteredExposures.map((e) => (
+                  <div key={e.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${e.status === 'pending' ? C.amber : C.lineStrong}`, padding: 20, borderRadius: 12, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
                     <div>
-                      <div style={{ fontWeight: 700 }}>{item.brokerName}</div>
-                      <div style={{ color: C.paperDim, fontSize: 12 }}>{item.title}</div>
+                      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
+                        <Badge tone={e.status === "pending" ? "pending" : e.status === "rejected" ? "warn" : "reg"}>{e.status.toUpperCase()}</Badge>
+                        <span style={{ fontWeight: 700 }}>{e.brokerName}</span>
+                      </div>
+                      <h4 style={{ fontSize: 15, margin: "4px 0" }}>{e.title}</h4>
+                      <p style={{ color: C.paperDim, fontSize: 13.5 }}>{e.text}</p>
                     </div>
-                    <Badge tone={item.status === "pending" ? "pending" : item.status === "rejected" ? "warn" : "reg"}>{item.status}</Badge>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                      {e.status === "pending" && (
+                        <>
+                          <Button variant="primary" onClick={() => handleStatus(e.id, "published")}><CheckCircle2 size={14} /> Publish</Button>
+                          <Button variant="danger" onClick={() => handleStatus(e.id, "rejected")}><XCircle size={14} /> Reject</Button>
+                        </>
+                      )}
+                      <Button variant="danger" onClick={() => handleDeleteExposure(e.id)}><Trash2 size={14} /> Delete</Button>
+                    </div>
                   </div>
                 ))}
               </div>
             </GlassCard>
+          )}
 
-            <GlassCard style={{ padding: 22 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Risk watch</h3>
-                <AlertTriangle size={18} color={C.alert} />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {riskWatch.map((broker) => (
-                  <div key={broker.id} style={{ background: "rgba(255,94,91,0.05)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: 12 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <strong>{broker.name}</strong>
-                      <Badge tone="warn">{Number(broker.score).toFixed(1)}</Badge>
+          {tab === "news" && (
+            <div className="admin-news-layout">
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 16, marginBottom: 16 }}>Publish Intelligence</h3>
+                <form onSubmit={handleAddNews}>
+                  <Field label="Headline"><input required style={inputStyle} value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} /></Field>
+                  <Field label="Category"><select style={inputStyle} value={newNews.category} onChange={e => setNewNews({ ...newNews, category: e.target.value })}><option>Regulation</option><option>Education</option><option>Market Watch</option></select></Field>
+                  <Field label="Briefing"><textarea required rows={6} style={{ ...inputStyle, resize: "vertical" }} value={newNews.summary} onChange={e => setNewNews({ ...newNews, summary: e.target.value })} /></Field>
+                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}><Plus size={14} /> Publish Dispatch</Button>
+                </form>
+              </GlassCard>
+              <GlassCard style={{ padding: 22 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {news.map((article) => (
+                    <div key={article.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: 18, borderRadius: 12, display: "flex", justifyContent: "space-between", gap: 18, flexWrap: "wrap" }}>
+                      <div>
+                        <Badge tone="reg">{article.category}</Badge>
+                        <div style={{ fontWeight: 700, marginTop: 8 }}>{article.title}</div>
+                        <div style={{ color: C.paperDim, fontSize: 13, marginTop: 5 }}>{article.summary}</div>
+                      </div>
+                      <Button variant="danger" onClick={() => handleDeleteNews(article.id)}><Trash2 size={14} /></Button>
                     </div>
-                    <div style={{ color: C.paperDim, fontSize: 12, marginTop: 6 }}>{(broker.flags || []).join(" • ") || "Due for review"}</div>
-                  </div>
-                ))}
-              </div>
-            </GlassCard>
-          </div>
-          <AdminOverview brokers={brokers} exposures={exposures} news={news} />
-        </div>
-      )}
-
-      {tab === "brokers" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32 }}>
-          <GlassCard style={{ padding: 22 }}>
-            <h3 style={{ fontSize: 16, marginBottom: 16 }}>Insert New Broker File</h3>
-            <form onSubmit={handleAddBroker}>
-              <Field label="Broker Name"><input required style={inputStyle} value={newBroker.name} onChange={e => setNewBroker({ ...newBroker, name: e.target.value })} /></Field>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <Field label="Years"><input type="number" style={inputStyle} value={newBroker.years} onChange={e => setNewBroker({ ...newBroker, years: e.target.value })} /></Field>
-                <Field label="Score (0-10)"><input type="number" step="0.1" style={inputStyle} value={newBroker.score} onChange={e => setNewBroker({ ...newBroker, score: e.target.value })} /></Field>
-              </div>
-              <Field label="Regulators"><input required style={inputStyle} value={newBroker.regulator} onChange={e => setNewBroker({ ...newBroker, regulator: e.target.value })} placeholder="FCA, ASIC" /></Field>
-              <Field label="License Number"><input required style={inputStyle} value={newBroker.license} onChange={e => setNewBroker({ ...newBroker, license: e.target.value })} /></Field>
-              <Field label="Jurisdiction Country"><input required style={inputStyle} value={newBroker.country} onChange={e => setNewBroker({ ...newBroker, country: e.target.value })} /></Field>
-              <Field label="Infringement Flags (CSV)"><input style={inputStyle} value={newBroker.flags} onChange={e => setNewBroker({ ...newBroker, flags: e.target.value })} placeholder="Offshore, Withdrawal issues" /></Field>
-              <Button type="submit" style={{ width: "100%", justifyContent: "center" }}>Insert Record into DB</Button>
-            </form>
-          </GlassCard>
-
-          <GlassCard style={{ padding: 22 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
-              <h3 style={{ fontSize: 16 }}>Registry roster</h3>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, background: C.ink, border: `1px solid ${C.lineStrong}`, borderRadius: 10, minWidth: 220, padding: "8px 12px" }}>
-                <Search size={14} color={C.muted} />
-                <input value={brokerSearch} onChange={(e) => setBrokerSearch(e.target.value)} placeholder="Search broker" style={{ background: "transparent", border: "none", outline: "none", color: C.paper, flex: 1 }} />
-              </div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {filteredBrokers.map((b) => (
-                <div key={b.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: 16, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{b.name} <span style={{ color: C.muted, fontWeight: 500 }}>({Number(b.score).toFixed(1)}/10)</span></div>
-                    <div style={{ fontSize: 12, color: C.muted }}>{b.regulator} · {b.country}</div>
-                  </div>
-                  <Button variant="danger" onClick={() => handleDeleteBroker(b.id)}><Trash2 size={14} /></Button>
+                  ))}
                 </div>
+              </GlassCard>
+            </div>
+          )}
+
+          {tab === "tools" && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
+              {[
+                { title: "Alert automation", desc: "Mark all low-score brokers with risk review tags.", action: handleHighlightRisk, tone: "warn" },
+                { title: "Queue triage", desc: "Move all pending exposures into the reviewed state.", action: handleBulkReview, tone: "reg" },
+                { title: "Sync registry", desc: "Refresh the current view from the live server state.", action: () => window.location.reload(), tone: "pending" }
+              ].map((tool) => (
+                <GlassCard key={tool.title} style={{ padding: 22 }}>
+                  <Badge tone={tool.tone}>{tool.title}</Badge>
+                  <h3 style={{ fontSize: 20, margin: "16px 0 8px" }}>{tool.title}</h3>
+                  <p style={{ color: C.paperDim, lineHeight: 1.6, fontSize: 13 }}>{tool.desc}</p>
+                  <Button onClick={tool.action} style={{ marginTop: 18, width: "100%", justifyContent: "center" }}>Run action</Button>
+                </GlassCard>
               ))}
             </div>
-          </GlassCard>
-        </div>
-      )}
-
-      {tab === "exposures" && (
-        <GlassCard style={{ padding: 22 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
-            <h3 style={{ fontSize: 16 }}>Exposure queue</h3>
-            <select value={exposureFilter} onChange={(e) => setExposureFilter(e.target.value)} style={{ ...inputStyle, width: "auto", minWidth: 160 }}>
-              <option value="all">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="published">Published</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {filteredExposures.map((e) => (
-              <div key={e.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${e.status === 'pending' ? C.amber : C.lineStrong}`, padding: 20, borderRadius: 12, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-                <div>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
-                    <Badge tone={e.status === "pending" ? "pending" : e.status === "rejected" ? "warn" : "reg"}>{e.status.toUpperCase()}</Badge>
-                    <span style={{ fontWeight: 700 }}>{e.brokerName}</span>
-                  </div>
-                  <h4 style={{ fontSize: 15, margin: "4px 0" }}>{e.title}</h4>
-                  <p style={{ color: C.paperDim, fontSize: 13.5 }}>{e.text}</p>
-                </div>
-                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                  {e.status === "pending" && (
-                    <>
-                      <Button variant="primary" onClick={() => handleStatus(e.id, "published")}><CheckCircle2 size={14} /> Publish</Button>
-                      <Button variant="danger" onClick={() => handleStatus(e.id, "rejected")}><XCircle size={14} /> Reject</Button>
-                    </>
-                  )}
-                  <Button variant="danger" onClick={() => handleDeleteExposure(e.id)}><Trash2 size={14} /> Delete</Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </GlassCard>
-      )}
-
-      {tab === "news" && (
-        <div className="admin-news-layout">
-          <GlassCard style={{ padding: 22 }}>
-            <h3 style={{ fontSize: 16, marginBottom: 16 }}>Publish Intelligence</h3>
-            <form onSubmit={handleAddNews}>
-              <Field label="Headline"><input required style={inputStyle} value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} /></Field>
-              <Field label="Category"><select style={inputStyle} value={newNews.category} onChange={e => setNewNews({ ...newNews, category: e.target.value })}><option>Regulation</option><option>Education</option><option>Market Watch</option></select></Field>
-              <Field label="Briefing"><textarea required rows={6} style={{ ...inputStyle, resize: "vertical" }} value={newNews.summary} onChange={e => setNewNews({ ...newNews, summary: e.target.value })} /></Field>
-              <Button type="submit" style={{ width: "100%", justifyContent: "center" }}><Plus size={14} /> Publish Dispatch</Button>
-            </form>
-          </GlassCard>
-          <GlassCard style={{ padding: 22 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {news.map((article) => (
-                <div key={article.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: 18, borderRadius: 12, display: "flex", justifyContent: "space-between", gap: 18, flexWrap: "wrap" }}>
-                  <div>
-                    <Badge tone="reg">{article.category}</Badge>
-                    <div style={{ fontWeight: 700, marginTop: 8 }}>{article.title}</div>
-                    <div style={{ color: C.paperDim, fontSize: 13, marginTop: 5 }}>{article.summary}</div>
-                  </div>
-                  <Button variant="danger" onClick={() => handleDeleteNews(article.id)}><Trash2 size={14} /></Button>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
-        </div>
-      )}
-
-      {tab === "tools" && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
-          {[
-            { title: "Alert automation", desc: "Mark all low-score brokers with risk review tags.", action: handleHighlightRisk, tone: "warn" },
-            { title: "Queue triage", desc: "Move all pending exposures into the reviewed state.", action: handleBulkReview, tone: "reg" },
-            { title: "Sync registry", desc: "Refresh the current view from the live server state.", action: () => window.location.reload(), tone: "pending" }
-          ].map((tool) => (
-            <GlassCard key={tool.title} style={{ padding: 22 }}>
-              <Badge tone={tool.tone}>{tool.title}</Badge>
-              <h3 style={{ fontSize: 20, margin: "16px 0 8px" }}>{tool.title}</h3>
-              <p style={{ color: C.paperDim, lineHeight: 1.6, fontSize: 13 }}>{tool.desc}</p>
-              <Button onClick={tool.action} style={{ marginTop: 18, width: "100%", justifyContent: "center" }}>Run action</Button>
-            </GlassCard>
-          ))}
-        </div>
-      )}
+          )}
         </main>
       </div>
     </div>

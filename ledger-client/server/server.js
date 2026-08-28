@@ -3,8 +3,9 @@ import cors from 'cors';
 import pg from 'pg';
 
 const { Pool } = pg;
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:1234@localhost:5432/ledger_db';
 const pool = new Pool({
-  connectionString: 'postgresql://postgres:1234@localhost:5432/ledger_db',
+  connectionString,
 });
 
 const app = express();
@@ -172,8 +173,13 @@ async function initializeDatabase() {
 }
 
 initializeDatabase()
-  .then(() => app.listen(PORT, () => console.log(`Ledger API operational on port ${PORT}`)))
+  .then(() => {
+    console.log('Database connected and initialized successfully.');
+  })
   .catch((err) => {
-    console.error(`Database initialization failed: ${err.message}`);
-    process.exitCode = 1;
+    console.warn(`Database connection notice: ${err.message}`);
+    console.warn('Server will continue running. (API endpoints requiring PostgreSQL will return errors until database is reachable)');
+  })
+  .finally(() => {
+    app.listen(PORT, () => console.log(`Ledger API operational on port ${PORT}`));
   });

@@ -15,21 +15,21 @@ import {
 const API_BASE = "http://localhost:5000/api";
 
 const C = {
-  ink: "#070E18",
-  surface: "#0E1A29",
-  surfaceHi: "#16273D",
-  surfaceHover: "#1E334F",
-  paper: "#F2EFE9",
-  paperDim: "#9EAABF",
-  muted: "#5F6F8A",
-  verified: "#36C79A",
-  verifiedDim: "#174236",
-  alert: "#FF5E5B",
-  alertDim: "#4D2121",
-  amber: "#EBB338",
-  amberDim: "#4D3B16",
-  line: "rgba(242, 239, 233, 0.08)",
-  lineStrong: "rgba(242, 239, 233, 0.16)",
+  ink:         "var(--c-ink)",
+  surface:     "var(--c-surface)",
+  surfaceHi:   "var(--c-surface-hi)",
+  surfaceHover:"var(--c-surface-hov)",
+  paper:       "var(--c-paper)",
+  paperDim:    "var(--c-paper-dim)",
+  muted:       "var(--c-muted)",
+  verified:    "var(--c-verified)",
+  verifiedDim: "var(--c-verified-dim)",
+  alert:       "var(--c-alert)",
+  alertDim:    "var(--c-alert-dim)",
+  amber:       "var(--c-amber)",
+  amberDim:    "var(--c-amber-dim)",
+  line:        "var(--c-line)",
+  lineStrong:  "var(--c-line-strong)",
 };
 
 const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');`;
@@ -120,37 +120,38 @@ function normalizeNews(article) {
    COMPONENTS
 --------------------------------------------------------- */
 function Stamp({ score, alert, size = 52 }) {
-  const s = alert ? C.alert : C.verified;
-  const sDim = alert ? C.alertDim : C.verifiedDim;
+  const s = alert ? "var(--c-alert)" : "var(--c-verified)";
+  const bg = alert ? "rgba(255,94,91,0.15)" : "rgba(54,199,154,0.15)";
   return (
     <div
       style={{
         width: size, height: size, borderRadius: "50%", flexShrink: 0,
         border: `1.5px dashed ${s}`, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center", color: s,
-        background: sDim + "33", transform: "rotate(-5deg)", fontFamily: "'IBM Plex Mono', monospace",
+        background: bg, transform: "rotate(-5deg)", fontFamily: "'IBM Plex Mono', monospace",
       }}
     >
       <div style={{ fontSize: size * 0.28, fontWeight: 700, lineHeight: 1 }}>{Number(score).toFixed(1)}</div>
-      <div style={{ fontSize: size * 0.14, color: C.muted, marginTop: 2 }}>/ 10</div>
+      <div style={{ fontSize: size * 0.14, color: "var(--c-muted)", marginTop: 2 }}>/ 10</div>
     </div>
   );
 }
 
+
 function Badge({ children, tone = "default" }) {
-  const toneMap = {
-    default: { border: C.lineStrong, color: C.paperDim, bg: "transparent" },
-    reg: { border: C.verifiedDim, color: C.verified, bg: C.verifiedDim + "40" },
-    warn: { border: C.alertDim, color: C.alert, bg: C.alertDim + "40" },
-    pending: { border: C.amberDim, color: C.amber, bg: C.amberDim + "40" },
-  };
-  const t = toneMap[tone] || toneMap.default;
   return (
-    <span className={`badge badge-${tone}`}
+    <span
+      className={`badge badge-${tone}`}
       style={{
         fontSize: 11, padding: "3px 8px", borderRadius: 4,
-        fontFamily: "'IBM Plex Mono', monospace", border: `1px solid ${t.border}`,
-        backgroundColor: t.bg, color: t.color, whiteSpace: "nowrap",
+        fontFamily: "'IBM Plex Mono', monospace", whiteSpace: "nowrap",
+        display: "inline-flex", alignItems: "center", gap: 4,
+        // Default (no tone) style — others handled by .badge-reg/warn/pending CSS classes
+        ...(tone === "default" && {
+          color: "var(--c-paper-dim)",
+          border: "1px solid var(--c-line-strong)",
+          background: "transparent",
+        }),
       }}
     >
       {children}
@@ -158,13 +159,15 @@ function Badge({ children, tone = "default" }) {
   );
 }
 
+
+
 function GlassCard({ children, style = {}, className = "" }) {
   return (
     <div
-      className={className}
+      className={`glass-card-hover ${className}`}
       style={{
-        background: "linear-gradient(145deg, rgba(14, 26, 41, 0.9), rgba(7, 14, 24, 0.88))",
-        border: `1px solid ${C.lineStrong}`,
+        background: "linear-gradient(145deg, var(--c-surface), var(--c-ink))",
+        border: `1px solid var(--c-line-strong)`,
         borderRadius: 18,
         boxShadow: "0 24px 50px rgba(3, 7, 15, 0.25)",
         backdropFilter: "blur(14px)",
@@ -185,10 +188,10 @@ function Button({ children, onClick, variant = "primary", type = "button", style
     boxShadow: "0 10px 18px rgba(0,0,0,0.18)",
   };
   const variants = {
-    primary: { background: "linear-gradient(135deg, #36C79A, #6fe0b6)", color: C.ink },
-    ghost: { background: "rgba(22,39,61,0.72)", color: C.paper, border: `1px solid ${C.lineStrong}` },
-    danger: { background: "linear-gradient(135deg, rgba(255,94,91,0.18), rgba(255,94,91,0.28))", color: C.alert, border: `1px solid ${C.alert}` },
-    subtle: { background: "rgba(22,39,61,0.7)", color: C.paper, border: `1px solid ${C.line}` },
+    primary: { background: "linear-gradient(135deg, #36C79A, #6fe0b6)", color: "#071c1a" },
+    ghost: { background: "var(--c-surface)", color: "var(--c-paper)", border: `1px solid var(--c-line-strong)` },
+    danger: { background: "linear-gradient(135deg, rgba(255,94,91,0.18), rgba(255,94,91,0.28))", color: "var(--c-alert)", border: `1px solid var(--c-alert)` },
+    subtle: { background: "var(--c-surface)", color: "var(--c-paper)", border: `1px solid var(--c-line)` },
   };
   return (
     <button
@@ -217,16 +220,17 @@ function Field({ label, children }) {
 }
 
 const inputStyle = {
-  width: "100%", background: C.ink, border: `1px solid ${C.lineStrong}`, borderRadius: 6,
-  color: C.paper, padding: "10px 12px", fontSize: 14, fontFamily: "'Inter', sans-serif", outline: "none",
+  width: "100%", background: "var(--input-bg)", border: "1px solid var(--input-border)", borderRadius: 6,
+  color: "var(--input-color)", padding: "10px 12px", fontSize: 14, fontFamily: "'Inter', sans-serif", outline: "none",
   boxSizing: "border-box"
 };
 
 /* ---------------------------------------------------------
    NAVBAR
 --------------------------------------------------------- */
-function Header({ view, setView, compareList, openCompare, isLight, toggleTheme }) {
+function Header({ view, setView, compareList, openCompare, isLight, toggleTheme, adminAuthed, onLoginClick, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loginHover, setLoginHover] = useState(false);
   const items = [
     { id: "home", label: "Registry" },
     { id: "brokers", label: "All Brokers" },
@@ -234,10 +238,10 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme 
     { id: "rankings", label: "Leaderboard" },
     { id: "exposure", label: "Exposure Desk" },
     { id: "news", label: "Dispatches" },
-    { id: "admin", label: "Admin" },
   ];
   return (
-    <header style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(7, 14, 24, 0.85)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.line}` }}>
+    <header style={{ position: "sticky", top: 0, zIndex: 60, background: "var(--header-bg)", backdropFilter: "blur(12px)", borderBottom: `1px solid var(--c-line)`, transition: "background 0.3s ease" }}>
+
       <div className="ledger-header-inner" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 22, cursor: "pointer" }} onClick={() => setView("home")}>
           <div style={{ width: 28, height: 28, borderRadius: "50%", border: `1.5px dashed ${C.verified}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.verified, fontSize: 13 }}>✓</div>
@@ -269,6 +273,40 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme 
         <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"} title={isLight ? "Switch to dark mode" : "Switch to light mode"}>
           {isLight ? <Moon size={17} /> : <Sun size={17} />}
         </button>
+
+        {/* Premium Login / Admin button */}
+        {adminAuthed ? (
+          <div className="header-admin-pill">
+            <div className="header-admin-avatar">
+              <UserCircle2 size={17} />
+            </div>
+            <span className="header-admin-label">Admin</span>
+            <button
+              type="button"
+              className="header-admin-logout"
+              onClick={onLogout}
+              title="Sign out"
+              aria-label="Sign out from admin"
+            >
+              <LogOut size={13} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="header-login-btn"
+            id="header-login-btn"
+            onClick={onLoginClick}
+            aria-label="Login to admin panel"
+            onMouseEnter={() => setLoginHover(true)}
+            onMouseLeave={() => setLoginHover(false)}
+          >
+            <span className="header-login-icon-wrap">
+              <UserCircle2 size={16} />
+            </span>
+          </button>
+        )}
+
         <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}><Menu size={20} /></button>
       </div>
     </header>
@@ -287,7 +325,9 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
 
   return (
     <div>
-      <section className="home-hero" style={{ position: "relative", overflow: "hidden", padding: "80px 24px 60px", borderBottom: `1px solid ${C.line}`, background: isLight ? "radial-gradient(ellipse at 80% -20%, #dcece8 0%, #f4f7f6 70%)" : `radial-gradient(ellipse at 80% -20%, ${C.surfaceHi} 0%, ${C.ink} 70%)` }}>
+      <section className="home-hero tech-grid" style={{ position: "relative", overflow: "hidden", padding: "80px 24px 60px", borderBottom: `1px solid var(--c-line)`, background: "radial-gradient(ellipse at 80% -20%, var(--c-surface-hi) 0%, var(--c-ink) 70%)", transition: "background 0.3s ease" }}>
+
+
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.4 }}>
           <div style={{ position: "absolute", width: 420, height: 420, borderRadius: "50%", background: "rgba(54,199,154,0.11)", top: -120, right: -40, filter: "blur(16px)" }} />
           <div style={{ position: "absolute", width: 360, height: 360, borderRadius: "50%", background: "rgba(59,130,246,0.08)", bottom: -140, left: -30, filter: "blur(18px)" }} />
@@ -479,6 +519,7 @@ function AICommandDeck({ brokers, exposures, setView, openDetail }) {
       </div>
       <div className="ai-deck-body">
         <div className="ai-radar-panel">
+          <div className="radar-sweep-effect" />
           <div className="ai-radar-orbit ai-radar-orbit-one" /><div className="ai-radar-orbit ai-radar-orbit-two" />
           <div className="ai-radar-core" style={{ background: `conic-gradient(${signalTone === "critical" ? C.alert : signalTone === "elevated" ? C.amber : C.verified} ${Math.max(focusScore * 10, 8)}%, rgba(255,255,255,.08) 0)` }}><div><strong>{focusScore.toFixed(1)}</strong><span>risk index</span></div></div>
           <div className="ai-radar-label"><span>Priority signal</span><strong className={`ai-signal-${signalTone}`}>{focusBroker ? (signalTone === "critical" ? "Escalate review" : signalTone === "elevated" ? "Verify evidence" : "Monitor record") : "Awaiting data"}</strong></div>
@@ -1254,7 +1295,11 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 export default function App() {
   const [view, setView] = useState("home");
   const [brokerSearch, setBrokerSearch] = useState("");
-  const [isLight, setIsLight] = useState(() => localStorage.getItem("ledger-theme") === "light");
+  const [isLight, setIsLight] = useState(() => {
+    const saved = localStorage.getItem("ledger-theme") === "light";
+    document.documentElement.setAttribute("data-theme", saved ? "light" : "dark");
+    return saved;
+  });
   const [brokers, setBrokers] = useState(initialBrokers);
   const [exposures, setExposures] = useState(initialExposures);
   const [news, setNews] = useState(initialNews);
@@ -1317,6 +1362,7 @@ export default function App() {
     setIsLight((current) => {
       const next = !current;
       localStorage.setItem("ledger-theme", next ? "light" : "dark");
+      document.documentElement.setAttribute("data-theme", next ? "light" : "dark");
       return next;
     });
   }
@@ -1332,23 +1378,31 @@ export default function App() {
   }
 
   return (
-    <div data-theme={isLight ? "light" : "dark"} style={{ background: C.ink, minHeight: "100vh", color: C.paper, fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         ${FONT_IMPORT}
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: ${isLight ? "#EDF4F1" : C.ink}; }
-        input, select, textarea { color-scheme: ${isLight ? "light" : "dark"}; }
       `}</style>
 
-      <Header view={view} setView={setView} compareList={compareList} openCompare={() => setCompareOpen(true)} isLight={isLight} toggleTheme={toggleTheme} />
+      <Header
+        view={view}
+        setView={setView}
+        compareList={compareList}
+        openCompare={() => setCompareOpen(true)}
+        isLight={isLight}
+        toggleTheme={toggleTheme}
+        adminAuthed={adminAuthed}
+        onLoginClick={() => setView("admin")}
+        onLogout={() => { setAdminAuthed(false); setView("home"); }}
+      />
 
-      {view === "home" && <Home brokers={brokers} exposures={exposures} setView={setView} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} isLight={isLight} setBrokerSearch={setBrokerSearch} />}
-      {view === "brokers" && <BrokersPage brokers={brokers} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} initialQuery={brokerSearch} />}
-      {view === "market" && <MarketPage />}
-      {view === "rankings" && <LeaderboardPage brokers={brokers} />}
-      {view === "exposure" && <ExposurePage exposures={exposures} brokers={brokers} onSubmitReport={handleAddExposure} />}
+      {view === "home" && <div className="view-transition-wrap"><Home brokers={brokers} exposures={exposures} setView={setView} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} isLight={isLight} setBrokerSearch={setBrokerSearch} /></div>}
+      {view === "brokers" && <div className="view-transition-wrap"><BrokersPage brokers={brokers} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} initialQuery={brokerSearch} /></div>}
+      {view === "market" && <div className="view-transition-wrap"><MarketPage /></div>}
+      {view === "rankings" && <div className="view-transition-wrap"><LeaderboardPage brokers={brokers} /></div>}
+      {view === "exposure" && <div className="view-transition-wrap"><ExposurePage exposures={exposures} brokers={brokers} onSubmitReport={handleAddExposure} /></div>}
       {view === "news" && (
-        <div style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px" }}>
+        <div className="view-transition-wrap" style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px" }}>
           <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginBottom: 24 }}>Dispatches & Intelligence</h1>
           {news.map(n => (
             <div key={n.id} style={{ borderBottom: `1px solid ${C.line}`, paddingBottom: 24, marginBottom: 24 }}>
@@ -1364,9 +1418,9 @@ export default function App() {
       )}
       {view === "admin" && (
         adminAuthed ? (
-          <AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} onLogout={() => setAdminAuthed(false)} />
+          <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} onLogout={() => setAdminAuthed(false)} /></div>
         ) : (
-          <main className="admin-login-page">
+          <main className="admin-login-page view-transition-wrap">
             <div className="admin-login-orbit orbit-one" /><div className="admin-login-orbit orbit-two" />
             <section className="admin-login-card">
               <div className="admin-login-brand"><div className="admin-login-mark"><ShieldCheck size={22} /></div><div><span>LEDGER // CONTROL</span><strong>Administrator access</strong></div></div>
@@ -1375,7 +1429,7 @@ export default function App() {
                 <Field label="Administrator ID"><input required autoComplete="username" style={inputStyle} value={adminUser} onChange={e => { setAdminUser(e.target.value); setAdminLoginError(""); }} placeholder="admin" /></Field>
                 <Field label="Password"><div className="password-field"><input required autoComplete="current-password" type={showAdminPassword ? "text" : "password"} style={inputStyle} value={adminPasscode} onChange={e => { setAdminPasscode(e.target.value); setAdminLoginError(""); }} placeholder="Enter administrator password" /><button type="button" className="password-toggle" aria-label={showAdminPassword ? "Hide password" : "Show password"} onClick={() => setShowAdminPassword(!showAdminPassword)}>{showAdminPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div></Field>
                 {adminLoginError && <div className="admin-login-error" role="alert"><AlertTriangle size={15} />{adminLoginError}</div>}
-                <Button type="submit" style={{ width: "100%", justifyContent: "center", padding: "12px 16px" }}><LogIn size={15} /> Enter control room</Button>
+                <Button type="submit" style={{ width: "100%", justifyContent: "center", padding: "12px 16px" }}><LogIn size={15} /> Login </Button>
               </form>
               <div className="admin-login-footer"><span><i className="status-light" /> Registry systems online</span><span>Demo ID: admin</span></div>
             </section>

@@ -163,17 +163,7 @@ function Badge({ children, tone = "default" }) {
 
 function GlassCard({ children, style = {}, className = "" }) {
   return (
-    <div
-      className={`glass-card-hover ${className}`}
-      style={{
-        background: "linear-gradient(145deg, var(--c-surface), var(--c-ink))",
-        border: `1px solid var(--c-line-strong)`,
-        borderRadius: 18,
-        boxShadow: "0 24px 50px rgba(3, 7, 15, 0.25)",
-        backdropFilter: "blur(14px)",
-        ...style,
-      }}
-    >
+    <div className={`glass-card-hover ${className}`} style={style}>
       {children}
     </div>
   );
@@ -188,9 +178,9 @@ function Button({ children, onClick, variant = "primary", type = "button", style
     boxShadow: "0 10px 18px rgba(0,0,0,0.18)",
   };
   const variants = {
-    primary: { background: "linear-gradient(135deg, #36C79A, #6fe0b6)", color: "#071c1a" },
+    primary: { background: "var(--gradient-brand)", color: "#FFFFFF", boxShadow: "0 4px 14px rgba(0, 230, 118, 0.3)" },
     ghost: { background: "var(--c-surface)", color: "var(--c-paper)", border: `1px solid var(--c-line-strong)` },
-    danger: { background: "linear-gradient(135deg, rgba(255,94,91,0.18), rgba(255,94,91,0.28))", color: "var(--c-alert)", border: `1px solid var(--c-alert)` },
+    danger: { background: "linear-gradient(135deg, rgba(255,61,0,0.18), rgba(255,61,0,0.28))", color: "var(--c-alert)", border: `1px solid var(--c-alert-dim)` },
     subtle: { background: "var(--c-surface)", color: "var(--c-paper)", border: `1px solid var(--c-line)` },
   };
   return (
@@ -324,8 +314,8 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
   const disputedTotal = exposures.reduce((total, exposure) => total + Number(exposure.amount || 0), 0);
 
   return (
-    <div>
-      <section className="home-hero tech-grid" style={{ position: "relative", overflow: "hidden", padding: "80px 24px 60px", borderBottom: `1px solid var(--c-line)`, background: "radial-gradient(ellipse at 80% -20%, var(--c-surface-hi) 0%, var(--c-ink) 70%)", transition: "background 0.3s ease" }}>
+    <div className="fade-in-up">
+      <section className="home-hero tech-grid" style={{ position: "relative", overflow: "hidden", padding: "100px 24px 80px", borderBottom: `1px solid var(--c-line)`, background: "var(--gradient-hero)", transition: "background 0.3s ease" }}>
 
 
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.4 }}>
@@ -353,7 +343,9 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             />
             <button
               onClick={() => { setBrokerSearch(q); setView("brokers"); }}
-              style={{ background: "linear-gradient(135deg, #36C79A, #5ce2b3)", color: C.ink, border: "none", padding: "0 24px", fontWeight: 700, cursor: "pointer" }}
+              style={{ background: "var(--gradient-brand)", color: "#FFFFFF", border: "none", padding: "0 28px", fontWeight: 700, cursor: "pointer", transition: "transform 0.2s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
               Examine
             </button>

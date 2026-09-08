@@ -36,12 +36,12 @@ const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraun
 
 // Initial seed data if PostgreSQL is booting or offline
 const initialBrokers = [
-  { id: "b1", name: "Solaris Prime", years: 16, score: 9.4, regulator: "FCA, ASIC, FSCA", license: "UK-771102", country: "United Kingdom", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: [] },
-  { id: "b2", name: "Vantage Global", years: 12, score: 9.1, regulator: "ASIC, FCA", license: "MM-208841", country: "Australia", type: "ECN", min_deposit: 50, max_leverage: "1:500", flags: [] },
-  { id: "b3", name: "Halcyon Capital", years: 9, score: 8.6, regulator: "CySEC", license: "CY-118820", country: "Cyprus", type: "STP", min_deposit: 200, max_leverage: "1:30", flags: [] },
-  { id: "b4", name: "Northbridge FX", years: 4, score: 5.2, regulator: "Offshore (SVG)", license: "SVG-33211", country: "St. Vincent", type: "Market Maker", min_deposit: 10, max_leverage: "1:1000", flags: ["Offshore registration"] },
-  { id: "b5", name: "Copperline Trade", years: 2, score: 4.1, regulator: "Offshore (Vanuatu)", license: "VU-44092", country: "Vanuatu", type: "Market Maker", min_deposit: 20, max_leverage: "1:2000", flags: ["Frequent withdrawal delays"] },
-  { id: "b6", name: "Reef Markets", years: 1, score: 2.8, regulator: "Unregistered", license: "—", country: "Unknown", type: "Unknown", min_deposit: 250, max_leverage: "1:500", flags: ["No physical registry", "Open dispute cases"] },
+  { id: "b1", name: "Solaris Prime", years: 16, score: 9.4, regulator: "FCA, ASIC, FSCA", license: "UK-771102", country: "United Kingdom", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: [], licenseStatus: "Regulated", subScores: { license: 9.6, business: 9.2, risk: 9.8, software: 9.0 }, tradingEnv: "AAA", fieldSurvey: "Physical office verified in London. Operations align with regulatory filings." },
+  { id: "b2", name: "Vantage Global", years: 12, score: 9.1, regulator: "ASIC, FCA", license: "MM-208841", country: "Australia", type: "ECN", min_deposit: 50, max_leverage: "1:500", flags: [], licenseStatus: "Regulated", subScores: { license: 9.4, business: 9.0, risk: 9.1, software: 8.9 }, tradingEnv: "AA", fieldSurvey: "Verified presence in Sydney. Excellent execution speeds recorded." },
+  { id: "b3", name: "Halcyon Capital", years: 9, score: 8.6, regulator: "CySEC", license: "CY-118820", country: "Cyprus", type: "STP", min_deposit: 200, max_leverage: "1:30", flags: [], licenseStatus: "Regulated", subScores: { license: 8.8, business: 8.5, risk: 8.9, software: 8.2 }, tradingEnv: "A", fieldSurvey: "Office located in Limassol. Standard STP execution models confirmed." },
+  { id: "b4", name: "Northbridge FX", years: 4, score: 5.2, regulator: "Offshore (SVG)", license: "SVG-33211", country: "St. Vincent", type: "Market Maker", min_deposit: 10, max_leverage: "1:1000", flags: ["Offshore registration"], licenseStatus: "Offshore Regulatory", subScores: { license: 4.5, business: 5.5, risk: 4.8, software: 6.0 }, tradingEnv: "C", fieldSurvey: "No physical office found at registered address. Virtual mailbox only." },
+  { id: "b5", name: "Copperline Trade", years: 2, score: 4.1, regulator: "Offshore (Vanuatu)", license: "VU-44092", country: "Vanuatu", type: "Market Maker", min_deposit: 20, max_leverage: "1:2000", flags: ["Frequent withdrawal delays"], licenseStatus: "Suspicious", subScores: { license: 3.5, business: 4.2, risk: 3.8, software: 4.9 }, tradingEnv: "D", fieldSurvey: "Unable to verify physical operations. High incidence of slippage reported." },
+  { id: "b6", name: "Reef Markets", years: 1, score: 2.8, regulator: "Unregistered", license: "—", country: "Unknown", type: "Unknown", min_deposit: 250, max_leverage: "1:500", flags: ["No physical registry", "Open dispute cases"], licenseStatus: "Unregulated Clone", subScores: { license: 1.0, business: 2.5, risk: 1.5, software: 3.0 }, tradingEnv: "F", fieldSurvey: "Entity is a suspected clone. Warning issued by multiple regulators." },
 ];
 
 const initialExposures = [
@@ -228,6 +228,8 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
     { id: "rankings", label: "Leaderboard" },
     { id: "exposure", label: "Exposure Desk" },
     { id: "news", label: "Dispatches" },
+    { id: "education", label: "Education" },
+    { id: "tools", label: "EA/VPS Tools" },
   ];
   return (
     <header style={{ position: "sticky", top: 0, zIndex: 60, background: "var(--header-bg)", backdropFilter: "blur(12px)", borderBottom: `1px solid var(--c-line)`, transition: "background 0.3s ease" }}>
@@ -556,6 +558,7 @@ function BrokerCard({ b, onClick, onCompare, isCompared }) {
           <Stamp score={b.score} alert={isFlagged} />
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "14px 0" }}>
+          {b.licenseStatus && <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>{b.licenseStatus}</Badge>}
           <Badge tone="reg">{b.regulator}</Badge>
           <Badge>{b.type}</Badge>
           {b.flags.map((f, i) => <Badge key={i} tone="warn">{f}</Badge>)}
@@ -905,14 +908,18 @@ function DetailModal({ broker, exposures, onClose }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
           {[
+            ["License Index", broker.subScores?.license || "N/A"],
+            ["Business Index", broker.subScores?.business || "N/A"],
+            ["Risk Management", broker.subScores?.risk || "N/A"],
+            ["Software Index", broker.subScores?.software || "N/A"],
             ["Regulator Bodies", broker.regulator],
             ["License ID", broker.license],
             ["Execution Type", broker.type],
-            ["Minimum Deposit", `$${broker.min_deposit || 50}`],
-            ["Max Leverage", broker.max_leverage || "1:500"],
+            ["Trading Environment", broker.tradingEnv || "Unrated"],
+            ["Field Survey", broker.fieldSurvey || "Pending Inspection"],
             ["Infringement Flags", broker.flags.length ? broker.flags.join(", ") : "Clean Record"]
           ].map(([k, v]) => (
-            <div key={k} style={{ background: C.ink, border: `1px solid ${C.line}`, borderRadius: 6, padding: "10px 12px" }}>
+            <div key={k} style={{ background: C.ink, border: `1px solid ${C.line}`, borderRadius: 6, padding: "10px 12px", gridColumn: k === "Field Survey" || k === "Infringement Flags" ? "span 2" : "span 1" }}>
               <div style={{ fontSize: 10.5, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>{k}</div>
               <div style={{ fontSize: 13.5, fontWeight: 500, marginTop: 3 }}>{v}</div>
             </div>
@@ -1306,6 +1313,90 @@ function TickerTape({ pairs }) {
 }
 
 /* ---------------------------------------------------------
+   EDUCATION & TOOLS PAGES
+--------------------------------------------------------- */
+function EducationPage() {
+  return (
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
+      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginBottom: 12 }}>Trader Education Hub</h1>
+      <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Learn how to identify legitimate brokers and protect your capital from sophisticated scams.</p>
+      
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        {[
+          { title: "Beginner's Guide to Forex Regulations", desc: "Understanding the difference between Tier-1 (FCA, ASIC) and offshore licenses.", time: "10 min read" },
+          { title: "How to Spot a Clone Broker", desc: "Clones use real license numbers but fake websites. Learn the tell-tale signs.", time: "8 min read" },
+          { title: "The Reality of 'Guaranteed Returns'", desc: "Why promises of fixed monthly profits are mathematically impossible in live markets.", time: "12 min read" },
+          { title: "Understanding Slippage vs Manipulation", desc: "How to tell if your broker is intentionally widening spreads to hunt your stop losses.", time: "15 min read" },
+        ].map((course, i) => (
+          <GlassCard key={i} style={{ padding: 24, borderRadius: 12, border: `1px solid ${C.lineStrong}`, display: "flex", flexDirection: "column", gap: 12 }}>
+            <Badge tone="reg">Course</Badge>
+            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20 }}>{course.title}</h3>
+            <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.5, flex: 1 }}>{course.desc}</p>
+            <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{course.time}</div>
+          </GlassCard>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ToolsPage() {
+  return (
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
+      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginBottom: 12 }}>EA & VPS Trading Tools</h1>
+      <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Enhance your trading environment with verified low-latency servers and trusted Expert Advisors.</p>
+      
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+        <div>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, marginBottom: 16 }}>Low Latency VPS</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {[
+              { name: "London Equinix LD4", latency: "< 1ms", price: "$25/mo" },
+              { name: "New York NY4", latency: "< 2ms", price: "$30/mo" },
+              { name: "Tokyo TY3", latency: "< 2ms", price: "$35/mo" },
+            ].map(vps => (
+              <div key={vps.name} style={{ background: C.surface, padding: 18, borderRadius: 8, border: `1px solid ${C.lineStrong}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontWeight: 600 }}>{vps.name}</div>
+                  <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Optimized for MT4/MT5</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <Badge tone="reg">{vps.latency}</Badge>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginTop: 6 }}>{vps.price}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, marginBottom: 16 }}>Verified EAs</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {[
+              { name: "Grid Master Pro", type: "Mean Reversion", rating: "4.8" },
+              { name: "Breakout Sniper", type: "Momentum", rating: "4.5" },
+              { name: "Trend Follower EA", type: "Trend", rating: "4.2" },
+            ].map(ea => (
+              <div key={ea.name} style={{ background: C.surface, padding: 18, borderRadius: 8, border: `1px solid ${C.lineStrong}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontWeight: 600 }}>{ea.name}</div>
+                  <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Strategy: {ea.type}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                    <span style={{ color: C.amber }}>★</span> <span style={{ fontWeight: 600 }}>{ea.rating}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
    MAIN ROOT EXPORT
 --------------------------------------------------------- */
 export default function App() {
@@ -1434,6 +1525,8 @@ export default function App() {
           ))}
         </div>
       )}
+      {view === "education" && <div className="view-transition-wrap"><EducationPage /></div>}
+      {view === "tools" && <div className="view-transition-wrap"><ToolsPage /></div>}
       {view === "admin" && (
         adminAuthed ? (
           <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} onLogout={() => setAdminAuthed(false)} /></div>

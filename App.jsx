@@ -10,26 +10,26 @@ import {
 /* ---------------------------------------------------------
    CONFIG & DESIGN TOKENS
 
-   abhijit
+   abhijeet
 --------------------------------------------------------- */
 const API_BASE = "http://localhost:5000/api";
 
 const C = {
-  ink:         "var(--c-ink)",
-  surface:     "var(--c-surface)",
-  surfaceHi:   "var(--c-surface-hi)",
-  surfaceHover:"var(--c-surface-hov)",
-  paper:       "var(--c-paper)",
-  paperDim:    "var(--c-paper-dim)",
-  muted:       "var(--c-muted)",
-  verified:    "var(--c-verified)",
+  ink: "var(--c-ink)",
+  surface: "var(--c-surface)",
+  surfaceHi: "var(--c-surface-hi)",
+  surfaceHover: "var(--c-surface-hov)",
+  paper: "var(--c-paper)",
+  paperDim: "var(--c-paper-dim)",
+  muted: "var(--c-muted)",
+  verified: "var(--c-verified)",
   verifiedDim: "var(--c-verified-dim)",
-  alert:       "var(--c-alert)",
-  alertDim:    "var(--c-alert-dim)",
-  amber:       "var(--c-amber)",
-  amberDim:    "var(--c-amber-dim)",
-  line:        "var(--c-line)",
-  lineStrong:  "var(--c-line-strong)",
+  alert: "var(--c-alert)",
+  alertDim: "var(--c-alert-dim)",
+  amber: "var(--c-amber)",
+  amberDim: "var(--c-amber-dim)",
+  line: "var(--c-line)",
+  lineStrong: "var(--c-line-strong)",
 };
 
 const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');`;
@@ -1282,6 +1282,30 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 }
 
 /* ---------------------------------------------------------
+   TICKER TAPE COMPONENT
+--------------------------------------------------------- */
+function TickerTape({ pairs }) {
+  return (
+    <div className="ticker-tape">
+      <div className="ticker-tape-track">
+        {[...pairs, ...pairs, ...pairs, ...pairs].map((pair, i) => {
+          const isUp = Number(pair.change) >= 0;
+          return (
+            <div className="ticker-item" key={i}>
+              <span className="ticker-symbol">{pair.symbol}</span>
+              <span className="ticker-price">{pair.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</span>
+              <span className={`ticker-change ${isUp ? 'ticker-up' : 'ticker-down'}`}>
+                {isUp ? '+' : ''}{pair.change}%
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
    MAIN ROOT EXPORT
 --------------------------------------------------------- */
 export default function App() {
@@ -1387,6 +1411,8 @@ export default function App() {
         onLoginClick={() => setView("admin")}
         onLogout={() => { setAdminAuthed(false); setView("home"); }}
       />
+
+      <TickerTape pairs={marketPairs} />
 
       {view === "home" && <div className="view-transition-wrap"><Home brokers={brokers} exposures={exposures} setView={setView} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} isLight={isLight} setBrokerSearch={setBrokerSearch} /></div>}
       {view === "brokers" && <div className="view-transition-wrap"><BrokersPage brokers={brokers} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} initialQuery={brokerSearch} /></div>}

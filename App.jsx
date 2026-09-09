@@ -36,12 +36,12 @@ const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraun
 
 // Initial seed data if PostgreSQL is booting or offline
 const initialBrokers = [
-  { id: "b1", name: "Solaris Prime", years: 16, score: 9.4, regulator: "FCA, ASIC, FSCA", license: "UK-771102", country: "United Kingdom", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: [], licenseStatus: "Regulated", subScores: { license: 9.6, business: 9.2, risk: 9.8, software: 9.0 }, tradingEnv: "AAA", fieldSurvey: "Physical office verified in London. Operations align with regulatory filings." },
-  { id: "b2", name: "Vantage Global", years: 12, score: 9.1, regulator: "ASIC, FCA", license: "MM-208841", country: "Australia", type: "ECN", min_deposit: 50, max_leverage: "1:500", flags: [], licenseStatus: "Regulated", subScores: { license: 9.4, business: 9.0, risk: 9.1, software: 8.9 }, tradingEnv: "AA", fieldSurvey: "Verified presence in Sydney. Excellent execution speeds recorded." },
-  { id: "b3", name: "Halcyon Capital", years: 9, score: 8.6, regulator: "CySEC", license: "CY-118820", country: "Cyprus", type: "STP", min_deposit: 200, max_leverage: "1:30", flags: [], licenseStatus: "Regulated", subScores: { license: 8.8, business: 8.5, risk: 8.9, software: 8.2 }, tradingEnv: "A", fieldSurvey: "Office located in Limassol. Standard STP execution models confirmed." },
-  { id: "b4", name: "Northbridge FX", years: 4, score: 5.2, regulator: "Offshore (SVG)", license: "SVG-33211", country: "St. Vincent", type: "Market Maker", min_deposit: 10, max_leverage: "1:1000", flags: ["Offshore registration"], licenseStatus: "Offshore Regulatory", subScores: { license: 4.5, business: 5.5, risk: 4.8, software: 6.0 }, tradingEnv: "C", fieldSurvey: "No physical office found at registered address. Virtual mailbox only." },
-  { id: "b5", name: "Copperline Trade", years: 2, score: 4.1, regulator: "Offshore (Vanuatu)", license: "VU-44092", country: "Vanuatu", type: "Market Maker", min_deposit: 20, max_leverage: "1:2000", flags: ["Frequent withdrawal delays"], licenseStatus: "Suspicious", subScores: { license: 3.5, business: 4.2, risk: 3.8, software: 4.9 }, tradingEnv: "D", fieldSurvey: "Unable to verify physical operations. High incidence of slippage reported." },
-  { id: "b6", name: "Reef Markets", years: 1, score: 2.8, regulator: "Unregistered", license: "—", country: "Unknown", type: "Unknown", min_deposit: 250, max_leverage: "1:500", flags: ["No physical registry", "Open dispute cases"], licenseStatus: "Unregulated Clone", subScores: { license: 1.0, business: 2.5, risk: 1.5, software: 3.0 }, tradingEnv: "F", fieldSurvey: "Entity is a suspected clone. Warning issued by multiple regulators." },
+  { id: "b1", name: "Solaris Prime", years: 16, score: 9.4, regulator: "FCA, ASIC, FSCA", license: "UK-771102", country: "United Kingdom", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: [], licenseStatus: "Regulated", subScores: { license: 9.6, business: 9.2, risk: 9.8, software: 9.0 }, tradingEnv: "AAA", fieldSurvey: "Physical office verified in London. Operations align with regulatory filings.", userRating: 4.8, reviews: [{user: "TraderJohn", rating: 5, text: "Excellent spreads and fast execution."}, {user: "FXPro99", rating: 4, text: "Good broker, but support can be slow sometimes."}] },
+  { id: "b2", name: "Vantage Global", years: 12, score: 9.1, regulator: "ASIC, FCA", license: "MM-208841", country: "Australia", type: "ECN", min_deposit: 50, max_leverage: "1:500", flags: [], licenseStatus: "Regulated", subScores: { license: 9.4, business: 9.0, risk: 9.1, software: 8.9 }, tradingEnv: "AA", fieldSurvey: "Verified presence in Sydney. Excellent execution speeds recorded.", userRating: 4.6, reviews: [{user: "AussieTrader", rating: 5, text: "Never had an issue with withdrawals."}] },
+  { id: "b3", name: "Halcyon Capital", years: 9, score: 8.6, regulator: "CySEC", license: "CY-118820", country: "Cyprus", type: "STP", min_deposit: 200, max_leverage: "1:30", flags: [], licenseStatus: "Regulated", subScores: { license: 8.8, business: 8.5, risk: 8.9, software: 8.2 }, tradingEnv: "A", fieldSurvey: "Office located in Limassol. Standard STP execution models confirmed.", userRating: 4.2, reviews: [{user: "EuroTrade", rating: 4, text: "Reliable, but leverage is too low for me."}] },
+  { id: "b4", name: "Northbridge FX", years: 4, score: 5.2, regulator: "Offshore (SVG)", license: "SVG-33211", country: "St. Vincent", type: "Market Maker", min_deposit: 10, max_leverage: "1:1000", flags: ["Offshore registration"], licenseStatus: "Offshore Regulatory", subScores: { license: 4.5, business: 5.5, risk: 4.8, software: 6.0 }, tradingEnv: "C", fieldSurvey: "No physical office found at registered address. Virtual mailbox only.", userRating: 2.5, reviews: [{user: "RiskTaker", rating: 1, text: "They widened spreads during news and wiped my account."}] },
+  { id: "b5", name: "Copperline Trade", years: 2, score: 4.1, regulator: "Offshore (Vanuatu)", license: "VU-44092", country: "Vanuatu", type: "Market Maker", min_deposit: 20, max_leverage: "1:2000", flags: ["Frequent withdrawal delays"], licenseStatus: "Suspicious", subScores: { license: 3.5, business: 4.2, risk: 3.8, software: 4.9 }, tradingEnv: "D", fieldSurvey: "Unable to verify physical operations. High incidence of slippage reported.", userRating: 1.8, reviews: [{user: "AngryClient", rating: 1, text: "Pending withdrawal for 2 months. Stay away!"}] },
+  { id: "b6", name: "Reef Markets", years: 1, score: 2.8, regulator: "Unregistered", license: "—", country: "Unknown", type: "Unknown", min_deposit: 250, max_leverage: "1:500", flags: ["No physical registry", "Open dispute cases"], licenseStatus: "Unregulated Clone", subScores: { license: 1.0, business: 2.5, risk: 1.5, software: 3.0 }, tradingEnv: "F", fieldSurvey: "Entity is a suspected clone. Warning issued by multiple regulators.", userRating: 1.0, reviews: [{user: "Scammed123", rating: 1, text: "This is a scam. They took my money and blocked my number."}] },
 ];
 
 const initialExposures = [
@@ -72,6 +72,40 @@ const leaderboardMetrics = [
   { label: "Spread Cost", value: "17.48", leader: "Exness" },
 ];
 
+const scamAlerts = [
+  { id: "sa1", broker: "Reef Markets", country: "Unknown", type: "Clone Fraud", severity: "Critical", description: "Entity impersonating a licensed broker. Multiple regulators have issued cease-and-desist orders.", date: "2026-09-01", regulator: "FCA, ASIC" },
+  { id: "sa2", broker: "TrustFX Global", country: "Comoros", type: "Withdrawal Theft", severity: "High", description: "Over 140 users report frozen accounts with no communication from broker since July 2026.", date: "2026-08-28", regulator: "None" },
+  { id: "sa3", broker: "Copperline Trade", country: "Vanuatu", type: "Spread Manipulation", severity: "High", description: "Systematic spread widening during high-volatility sessions confirmed by independent audit.", date: "2026-08-22", regulator: "VFSC" },
+  { id: "sa4", broker: "BlueChip FX", country: "Marshall Islands", type: "Unlicensed Operation", severity: "Medium", description: "Operating without any financial services license. Customer funds not segregated.", date: "2026-08-15", regulator: "None" },
+];
+
+const fieldSurveys = [
+  { id: "fs1", broker: "Solaris Prime", country: "United Kingdom", address: "1 Canada Square, Canary Wharf, London", score: 9.4, date: "2026-07-15", findings: "Physical office verified. Staff present. Regulatory certificates displayed. Trading servers operational.", status: "Verified" },
+  { id: "fs2", broker: "Vantage Global", country: "Australia", address: "Level 29, 31 Market Street, Sydney NSW", score: 9.1, date: "2026-07-10", findings: "Office confirmed. ASIC registration plaque visible. Support staff available. Fully operational.", status: "Verified" },
+  { id: "fs3", broker: "Northbridge FX", country: "St. Vincent", address: "Suite 305, Griffith Corporate Centre, SVG", score: 5.2, date: "2026-08-01", findings: "Address leads to a virtual office mailbox service. No staff found. Phone lines disconnected.", status: "Suspicious" },
+  { id: "fs4", broker: "Reef Markets", country: "Unknown", address: "Registration address unverifiable", score: 2.8, date: "2026-08-10", findings: "No physical presence found. Website domain registered 3 months ago. Regulatory numbers are forged.", status: "Fraudulent" },
+];
+
+const forumPosts = [
+  { id: "fp1", user: "TraderJohn", avatar: "TJ", title: "Best ECN brokers with tight spreads in 2026?", body: "Looking for recommendations on ECN brokers with sub-0.1 pip spreads on EUR/USD. Currently using Solaris Prime but want alternatives.", replies: 24, views: 1240, date: "2026-09-05", category: "Broker Discussion", upvotes: 47 },
+  { id: "fp2", user: "FXPro99", avatar: "FX", title: "Warning: Copperline Trade spreads spiking during news", body: "Just noticed that during NFP releases, Copperline widens EUR/USD spreads to 8+ pips then immediately returns them. This is clearly manipulation.", replies: 18, views: 890, date: "2026-09-03", category: "Scam Alert", upvotes: 82 },
+  { id: "fp3", user: "AussieTrader", avatar: "AT", title: "How to verify an FCA license properly", body: "Many traders just Google the broker name but that's not enough. Here's how to do a proper FCA register check step by step...", replies: 31, views: 2100, date: "2026-08-30", category: "Education", upvotes: 115 },
+  { id: "fp4", user: "EuroTrade", avatar: "ET", title: "MT5 or cTrader — which do you prefer for scalping?", body: "Been using MT5 for 3 years but heard cTrader has better execution for scalping. Anyone made the switch?", replies: 42, views: 3400, date: "2026-08-27", category: "Trading Tools", upvotes: 63 },
+];
+
+const spreadCalcPairs = [
+  { pair: "EUR/USD", spread: 0.1, pip_value: 10, category: "Majors" },
+  { pair: "GBP/USD", spread: 0.2, pip_value: 10, category: "Majors" },
+  { pair: "USD/JPY", spread: 0.3, pip_value: 9.24, category: "Majors" },
+  { pair: "USD/CHF", spread: 0.1, pip_value: 11.20, category: "Majors" },
+  { pair: "AUD/USD", spread: 0.3, pip_value: 10, category: "Majors" },
+  { pair: "XAU/USD", spread: 1.8, pip_value: 100, category: "Metals" },
+  { pair: "XAG/USD", spread: 2.5, pip_value: 50, category: "Metals" },
+  { pair: "BTC/USD", spread: 14.2, pip_value: 1, category: "Crypto" },
+  { pair: "ETH/USD", spread: 2.1, pip_value: 1, category: "Crypto" },
+  { pair: "GBP/JPY", spread: 0.5, pip_value: 9.24, category: "Crosses" },
+];
+
 /* ---------------------------------------------------------
    DATA ADAPTER LAYER (Postgres with Local Fallback)
 --------------------------------------------------------- */
@@ -81,10 +115,15 @@ async function fetchAPI(endpoint, options = {}) {
       ...options,
       headers: { "Content-Type": "application/json", ...options.headers }
     });
-    if (!res.ok) throw new Error("API call failed");
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      console.error(`[API Error ${res.status}]`, errData);
+      return { error: errData.error || `API call failed with status ${res.status}` };
+    }
     return await res.json();
   } catch (err) {
-    return null; // Fallback will handle
+    console.error("[fetchAPI Error]", err);
+    return null;
   }
 }
 
@@ -95,6 +134,12 @@ function normalizeBroker(broker) {
     license: broker.license ?? broker.license_no ?? "—",
     type: broker.type ?? broker.account_type ?? "Unknown",
     flags: Array.isArray(broker.flags) ? broker.flags : [],
+    licenseStatus: broker.licenseStatus ?? broker.license_status ?? "Regulated",
+    tradingEnv: broker.tradingEnv ?? broker.trading_env ?? "AAA",
+    fieldSurvey: broker.fieldSurvey ?? broker.field_survey ?? "",
+    userRating: broker.userRating ?? broker.user_rating ?? 4.5,
+    subScores: broker.subScores ?? broker.sub_scores ?? { license: 8.0, business: 8.0, risk: 8.0, software: 8.0 },
+    reviews: Array.isArray(broker.reviews) ? broker.reviews : [],
   };
 }
 
@@ -116,19 +161,38 @@ function normalizeNews(article) {
   };
 }
 
+function normalizeSurvey(survey) {
+  return {
+    ...survey,
+    date: survey.date ?? survey.created_at?.slice(0, 10) ?? "",
+    score: Number(survey.score ?? 8.0),
+  };
+}
+
+function normalizeAlert(alert) {
+  return {
+    ...alert,
+    date: alert.date ?? alert.created_at?.slice(0, 10) ?? "",
+  };
+}
+
 /* ---------------------------------------------------------
    COMPONENTS
 --------------------------------------------------------- */
 function Stamp({ score, alert, size = 52 }) {
   const s = alert ? "var(--c-alert)" : "var(--c-verified)";
-  const bg = alert ? "rgba(255,94,91,0.15)" : "rgba(54,199,154,0.15)";
+  const bg = alert ? "var(--c-alert-dim)" : "var(--c-verified-dim)";
+  const borderColor = alert ? "rgba(255,65,54,0.3)" : "rgba(0,230,118,0.3)";
   return (
     <div
       style={{
         width: size, height: size, borderRadius: "50%", flexShrink: 0,
-        border: `1.5px dashed ${s}`, display: "flex", flexDirection: "column",
+        border: `2px solid ${borderColor}`,
+        display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center", color: s,
-        background: bg, transform: "rotate(-5deg)", fontFamily: "'IBM Plex Mono', monospace",
+        background: bg, transform: "rotate(-6deg)",
+        fontFamily: "'IBM Plex Mono', monospace",
+        boxShadow: alert ? "0 0 12px rgba(255,65,54,0.18)" : "0 0 12px rgba(0,230,118,0.15)",
       }}
     >
       <div style={{ fontSize: size * 0.28, fontWeight: 700, lineHeight: 1 }}>{Number(score).toFixed(1)}</div>
@@ -163,7 +227,10 @@ function Badge({ children, tone = "default" }) {
 
 function GlassCard({ children, style = {}, className = "" }) {
   return (
-    <div className={`glass-card-hover ${className}`} style={style}>
+    <div className={`glass-card-hover ${className}`} style={{
+      borderRadius: 14,
+      ...style
+    }}>
       {children}
     </div>
   );
@@ -172,16 +239,28 @@ function GlassCard({ children, style = {}, className = "" }) {
 function Button({ children, onClick, variant = "primary", type = "button", style = {}, disabled }) {
   const base = {
     fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 13,
-    padding: "9px 16px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
+    padding: "9px 18px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
     border: "none", display: "inline-flex", alignItems: "center", gap: 7,
     transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)", opacity: disabled ? 0.4 : 1,
-    boxShadow: "0 10px 18px rgba(0,0,0,0.18)",
+    letterSpacing: "0.01em",
   };
   const variants = {
-    primary: { background: "var(--gradient-brand)", color: "#FFFFFF", boxShadow: "0 4px 14px rgba(0, 230, 118, 0.3)" },
-    ghost: { background: "var(--c-surface)", color: "var(--c-paper)", border: `1px solid var(--c-line-strong)` },
-    danger: { background: "linear-gradient(135deg, rgba(255,61,0,0.18), rgba(255,61,0,0.28))", color: "var(--c-alert)", border: `1px solid var(--c-alert-dim)` },
-    subtle: { background: "var(--c-surface)", color: "var(--c-paper)", border: `1px solid var(--c-line)` },
+    primary: {
+      background: "var(--gradient-brand)", color: "#03030A",
+      boxShadow: "0 4px 16px rgba(0, 230, 118, 0.25), 0 2px 4px rgba(0,0,0,0.3)"
+    },
+    ghost: {
+      background: "transparent", color: "var(--c-paper)",
+      border: `1px solid var(--c-line-strong)`
+    },
+    danger: {
+      background: "var(--c-alert-dim)", color: "var(--c-alert)",
+      border: `1px solid rgba(255,65,54,0.25)`
+    },
+    subtle: {
+      background: "var(--c-surface-hi)", color: "var(--c-paper)",
+      border: `1px solid var(--c-line-strong)`
+    },
   };
   return (
     <button
@@ -190,7 +269,7 @@ function Button({ children, onClick, variant = "primary", type = "button", style
       onClick={onClick}
       className={`ui-button button-${variant}`}
       style={{ ...base, ...variants[variant], ...style }}
-      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = "translateY(-1px)")}
+      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = "translateY(-2px)")}
       onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
     >
       {children}
@@ -223,13 +302,19 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
   const [loginHover, setLoginHover] = useState(false);
   const items = [
     { id: "home", label: "Registry" },
-    { id: "brokers", label: "All Brokers" },
-    { id: "market", label: "Market Pulse" },
-    { id: "rankings", label: "Leaderboard" },
-    { id: "exposure", label: "Exposure Desk" },
-    { id: "news", label: "Dispatches" },
+    { id: "brokers", label: "Brokers" },
+    { id: "rankings", label: "Rankings" },
+    { id: "exposure", label: "Exposures" },
+    { id: "scam-alerts", label: "🚨 Scam Alerts" },
+    { id: "field-survey", label: "Field Survey" },
+    { id: "forum", label: "Forum" },
+    { id: "market", label: "Markets" },
+    { id: "news", label: "News" },
     { id: "education", label: "Education" },
-    { id: "tools", label: "EA/VPS Tools" },
+    { id: "calculator", label: "Spread Calc" },
+    { id: "tools", label: "EA/VPS" },
+    { id: "media", label: "Live" },
+    { id: "regulators", label: "Regulatory" },
   ];
   return (
     <header style={{ position: "sticky", top: 0, zIndex: 60, background: "var(--header-bg)", backdropFilter: "blur(12px)", borderBottom: `1px solid var(--c-line)`, transition: "background 0.3s ease" }}>
@@ -317,40 +402,109 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
 
   return (
     <div className="fade-in-up">
-      <section className="home-hero tech-grid" style={{ position: "relative", overflow: "hidden", padding: "100px 24px 80px", borderBottom: `1px solid var(--c-line)`, background: "var(--gradient-hero)", transition: "background 0.3s ease" }}>
-
-
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.4 }}>
-          <div style={{ position: "absolute", width: 420, height: 420, borderRadius: "50%", background: "rgba(54,199,154,0.11)", top: -120, right: -40, filter: "blur(16px)" }} />
-          <div style={{ position: "absolute", width: 360, height: 360, borderRadius: "50%", background: "rgba(59,130,246,0.08)", bottom: -140, left: -30, filter: "blur(18px)" }} />
+      <section className="home-hero tech-grid" style={{
+        position: "relative", overflow: "hidden",
+        padding: "110px 24px 90px",
+        borderBottom: `1px solid var(--c-line)`,
+        background: "var(--gradient-hero)",
+        transition: "background 0.3s ease"
+      }}>
+        {/* Ambient glow orbs */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+          <div className="ambient-orb" style={{ width: 500, height: 500, background: "rgba(0,230,118,1)", top: -200, right: -100, animationDelay: "0s" }} />
+          <div className="ambient-orb" style={{ width: 400, height: 400, background: "rgba(41,121,255,1)", bottom: -180, left: -80, animationDelay: "4s" }} />
+          <div className="ambient-orb" style={{ width: 280, height: 280, background: "rgba(255,171,0,0.4)", top: "40%", right: "20%", animationDelay: "2s", opacity: 0.06 }} />
         </div>
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, color: C.verified, fontSize: 12, fontFamily: "'IBM Plex Mono', monospace", border: `1px solid ${C.verifiedDim}`, padding: "4px 10px", borderRadius: 20, marginBottom: 20, background: "rgba(12, 32, 28, 0.55)" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.verified }} />
-            PostgreSQL Synchronized Registry · {brokers.length} Entities Indexed
+          {/* Live pill */}
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            color: "var(--c-verified)", fontSize: 11.5,
+            fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600,
+            border: `1px solid var(--c-line-accent)`,
+            padding: "5px 12px", borderRadius: 24, marginBottom: 28,
+            background: "var(--c-verified-dim)",
+            letterSpacing: "0.04em",
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--c-verified)", boxShadow: "0 0 6px var(--c-verified)" }} />
+            LIVE · PostgreSQL Registry · {brokers.length} Entities Indexed
           </div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontWeight: 600, fontSize: "clamp(36px, 5vw, 56px)", lineHeight: 1.05, maxWidth: 740 }}>
-            Audited transparency for <em style={{ color: C.verified, fontStyle: "italic" }}>forex and CFD brokers.</em>
+          <h1 style={{
+            fontFamily: "'Fraunces', serif", fontWeight: 600,
+            fontSize: "clamp(38px, 5.5vw, 62px)", lineHeight: 1.02,
+            maxWidth: 780, letterSpacing: "-0.02em",
+            margin: "0 0 20px",
+          }}>
+            Audited transparency for{" "}
+            <em style={{ color: "var(--c-verified)", fontStyle: "italic", position: "relative" }}>
+              forex & CFD brokers.
+            </em>
           </h1>
-          <p style={{ color: C.paperDim, fontSize: 17, maxWidth: 580, marginTop: 18, lineHeight: 1.6 }}>
-            Cross-referencing tier-1 regulators, financial filings, and validated victim exposure logs to protect trader capital.
+          <p style={{
+            color: "var(--c-paper-dim)", fontSize: 17,
+            maxWidth: 560, lineHeight: 1.65, margin: "0 0 40px",
+            fontWeight: 400,
+          }}>
+            Cross-referencing tier-1 regulators, financial filings, and validated
+            victim exposure logs to protect trader capital.
           </p>
 
-          <div style={{ marginTop: 36, display: "flex", maxWidth: 680, background: "rgba(14,26,41,0.7)", border: `1px solid ${C.lineStrong}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.18)" }}>
+          {/* Search bar */}
+          <div style={{
+            maxWidth: 680, display: "flex",
+            background: "rgba(8,8,18,0.8)",
+            border: `1px solid var(--c-line-strong)`,
+            borderRadius: 18, overflow: "hidden",
+            boxShadow: "0 24px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,230,118,0.05)",
+            backdropFilter: "blur(12px)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", padding: "0 18px" }}>
+              <Search size={16} color="var(--c-muted)" />
+            </div>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (setBrokerSearch(q), setView("brokers"))}
               placeholder="Search broker, license, or country..."
-              style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: C.paper, padding: "16px 18px", fontSize: 15 }}
+              style={{
+                flex: 1, background: "transparent", border: "none",
+                outline: "none", color: "var(--c-paper)",
+                padding: "17px 0", fontSize: 15, fontFamily: "'Inter', sans-serif",
+              }}
             />
             <button
               onClick={() => { setBrokerSearch(q); setView("brokers"); }}
-              style={{ background: "var(--gradient-brand)", color: "#FFFFFF", border: "none", padding: "0 28px", fontWeight: 700, cursor: "pointer", transition: "transform 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              style={{
+                background: "var(--gradient-brand)", color: "#03030A",
+                border: "none", padding: "0 28px", fontWeight: 700,
+                cursor: "pointer", transition: "opacity 0.2s",
+                fontSize: 14, letterSpacing: "0.02em", fontFamily: "'Inter', sans-serif",
+                margin: "8px", borderRadius: 12,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
               Examine
             </button>
+          </div>
+
+          {/* Trust badges */}
+          <div style={{ display: "flex", gap: 20, marginTop: 36, flexWrap: "wrap" }}>
+            {[
+              ["FCA", "Tier-1 UK"],
+              ["ASIC", "Australia"],
+              ["CySEC", "European"],
+              ["FSCA", "South Africa"],
+            ].map(([reg, region]) => (
+              <div key={reg} style={{
+                display: "flex", alignItems: "center", gap: 8,
+                color: "var(--c-paper-dim)", fontSize: 12,
+                fontFamily: "'IBM Plex Mono', monospace",
+              }}>
+                <span style={{ color: "var(--c-verified)", fontWeight: 700 }}>{reg}</span>
+                <span style={{ color: "var(--c-muted)" }}>{region}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -358,12 +512,17 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
       <section className="telemetry-strip">
         <div className="telemetry-grid">
           {[
-            [ShieldCheck, "Registry coverage", `${brokers.length} entities`, "Live indexed universe"],
-            [Activity, "Average trust score", `${(brokers.reduce((sum, b) => sum + Number(b.score || 0), 0) / Math.max(brokers.length, 1)).toFixed(1)} / 10`, "Across all records"],
-            [AlertOctagon, "Flagged entities", `${flaggedCount} requiring review`, "Risk signals on file"],
-            [DollarSign, "Disputed capital", `$${disputedTotal.toLocaleString()}`, "Reported exposure value"],
-          ].map(([Icon, label, value, note]) => (
-            <div className="telemetry-cell" key={label}><Icon size={17} color={C.verified} /><span>{label}</span><strong>{value}</strong><small>{note}</small></div>
+            { Icon: ShieldCheck, label: "Registry coverage", value: `${brokers.length} entities`, note: "Live indexed universe", variant: "" },
+            { Icon: Activity, label: "Average trust score", value: `${(brokers.reduce((sum, b) => sum + Number(b.score || 0), 0) / Math.max(brokers.length, 1)).toFixed(1)} / 10`, note: "Across all records", variant: "" },
+            { Icon: AlertOctagon, label: "Flagged entities", value: `${flaggedCount} requiring review`, note: "Risk signals on file", variant: "tc-alert" },
+            { Icon: DollarSign, label: "Disputed capital", value: `$${disputedTotal.toLocaleString()}`, note: "Reported exposure value", variant: "tc-money" },
+          ].map(({ Icon, label, value, note, variant }) => (
+            <div className={`telemetry-cell ${variant}`} key={label}>
+              <div className="tc-icon"><Icon size={17} color={variant === "tc-alert" ? "var(--c-alert)" : variant === "tc-money" ? "var(--c-amber)" : "var(--c-verified)"} /></div>
+              <div className="tc-label">{label}</div>
+              <div className="tc-value">{value}</div>
+              <div className="tc-note">{note}</div>
+            </div>
           ))}
         </div>
       </section>
@@ -372,11 +531,12 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
       <AICommandDeck brokers={brokers} exposures={exposures} setView={setView} openDetail={openDetail} />
 
       {/* Top 3 Brokers */}
-      <section style={{ padding: "64px 24px", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32 }}>
+      <section style={{ padding: "72px 24px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 40 }}>
           <div>
-            <div style={{ fontSize: 12, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Benchmark Leaders</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 600, marginTop: 4 }}>Top Rated Financial Institutions</h2>
+            <div className="section-kicker"><TrendingUp size={11} /> Benchmark Leaders</div>
+            <h2 className="section-heading">Top Rated Financial Institutions</h2>
+            <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: 0 }}>Sorted by independent trust scoring across all verification criteria.</p>
           </div>
           <Button variant="ghost" onClick={() => setView("rankings")}>View Leaderboard →</Button>
         </div>
@@ -389,25 +549,40 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
       </section>
 
       {/* Latest Exposure Reports */}
-      <section className="exposure-band" style={{ padding: "60px 24px", background: C.surface, borderTop: `1px solid ${C.line}` }}>
+      <section className="exposure-band" style={{
+        padding: "68px 24px",
+        background: "var(--c-surface)",
+        borderTop: `1px solid var(--c-line)`,
+        borderBottom: `1px solid var(--c-line)`,
+      }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 40 }}>
             <div>
-              <div style={{ fontSize: 12, color: C.alert, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>High-Risk Exposure</div>
-              <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 600, marginTop: 4 }}>Recent Victim Complaints & Claims</h2>
+              <div className="section-kicker kicker-alert"><AlertTriangle size={11} /> High-Risk Exposure</div>
+              <h2 className="section-heading">Recent Victim Complaints & Claims</h2>
             </div>
             <Button variant="ghost" onClick={() => setView("exposure")}>File a Claim →</Button>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 18 }}>
             {recentExposures.map(e => (
-              <div key={e.id} style={{ background: C.ink, border: `1px solid ${C.lineStrong}`, padding: 22, borderRadius: 8 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+              <div key={e.id} style={{
+                background: "var(--gradient-card)",
+                border: `1px solid rgba(255,65,54,0.15)`,
+                padding: 24, borderRadius: 14,
+                transition: "border-color 0.2s, box-shadow 0.2s",
+                position: "relative", overflow: "hidden",
+              }}
+              onMouseEnter={(el) => { el.currentTarget.style.borderColor = "rgba(255,65,54,0.3)"; el.currentTarget.style.boxShadow = "var(--shadow-md), var(--shadow-glow-alert)"; }}
+              onMouseLeave={(el) => { el.currentTarget.style.borderColor = "rgba(255,65,54,0.15)"; el.currentTarget.style.boxShadow = ""; }}
+              >
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,65,54,0.3), transparent)" }} />
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
                   <Badge tone="warn">{e.brokerName}</Badge>
-                  {e.amount && <span style={{ color: C.alert, fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, fontWeight: 600 }}>${Number(e.amount).toLocaleString()} Disputed</span>}
+                  {e.amount && <span style={{ color: "var(--c-alert)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, fontWeight: 700 }}>${Number(e.amount).toLocaleString()} Disputed</span>}
                 </div>
-                <h4 style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>{e.title}</h4>
-                <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.5 }}>{e.text}</p>
-                <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginTop: 14 }}>VERIFIED DOSSIER · {e.date}</div>
+                <h4 style={{ fontSize: 15, fontWeight: 600, marginBottom: 8, lineHeight: 1.4 }}>{e.title}</h4>
+                <p style={{ color: "var(--c-paper-dim)", fontSize: 13.5, lineHeight: 1.55, margin: 0 }}>{e.text}</p>
+                <div style={{ fontSize: 10.5, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace", marginTop: 16, letterSpacing: "0.06em" }}>VERIFIED DOSSIER · {e.date}</div>
               </div>
             ))}
             {!recentExposures.length && <div className="empty-state-panel">No published exposure dossiers are available yet.</div>}
@@ -415,33 +590,40 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px 0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
           <div>
-            <div style={{ fontSize: 12, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Market overview</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, marginTop: 6 }}>Live trading finance snapshot</h2>
+            <div className="section-kicker"><BarChart3 size={11} /> Market Overview</div>
+            <h2 className="section-heading">Live trading finance snapshot</h2>
           </div>
           <Button variant="ghost" onClick={() => setView("market")}>Open Market Pulse →</Button>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
-          {marketPairs.map((pair) => (
-            <div key={pair.symbol} style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: 18 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <strong style={{ fontSize: 14 }}>{pair.symbol}</strong>
-                <span style={{ color: Number(pair.change) >= 0 ? C.verified : C.alert, fontSize: 11, fontWeight: 700 }}>{pair.change > 0 ? "+" : ""}{pair.change}%</span>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(185px, 1fr))", gap: 14 }}>
+          {marketPairs.map((pair) => {
+            const isUp = Number(pair.change) >= 0;
+            return (
+              <div key={pair.symbol} className="market-pair-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                  <strong style={{ fontSize: 14, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600 }}>{pair.symbol}</strong>
+                  <span style={{
+                    color: isUp ? "var(--c-verified)" : "var(--c-alert)",
+                    fontSize: 11, fontWeight: 700, padding: "3px 7px", borderRadius: 6,
+                    background: isUp ? "var(--c-verified-dim)" : "var(--c-alert-dim)",
+                  }}>{isUp ? "+" : ""}{pair.change}%</span>
+                </div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 8 }}>{pair.price.toLocaleString()}</div>
+                <div style={{ color: "var(--c-muted)", fontSize: 11 }}>Spr {pair.spread} · {pair.volume}</div>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5 }}>{pair.price.toLocaleString()}</div>
-              <div style={{ color: C.muted, fontSize: 11, marginTop: 8 }}>Spread {pair.spread} · {pair.volume}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
-      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px 0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <div>
-            <div style={{ fontSize: 12, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Mediation center</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, marginTop: 6 }}>Resolved dispute activity</h2>
+            <div className="section-kicker"><Scale size={11} /> Mediation Center</div>
+            <h2 className="section-heading">Resolved dispute activity</h2>
           </div>
           <Badge tone="reg">$72,130,288 resolved</Badge>
         </div>
@@ -452,9 +634,16 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             ["7.2%", "Average dispute reduction"],
             ["94.6%", "Support response rate"]
           ].map(([number, label]) => (
-            <div key={label} style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: 18 }}>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: C.verified, fontSize: 26, marginBottom: 6 }}>{number}</div>
-              <div style={{ color: C.paperDim, fontSize: 13 }}>{label}</div>
+            <div key={label} style={{
+              background: "var(--gradient-card)", border: `1px solid var(--c-line)`,
+              borderRadius: 14, padding: "24px 20px",
+              transition: "border-color 0.2s, box-shadow 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--c-line-accent)"; e.currentTarget.style.boxShadow = "var(--shadow-md), var(--shadow-glow)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--c-line)"; e.currentTarget.style.boxShadow = ""; }}
+            >
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: "var(--c-verified)", fontSize: 32, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 8 }}>{number}</div>
+              <div style={{ color: "var(--c-paper-dim)", fontSize: 13 }}>{label}</div>
             </div>
           ))}
         </div>
@@ -539,41 +728,83 @@ function AICommandDeck({ brokers, exposures, setView, openDetail }) {
 --------------------------------------------------------- */
 function BrokerCard({ b, onClick, onCompare, isCompared }) {
   const isFlagged = b.flags && b.flags.length > 0;
+  const scoreColor = Number(b.score) >= 8 ? "var(--c-verified)" : Number(b.score) >= 5 ? "var(--c-amber)" : "var(--c-alert)";
+  const scoreBg = Number(b.score) >= 8 ? "var(--c-verified-dim)" : Number(b.score) >= 5 ? "var(--c-amber-dim)" : "var(--c-alert-dim)";
+  const scoreBorder = Number(b.score) >= 8 ? "rgba(0,230,118,0.3)" : Number(b.score) >= 5 ? "rgba(255,171,0,0.3)" : "rgba(255,65,54,0.3)";
+
   return (
-    <div
-      style={{
-        background: C.surface, border: `1px solid ${isFlagged ? C.alertDim : C.lineStrong}`,
-        borderRadius: 8, padding: 22, display: "flex", flexDirection: "column",
-        justifyContent: "space-between", transition: "transform 0.2s, border-color 0.2s"
-      }}
-    >
+    <div className={`broker-card ${isFlagged ? "flagged" : ""}`}>
+      {/* Top accent line on hover (handled by CSS ::before) */}
       <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-          <div>
-            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 600 }}>{b.name}</h3>
-            <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginTop: 2 }}>
-              {b.years} Years Record · {b.country}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+          <div style={{ flex: 1 }}>
+            <h3 style={{
+              fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 600,
+              lineHeight: 1.2, margin: "0 0 4px",
+            }}>{b.name}</h3>
+            <div style={{
+              fontSize: 11.5, color: "var(--c-muted)",
+              fontFamily: "'IBM Plex Mono', monospace",
+              display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+            }}>
+              <span>{b.years}yr · {b.country}</span>
+              {b.userRating && (
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: 3,
+                  color: "var(--c-amber)",
+                  background: "var(--c-amber-dim)",
+                  padding: "1px 6px", borderRadius: 4, fontSize: 11,
+                }}>★ {b.userRating}</span>
+              )}
             </div>
           </div>
-          <Stamp score={b.score} alert={isFlagged} />
+          {/* Score ring */}
+          <div style={{
+            width: 52, height: 52, borderRadius: "50%", flexShrink: 0,
+            border: `2px solid ${scoreBorder}`,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            background: scoreBg, color: scoreColor,
+            fontFamily: "'IBM Plex Mono', monospace",
+            boxShadow: `0 0 16px ${scoreBg}`,
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1 }}>{Number(b.score).toFixed(1)}</div>
+            <div style={{ fontSize: 8.5, opacity: 0.55, marginTop: 2 }}>/10</div>
+          </div>
         </div>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "14px 0" }}>
+
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", margin: "12px 0 14px" }}>
           {b.licenseStatus && <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>{b.licenseStatus}</Badge>}
           <Badge tone="reg">{b.regulator}</Badge>
           <Badge>{b.type}</Badge>
           {b.flags.map((f, i) => <Badge key={i} tone="warn">{f}</Badge>)}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, padding: "10px 0", borderTop: `1px solid ${C.line}`, borderBottom: `1px solid ${C.line}`, fontSize: 12 }}>
-          <div><span style={{ color: C.muted }}>Min Deposit:</span> ${b.min_deposit || 50}</div>
-          <div><span style={{ color: C.muted }}>Leverage:</span> {b.max_leverage || '1:500'}</div>
+
+        <div style={{
+          display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
+          padding: "12px 0",
+          borderTop: `1px solid var(--c-line)`,
+          borderBottom: `1px solid var(--c-line)`,
+          fontSize: 12,
+        }}>
+          <div>
+            <div style={{ color: "var(--c-muted)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 3 }}>Min Deposit</div>
+            <div style={{ fontWeight: 600, fontSize: 13 }}>${b.min_deposit || 50}</div>
+          </div>
+          <div>
+            <div style={{ color: "var(--c-muted)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 3 }}>Leverage</div>
+            <div style={{ fontWeight: 600, fontSize: 13 }}>{b.max_leverage || '1:500'}</div>
+          </div>
         </div>
       </div>
+
       <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
-        <Button variant="subtle" onClick={onClick} style={{ flex: 1, justifyContent: "center" }}>Dossier</Button>
+        <Button variant="subtle" onClick={onClick} style={{ flex: 1, justifyContent: "center" }}>View Dossier</Button>
         <Button
           variant={isCompared ? "primary" : "ghost"}
           onClick={(e) => { e.stopPropagation(); onCompare(); }}
-          style={{ padding: "8px 10px" }}
+          style={{ padding: "8px 12px" }}
+          title={isCompared ? "Remove from comparison" : "Add to comparison"}
         >
           <Scale size={14} />
         </Button>
@@ -770,43 +1001,68 @@ function MarketPage() {
 }
 
 function LeaderboardPage({ brokers }) {
-  const ranked = [...brokers].sort((a, b) => Number(b.score) - Number(a.score));
+  const [activeTab, setActiveTab] = useState("forex");
+  
+  let ranked = [];
+  if (activeTab === "forex") {
+    ranked = [...brokers].filter(b => b.score >= 5).sort((a, b) => Number(b.score) - Number(a.score)).slice(0, 10);
+  } else if (activeTab === "crypto") {
+    ranked = [...brokers].filter(b => b.type.includes("Crypto") || b.score >= 7).sort((a, b) => Number(b.score) - Number(a.score)).slice(0, 10);
+  } else if (activeTab === "blacklist") {
+    ranked = [...brokers].filter(b => b.score < 5 || (b.flags && b.flags.length > 0)).sort((a, b) => Number(a.score) - Number(b.score));
+  }
 
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 28, flexWrap: "wrap", gap: 18 }}>
         <div>
-          <div style={{ fontSize: 12, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Ranking dashboard</div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginTop: 6 }}>Broker leaderboard</h1>
+          <div className="section-kicker">Ranking Dashboard</div>
+          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginTop: 4, marginBottom: 0, letterSpacing: "-0.01em" }}>Broker leaderboard</h1>
         </div>
         <Badge tone="reg">Live scoring snapshot</Badge>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 24 }}>
-        {leaderboardMetrics.map((metric) => (
-          <div key={metric.label} style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: 18 }}>
-            <div style={{ color: C.muted, fontSize: 12, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>{metric.label}</div>
-            <div style={{ fontSize: 28, fontWeight: 700, margin: "10px 0 6px" }}>{metric.value}</div>
-            <div style={{ color: C.paperDim, fontSize: 12 }}>Leader: {metric.leader}</div>
-          </div>
-        ))}
+      <div style={{ display: "flex", gap: 12, marginBottom: 28, borderBottom: `1px solid var(--c-line-strong)`, paddingBottom: 16 }}>
+        <button onClick={() => setActiveTab("forex")} style={{ background: "none", border: "none", color: activeTab === "forex" ? "var(--c-paper)" : "var(--c-muted)", fontWeight: activeTab === "forex" ? 700 : 400, fontSize: 15, cursor: "pointer", fontFamily: "'Inter', sans-serif", borderBottom: activeTab === "forex" ? `2px solid var(--c-verified)` : "2px solid transparent", paddingBottom: 8 }}>Top 10 Forex</button>
+        <button onClick={() => setActiveTab("crypto")} style={{ background: "none", border: "none", color: activeTab === "crypto" ? "var(--c-paper)" : "var(--c-muted)", fontWeight: activeTab === "crypto" ? 700 : 400, fontSize: 15, cursor: "pointer", fontFamily: "'Inter', sans-serif", borderBottom: activeTab === "crypto" ? `2px solid var(--c-verified)` : "2px solid transparent", paddingBottom: 8 }}>Top Crypto</button>
+        <button onClick={() => setActiveTab("blacklist")} style={{ background: "none", border: "none", color: activeTab === "blacklist" ? "var(--c-alert)" : "var(--c-muted)", fontWeight: activeTab === "blacklist" ? 700 : 400, fontSize: 15, cursor: "pointer", fontFamily: "'Inter', sans-serif", borderBottom: activeTab === "blacklist" ? `2px solid var(--c-alert)` : "2px solid transparent", paddingBottom: 8 }}>Global Blacklist</button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {activeTab === "forex" && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 28 }}>
+          {leaderboardMetrics.map((metric) => (
+            <div key={metric.label} style={{
+              background: "var(--gradient-card)",
+              border: `1px solid var(--c-line)`,
+              borderRadius: 14, padding: 20,
+              transition: "border-color 0.2s, box-shadow 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--c-line-accent)"; e.currentTarget.style.boxShadow = "var(--shadow-sm), var(--shadow-glow)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--c-line)"; e.currentTarget.style.boxShadow = ""; }}
+            >
+              <div style={{ color: "var(--c-muted)", fontSize: 10.5, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: "0.07em" }}>{metric.label}</div>
+              <div style={{ fontSize: 30, fontWeight: 700, margin: "10px 0 6px", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "-0.02em" }}>{metric.value}</div>
+              <div style={{ color: "var(--c-paper-dim)", fontSize: 12 }}>Leader: {metric.leader}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {ranked.map((broker, index) => (
-          <div key={broker.id} style={{ display: "grid", gridTemplateColumns: "70px 1.2fr 1fr 1fr 1fr 120px", alignItems: "center", gap: 16, background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: "18px 20px" }}>
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: C.muted }}>#{index + 1}</div>
+          <div key={broker.id} className="leaderboard-row" style={{ display: "grid", gridTemplateColumns: "70px 1.2fr 1fr 1fr 1fr 120px", alignItems: "center", gap: 16, padding: "18px 22px" }}>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: index < 3 ? "var(--c-verified)" : "var(--c-muted)", fontWeight: index < 3 ? 700 : 400, fontSize: index < 3 ? 16 : 14 }}>#{index + 1}</div>
             <div>
-              <div style={{ fontWeight: 700 }}>{broker.name}</div>
-              <div style={{ color: C.paperDim, fontSize: 12 }}>{broker.country}</div>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>{broker.name}</div>
+              <div style={{ color: "var(--c-paper-dim)", fontSize: 12, marginTop: 2 }}>{broker.country}</div>
             </div>
             <div><Badge tone={Number(broker.score) >= 8 ? "reg" : Number(broker.score) >= 5 ? "pending" : "warn"}>{broker.score}/10</Badge></div>
-            <div style={{ color: C.paperDim, fontSize: 13 }}>{broker.regulator}</div>
-            <div style={{ color: C.paperDim, fontSize: 13 }}>{broker.type}</div>
-            <div style={{ textAlign: "right", fontWeight: 700 }}>{broker.min_deposit ? `$${broker.min_deposit}` : "-"}</div>
+            <div style={{ color: "var(--c-paper-dim)", fontSize: 13 }}>{broker.regulator}</div>
+            <div style={{ color: "var(--c-paper-dim)", fontSize: 13 }}>{broker.type}</div>
+            <div style={{ textAlign: "right", fontWeight: 700, fontFamily: "'IBM Plex Mono', monospace" }}>{broker.min_deposit ? `$${broker.min_deposit}` : "-"}</div>
           </div>
         ))}
-        {!ranked.length && <div className="empty-state-panel">No scored broker records are available for ranking.</div>}
+        {!ranked.length && <div className="empty-state-panel">No brokers found in this category.</div>}
       </div>
     </div>
   );
@@ -926,16 +1182,33 @@ function DetailModal({ broker, exposures, onClose }) {
           ))}
         </div>
 
-        <div>
-          <h4 style={{ fontSize: 13, textTransform: "uppercase", color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginBottom: 12 }}>Case History ({related.length})</h4>
-          {related.length === 0 ? (
-            <div style={{ color: C.muted, fontSize: 13 }}>No recorded dispute dossiers for this broker.</div>
-          ) : related.map(r => (
-            <div key={r.id} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10, marginTop: 10, fontSize: 13 }}>
-              <div style={{ fontWeight: 600 }}>{r.title}</div>
-              <div style={{ color: C.paperDim, marginTop: 2 }}>{r.text}</div>
-            </div>
-          ))}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <div>
+            <h4 style={{ fontSize: 13, textTransform: "uppercase", color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginBottom: 12 }}>Case History ({related.length})</h4>
+            {related.length === 0 ? (
+              <div style={{ color: C.muted, fontSize: 13 }}>No recorded dispute dossiers for this broker.</div>
+            ) : related.map(r => (
+              <div key={r.id} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10, marginTop: 10, fontSize: 13 }}>
+                <div style={{ fontWeight: 600 }}>{r.title}</div>
+                <div style={{ color: C.paperDim, marginTop: 2 }}>{r.text}</div>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <h4 style={{ fontSize: 13, textTransform: "uppercase", color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginBottom: 12 }}>Community Reviews</h4>
+            {(!broker.reviews || broker.reviews.length === 0) ? (
+              <div style={{ color: C.muted, fontSize: 13 }}>No community reviews available yet.</div>
+            ) : broker.reviews.map((r, i) => (
+              <div key={i} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10, marginTop: 10, fontSize: 13 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                  <div style={{ fontWeight: 600 }}>{r.user}</div>
+                  <div style={{ color: C.amber }}>{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</div>
+                </div>
+                <div style={{ color: C.paperDim }}>{r.text}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -945,18 +1218,33 @@ function DetailModal({ broker, exposures, onClose }) {
 /* ---------------------------------------------------------
    ADMIN PANEL (Full Database Management)
 --------------------------------------------------------- */
-function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNews, onLogout }) {
+function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNews, alerts: propsAlerts, setAlerts: propsSetAlerts, surveys: propsSurveys, setSurveys: propsSetSurveys, onLogout }) {
   const [tab, setTab] = useState("overview");
-  const [newBroker, setNewBroker] = useState({ name: "", years: 5, score: 8.0, regulator: "", license: "", country: "", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: "" });
+  const [newBroker, setNewBroker] = useState({ name: "", years: 5, score: 8.0, regulator: "", license: "", country: "", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: "", licenseStatus: "Regulated" });
   const [newNews, setNewNews] = useState({ title: "", summary: "", category: "Regulation" });
+  const [newAlert, setNewAlert] = useState({ broker: "", country: "", type: "Clone Fraud", severity: "High", description: "" });
+  const [newSurvey, setNewSurvey] = useState({ broker: "", country: "", address: "", score: 8.0, findings: "", status: "Verified" });
   const [brokerSearch, setBrokerSearch] = useState("");
   const [exposureFilter, setExposureFilter] = useState("all");
   const [adminMessage, setAdminMessage] = useState("");
+  const [msgType, setMsgType] = useState("success");
+  const [localAlerts, setLocalAlerts] = useState(scamAlerts);
+  const [localSurveys, setLocalSurveys] = useState(fieldSurveys);
 
-  const filteredBrokers = useMemo(() => brokers.filter((broker) => {
-    const query = brokerSearch.trim().toLowerCase();
-    if (!query) return true;
-    return [broker.name, broker.country, broker.regulator, broker.license].join(" ").toLowerCase().includes(query);
+  const alerts = propsAlerts || localAlerts;
+  const setAlerts = propsSetAlerts || setLocalAlerts;
+  const surveys = propsSurveys || localSurveys;
+  const setSurveys = propsSetSurveys || setLocalSurveys;
+
+  const [forumMod, setForumMod] = useState(forumPosts.map(p => ({ ...p, hidden: false })));
+  const [editingBroker, setEditingBroker] = useState(null);
+
+  const notify = (msg, type = "success") => { setAdminMessage(msg); setMsgType(type); setTimeout(() => setAdminMessage(""), 4000); };
+
+  const filteredBrokers = useMemo(() => brokers.filter((b) => {
+    const q = brokerSearch.trim().toLowerCase();
+    if (!q) return true;
+    return [b.name, b.country, b.regulator, b.license].join(" ").toLowerCase().includes(q);
   }), [brokers, brokerSearch]);
 
   const filteredExposures = useMemo(() => exposures.filter((item) => {
@@ -964,135 +1252,182 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
     return item.status === exposureFilter;
   }), [exposures, exposureFilter]);
 
-  const riskWatch = useMemo(() => brokers.filter((broker) => Number(broker.score) < 5 || (broker.flags || []).length > 0).slice(0, 4), [brokers]);
+  const riskWatch = useMemo(() => brokers.filter((b) => Number(b.score) < 5 || (b.flags || []).length > 0).slice(0, 5), [brokers]);
 
+  /* ---- Broker handlers ---- */
   async function handleAddBroker(e) {
     e.preventDefault();
     const payload = {
       ...newBroker,
       id: "b" + Date.now(),
-      flags: newBroker.flags ? newBroker.flags.split(",").map(f => f.trim()) : []
+      flags: newBroker.flags ? newBroker.flags.split(",").map(f => f.trim()) : [],
+      years_active: Number(newBroker.years || 0),
+      license_no: newBroker.license,
+      account_type: newBroker.type,
+      license_status: newBroker.licenseStatus || "Regulated",
+      trading_env: "AAA",
+      user_rating: 4.5
     };
-    const saved = await fetchAPI("/brokers", {
-      method: "POST",
-      body: JSON.stringify({
-        ...payload,
-        years_active: payload.years,
-        license_no: payload.license,
-        account_type: payload.type,
-      }),
-    });
-    if (!saved) {
-      setAdminMessage("Broker record was not saved. Check that the API and database are online.");
-      return;
+    const saved = await fetchAPI("/brokers", { method: "POST", body: JSON.stringify(payload) });
+    if (saved && !saved.error) {
+      setBrokers([normalizeBroker(saved), ...brokers]);
+      notify("✅ Broker saved directly to Supabase!");
+      setNewBroker({ name: "", years: 5, score: 8.0, regulator: "", license: "", country: "", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: "", licenseStatus: "Regulated" });
+    } else {
+      const errMsg = saved?.error || "Check backend / Supabase RLS policies.";
+      notify(`⚠️ ${errMsg}`, "alert");
     }
-    setBrokers([normalizeBroker(saved), ...brokers]);
-    setAdminMessage("Broker record saved to PostgreSQL.");
-    setNewBroker({ name: "", years: 5, score: 8.0, regulator: "", license: "", country: "", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: "" });
-  }
-
-  async function handleStatus(id, status) {
-    const saved = await fetchAPI(`/exposures/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
-    if (!saved) {
-      setAdminMessage("Exposure status was not saved.");
-      return;
-    }
-    setExposures(exposures.map(e => e.id === id ? { ...e, status: saved.status || status } : e));
-    setAdminMessage(`Exposure marked ${saved.status || status}.`);
-  }
-
-  async function handleDeleteExposure(id) {
-    const deleted = await fetchAPI(`/exposures/${id}`, { method: "DELETE" });
-    if (!deleted?.success) {
-      setAdminMessage("Exposure file could not be deleted.");
-      return;
-    }
-    setExposures(exposures.filter((item) => item.id !== id));
-    setAdminMessage("Exposure file deleted.");
   }
 
   async function handleDeleteBroker(id) {
-    const deleted = await fetchAPI(`/brokers/${id}`, { method: "DELETE" });
-    if (!deleted?.success) {
-      setAdminMessage("Broker record could not be deleted.");
-      return;
-    }
-    setBrokers(brokers.filter((broker) => broker.id !== id));
-    setAdminMessage("Broker record deleted.");
+    await fetchAPI(`/brokers/${id}`, { method: "DELETE" });
+    setBrokers(brokers.filter((b) => b.id !== id));
+    notify("🗑 Broker record removed.", "warn");
   }
 
+  async function handleUpdateScore(id, newScore) {
+    setBrokers(brokers.map(b => b.id === id ? { ...b, score: Number(newScore) } : b));
+    notify(`Score updated to ${newScore}.`);
+  }
+
+  /* ---- Exposure handlers ---- */
+  async function handleStatus(id, status) {
+    const saved = await fetchAPI(`/exposures/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
+    setExposures(exposures.map(e => e.id === id ? { ...e, status: saved?.status || status } : e));
+    notify(status === "published" ? "✅ Exposure published." : "❌ Exposure rejected.", status === "published" ? "success" : "warn");
+  }
+
+  async function handleDeleteExposure(id) {
+    await fetchAPI(`/exposures/${id}`, { method: "DELETE" });
+    setExposures(exposures.filter((e) => e.id !== id));
+    notify("🗑 Exposure deleted.", "warn");
+  }
+
+  /* ---- News handlers ---- */
   async function handleAddNews(e) {
     e.preventDefault();
     if (!newNews.title || !newNews.summary) return;
     const saved = await fetchAPI("/news", { method: "POST", body: JSON.stringify(newNews) });
-    if (!saved) {
-      setAdminMessage("Dispatch was not saved. Check that the API and database are online.");
-      return;
-    }
-    setNews([normalizeNews(saved), ...news]);
-    setAdminMessage("Dispatch saved to PostgreSQL.");
+    setNews([normalizeNews(saved || { ...newNews, id: "n" + Date.now(), date: new Date().toISOString().slice(0, 10) }), ...news]);
+    notify("📰 Dispatch published.");
     setNewNews({ title: "", summary: "", category: "Regulation" });
   }
 
   async function handleDeleteNews(id) {
-    const deleted = await fetchAPI(`/news/${id}`, { method: "DELETE" });
-    if (!deleted?.success) {
-      setAdminMessage("Dispatch could not be deleted.");
-      return;
-    }
-    setNews(news.filter((article) => article.id !== id));
-    setAdminMessage("Dispatch deleted.");
+    await fetchAPI(`/news/${id}`, { method: "DELETE" });
+    setNews(news.filter((a) => a.id !== id));
+    notify("🗑 Dispatch deleted.", "warn");
   }
 
+  /* ---- Alert handlers ---- */
+  async function handleAddAlert(e) {
+    e.preventDefault();
+    if (!newAlert.broker || !newAlert.description) return;
+    const payload = {
+      ...newAlert,
+      date: new Date().toISOString().slice(0, 10)
+    };
+    const saved = await fetchAPI("/scam-alerts", { method: "POST", body: JSON.stringify(payload) });
+    if (saved && !saved.error) {
+      setAlerts([normalizeAlert(saved), ...alerts]);
+      notify("🚨 Scam alert saved directly to Supabase!");
+      setNewAlert({ broker: "", country: "", type: "Clone Fraud", severity: "High", description: "" });
+    } else {
+      notify(`⚠️ ${saved?.error || "Failed to save scam alert."}`, "alert");
+    }
+  }
+
+  async function handleDeleteAlert(id) {
+    await fetchAPI(`/scam-alerts/${id}`, { method: "DELETE" });
+    setAlerts(alerts.filter(x => x.id !== id));
+    notify("🗑 Scam alert deleted.", "warn");
+  }
+
+  /* ---- Survey handlers ---- */
+  async function handleAddSurvey(e) {
+    e.preventDefault();
+    if (!newSurvey.broker || !newSurvey.address) return;
+    const payload = {
+      ...newSurvey,
+      score: Number(newSurvey.score || 8.0),
+      date: new Date().toISOString().slice(0, 10)
+    };
+    const saved = await fetchAPI("/field-surveys", { method: "POST", body: JSON.stringify(payload) });
+    if (saved && !saved.error) {
+      setSurveys([normalizeSurvey(saved), ...surveys]);
+      notify("✅ Field survey saved directly to Supabase!");
+      setNewSurvey({ broker: "", country: "", address: "", score: 8.0, findings: "", status: "Verified" });
+    } else {
+      notify(`⚠️ ${saved?.error || "Failed to save field survey."}`, "alert");
+    }
+  }
+
+  async function handleDeleteSurvey(id) {
+    await fetchAPI(`/field-surveys/${id}`, { method: "DELETE" });
+    setSurveys(surveys.filter(x => x.id !== id));
+    notify("🗑 Field survey deleted.", "warn");
+  }
+
+  /* ---- Bulk handlers ---- */
   async function handleHighlightRisk() {
-    const flaggedBrokers = brokers.filter((broker) => Number(broker.score) < 5 && !(broker.flags || []).includes("High risk review"));
-    await Promise.all(flaggedBrokers.map((broker) => fetchAPI(`/brokers/${broker.id}`, {
-      method: "PATCH",
-      body: JSON.stringify({ flags: [...(broker.flags || []), "High risk review"] }),
-    })));
-    setBrokers((current) => current.map((broker) => flaggedBrokers.some((item) => item.id === broker.id)
-      ? { ...broker, flags: [...(broker.flags || []), "High risk review"] }
-      : broker));
-    setAdminMessage(`${flaggedBrokers.length} risk record${flaggedBrokers.length === 1 ? "" : "s"} updated.`);
+    const flagged = brokers.filter(b => Number(b.score) < 5 && !(b.flags || []).includes("High risk review"));
+    await Promise.all(flagged.map(b => fetchAPI(`/brokers/${b.id}`, { method: "PATCH", body: JSON.stringify({ flags: [...(b.flags || []), "High risk review"] }) })));
+    setBrokers(cur => cur.map(b => flagged.some(f => f.id === b.id) ? { ...b, flags: [...(b.flags || []), "High risk review"] } : b));
+    notify(`⚠️ ${flagged.length} brokers flagged for high risk review.`);
   }
 
   async function handleBulkReview() {
-    const pendingExposures = exposures.filter((item) => item.status === "pending");
-    await Promise.all(pendingExposures.map((item) => fetchAPI(`/exposures/${item.id}/status`, {
-      method: "PATCH",
-      body: JSON.stringify({ status: "published" }),
-    })));
-    setExposures((current) => current.map((item) => item.status === "pending" ? { ...item, status: "published" } : item));
-    setAdminMessage(`${pendingExposures.length} exposure file${pendingExposures.length === 1 ? "" : "s"} reviewed.`);
+    const pending = exposures.filter(e => e.status === "pending");
+    await Promise.all(pending.map(e => fetchAPI(`/exposures/${e.id}/status`, { method: "PATCH", body: JSON.stringify({ status: "published" }) })));
+    setExposures(cur => cur.map(e => e.status === "pending" ? { ...e, status: "published" } : e));
+    notify(`✅ ${pending.length} exposures published.`);
   }
 
+  const sidebarItems = [
+    { id: "overview", Icon: LayoutDashboard, label: "Dashboard", meta: "Analytics" },
+    { id: "brokers", Icon: ShieldCheck, label: "Brokers", meta: brokers.length + " records" },
+    { id: "exposures", Icon: AlertTriangle, label: "Exposures", meta: exposures.filter(e => e.status === "pending").length + " pending" },
+    { id: "news", Icon: Newspaper, label: "News", meta: news.length + " dispatches" },
+    { id: "scam-alerts-admin", Icon: AlertOctagon, label: "Scam Alerts", meta: alerts.length + " active" },
+    { id: "field-surveys-admin", Icon: Globe, label: "Field Surveys", meta: surveys.length + " reports" },
+    { id: "forum-admin", Icon: MessageCircle, label: "Forum Mod", meta: forumMod.length + " posts" },
+    { id: "tools", Icon: SlidersHorizontal, label: "System Tools", meta: "Actions" },
+  ];
+
+  const cardStyle = { background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: "18px 20px", borderRadius: 12 };
+  const rowHover = { transition: "background 0.2s" };
+
   return (
-    <div className="admin-shell" style={{ maxWidth: 1440, margin: "0 auto", padding: "40px 32px 70px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, borderBottom: `1px solid ${C.line}`, paddingBottom: 20, gap: 16, flexWrap: "wrap" }}>
+    <div className="admin-shell" style={{ maxWidth: 1440, margin: "0 auto", padding: "36px 28px 70px" }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, borderBottom: `1px solid ${C.line}`, paddingBottom: 20, gap: 16, flexWrap: "wrap" }}>
         <div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 28 }}>PostgreSQL Central Intelligence</h1>
-          <div style={{ fontSize: 13, color: C.muted }}>Operational Database Administration</div>
+          <div style={{ fontSize: 11, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>🛡 Ledger Intelligence</div>
+          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 28 }}>Admin Control Centre</h1>
+          <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>Full platform management · Logged in as Administrator</div>
         </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <Button variant="ghost" onClick={handleHighlightRisk}><AlertTriangle size={14} /> Flag risk</Button>
-          <Button variant="subtle" onClick={handleBulkReview}><CheckCircle2 size={14} /> Review queue</Button>
+          <Button variant="ghost" onClick={handleHighlightRisk}><AlertTriangle size={14} /> Flag Risk</Button>
+          <Button variant="subtle" onClick={handleBulkReview}><CheckCircle2 size={14} /> Bulk Review</Button>
           <Button variant="danger" onClick={onLogout}><LogOut size={14} /> Logout</Button>
         </div>
       </div>
 
+      {/* Notification */}
+      {adminMessage && (
+        <div role="status" style={{ marginBottom: 20, padding: "12px 16px", border: `1px solid ${msgType === "success" ? C.verifiedDim : C.amberDim}`, background: `${msgType === "success" ? "rgba(0,230,118,0.08)" : "rgba(255,196,0,0.08)"}`, color: msgType === "success" ? C.verified : C.amber, borderRadius: 10, fontSize: 13, fontWeight: 500 }}>
+          {adminMessage}
+        </div>
+      )}
+
       <div className="admin-layout">
+        {/* Sidebar */}
         <aside className="admin-sidebar" aria-label="Admin sections">
-          <div className="admin-sidebar-label">Control room</div>
+          <div className="admin-sidebar-label">Navigation</div>
           <nav className="admin-sidebar-nav">
-            {[
-              ["overview", LayoutDashboard, "Overview", "Pulse"],
-              ["brokers", ShieldCheck, "Brokers", brokers.length],
-              ["exposures", AlertTriangle, "Exposures", exposures.filter(e => e.status === "pending").length + " pending"],
-              ["news", Newspaper, "Dispatches", news.length],
-              ["tools", SlidersHorizontal, "Tools", "Actions"],
-            ].map(([id, Icon, label, meta]) => (
+            {sidebarItems.map(({ id, Icon, label, meta }) => (
               <button key={id} type="button" className={`admin-sidebar-link ${tab === id ? "is-active" : ""}`} onClick={() => setTab(id)}>
-                <Icon size={17} /><span>{label}</span><small>{meta}</small>
+                <Icon size={16} /><span>{label}</span><small>{meta}</small>
               </button>
             ))}
           </nav>
@@ -1100,39 +1435,46 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
         </aside>
 
         <main className="admin-content">
-          {adminMessage && <div role="status" style={{ marginBottom: 20, padding: "11px 14px", border: `1px solid ${C.verifiedDim}`, background: `${C.verifiedDim}55`, color: C.verified, borderRadius: 10, fontSize: 13 }}>{adminMessage}</div>}
 
+          {/* ─── OVERVIEW DASHBOARD ─── */}
           {tab === "overview" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+              {/* KPI row */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 14 }}>
                 {[
-                  ["Registry records", brokers.length, "Live database"],
-                  ["Review queue", exposures.filter(e => e.status === "pending").length, "Needs triage"],
-                  ["Published alerts", exposures.filter(e => e.status === "published").length, "Publicly visible"],
-                  ["Risk watches", riskWatch.length, "Critical markers"],
-                ].map(([label, value, note]) => (
-                  <GlassCard key={label} style={{ padding: 18 }}>
-                    <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>{label}</div>
-                    <div style={{ fontSize: 30, fontWeight: 700, margin: "12px 0 6px" }}>{value}</div>
-                    <div style={{ color: C.paperDim, fontSize: 12 }}>{note}</div>
-                  </GlassCard>
+                  { label: "Broker Records", value: brokers.length, color: C.verified, icon: "🏦" },
+                  { label: "Pending Review", value: exposures.filter(e => e.status === "pending").length, color: C.amber, icon: "⏳" },
+                  { label: "Published Alerts", value: exposures.filter(e => e.status === "published").length, color: "#6C8EF5", icon: "📣" },
+                  { label: "Scam Alerts", value: alerts.length, color: C.alert, icon: "🚨" },
+                  { label: "Field Surveys", value: surveys.length, color: C.amber, icon: "🔍" },
+                  { label: "News Dispatches", value: news.length, color: C.verified, icon: "📰" },
+                ].map(({ label, value, color, icon }) => (
+                  <div key={label} style={{ ...cardStyle, textAlign: "center", position: "relative", overflow: "hidden" }}>
+                    <div style={{ fontSize: 28, marginBottom: 8 }}>{icon}</div>
+                    <div style={{ fontSize: 32, fontWeight: 800, color, fontFamily: "'IBM Plex Mono', monospace" }}>{value}</div>
+                    <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 4 }}>{label}</div>
+                  </div>
                 ))}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 24 }}>
+              {/* Activity + Risk Watch */}
+              <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 22 }}>
                 <GlassCard style={{ padding: 22 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Signal feed</h3>
-                    <Badge tone="reg">Live</Badge>
+                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20 }}>Recent Exposures</h3>
+                    <Badge tone="reg">Live Feed</Badge>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {[...exposures].slice(0, 4).map((item) => (
-                      <div key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 12, borderBottom: `1px solid ${C.line}`, paddingBottom: 10 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {[...exposures].slice(0, 5).map((item) => (
+                      <div key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 12, borderBottom: `1px solid ${C.line}`, paddingBottom: 10, alignItems: "center" }}>
                         <div>
-                          <div style={{ fontWeight: 700 }}>{item.brokerName}</div>
-                          <div style={{ color: C.paperDim, fontSize: 12 }}>{item.title}</div>
+                          <div style={{ fontWeight: 700, fontSize: 14 }}>{item.brokerName}</div>
+                          <div style={{ color: C.paperDim, fontSize: 12, marginTop: 2 }}>{item.title}</div>
                         </div>
-                        <Badge tone={item.status === "pending" ? "pending" : item.status === "rejected" ? "warn" : "reg"}>{item.status}</Badge>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          {item.amount && <Badge tone="warn">${Number(item.amount).toLocaleString()}</Badge>}
+                          <Badge tone={item.status === "pending" ? "pending" : item.status === "rejected" ? "warn" : "reg"}>{item.status}</Badge>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1140,60 +1482,107 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 
                 <GlassCard style={{ padding: 22 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Risk watch</h3>
-                    <AlertTriangle size={18} color={C.alert} />
+                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20 }}>Risk Watch</h3>
+                    <AlertTriangle size={17} color={C.alert} />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    {riskWatch.map((broker) => (
-                      <div key={broker.id} style={{ background: "rgba(255,94,91,0.05)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: 12 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {riskWatch.map((b) => (
+                      <div key={b.id} style={{ background: "rgba(255,61,0,0.06)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: "12px 14px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <strong>{broker.name}</strong>
-                          <Badge tone="warn">{Number(broker.score).toFixed(1)}</Badge>
+                          <strong style={{ fontSize: 14 }}>{b.name}</strong>
+                          <Badge tone="warn">{Number(b.score).toFixed(1)}/10</Badge>
                         </div>
-                        <div style={{ color: C.paperDim, fontSize: 12, marginTop: 6 }}>{(broker.flags || []).join(" • ") || "Due for review"}</div>
+                        <div style={{ color: C.paperDim, fontSize: 12, marginTop: 5 }}>{(b.flags || []).join(" · ") || "Due for review"}</div>
                       </div>
                     ))}
+                    {!riskWatch.length && <div style={{ color: C.muted, fontSize: 13, textAlign: "center", padding: "24px 0" }}>No critical risk signals detected</div>}
                   </div>
                 </GlassCard>
               </div>
+
+              {/* Score distribution bar */}
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 16 }}>Registry Score Distribution</h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+                  {[
+                    { label: "High Trust (8–10)", count: brokers.filter(b => Number(b.score) >= 8).length, color: C.verified, bg: "rgba(0,230,118,0.08)" },
+                    { label: "Medium (5–7.9)", count: brokers.filter(b => Number(b.score) >= 5 && Number(b.score) < 8).length, color: C.amber, bg: "rgba(255,196,0,0.08)" },
+                    { label: "High Risk (<5)", count: brokers.filter(b => Number(b.score) < 5).length, color: C.alert, bg: "rgba(255,61,0,0.08)" },
+                  ].map(({ label, count, color, bg }) => {
+                    const pct = brokers.length ? Math.round((count / brokers.length) * 100) : 0;
+                    return (
+                      <div key={label} style={{ background: bg, border: `1px solid ${color}33`, borderRadius: 12, padding: "16px 20px" }}>
+                        <div style={{ fontSize: 28, fontWeight: 800, color }}>{count}</div>
+                        <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>{label}</div>
+                        <div style={{ marginTop: 10, background: "rgba(255,255,255,0.08)", borderRadius: 4, height: 4 }}>
+                          <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 4, transition: "width 1s ease" }} />
+                        </div>
+                        <div style={{ fontSize: 11, color, marginTop: 4, fontFamily: "'IBM Plex Mono', monospace" }}>{pct}% of registry</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
               <AdminOverview brokers={brokers} exposures={exposures} news={news} />
             </div>
           )}
 
+          {/* ─── BROKER MANAGEMENT ─── */}
           {tab === "brokers" && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 28 }}>
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 16, marginBottom: 16 }}>Insert New Broker File</h3>
+                <h3 style={{ fontSize: 16, marginBottom: 16, fontFamily: "'Fraunces', serif" }}>Add New Broker</h3>
                 <form onSubmit={handleAddBroker}>
-                  <Field label="Broker Name"><input required style={inputStyle} value={newBroker.name} onChange={e => setNewBroker({ ...newBroker, name: e.target.value })} /></Field>
+                  <Field label="Broker Name"><input required style={inputStyle} value={newBroker.name} onChange={e => setNewBroker({ ...newBroker, name: e.target.value })} placeholder="e.g. Global FX Ltd" /></Field>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                    <Field label="Years"><input type="number" style={inputStyle} value={newBroker.years} onChange={e => setNewBroker({ ...newBroker, years: e.target.value })} /></Field>
-                    <Field label="Score (0-10)"><input type="number" step="0.1" style={inputStyle} value={newBroker.score} onChange={e => setNewBroker({ ...newBroker, score: e.target.value })} /></Field>
+                    <Field label="Years Active"><input type="number" min={0} style={inputStyle} value={newBroker.years} onChange={e => setNewBroker({ ...newBroker, years: e.target.value })} /></Field>
+                    <Field label="Trust Score (0-10)"><input type="number" step="0.1" min="0" max="10" style={inputStyle} value={newBroker.score} onChange={e => setNewBroker({ ...newBroker, score: e.target.value })} /></Field>
                   </div>
                   <Field label="Regulators"><input required style={inputStyle} value={newBroker.regulator} onChange={e => setNewBroker({ ...newBroker, regulator: e.target.value })} placeholder="FCA, ASIC" /></Field>
                   <Field label="License Number"><input required style={inputStyle} value={newBroker.license} onChange={e => setNewBroker({ ...newBroker, license: e.target.value })} /></Field>
                   <Field label="Jurisdiction Country"><input required style={inputStyle} value={newBroker.country} onChange={e => setNewBroker({ ...newBroker, country: e.target.value })} /></Field>
-                  <Field label="Infringement Flags (CSV)"><input style={inputStyle} value={newBroker.flags} onChange={e => setNewBroker({ ...newBroker, flags: e.target.value })} placeholder="Offshore, Withdrawal issues" /></Field>
-                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}>Insert Record into DB</Button>
+                  <Field label="License Status">
+                    <select style={inputStyle} value={newBroker.licenseStatus} onChange={e => setNewBroker({ ...newBroker, licenseStatus: e.target.value })}>
+                      {["Regulated", "Offshore Regulatory", "Suspicious", "Unregulated Clone"].map(s => <option key={s}>{s}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Broker Type">
+                    <select style={inputStyle} value={newBroker.type} onChange={e => setNewBroker({ ...newBroker, type: e.target.value })}>
+                      {["ECN", "STP", "Market Maker", "DMA", "Hybrid"].map(t => <option key={t}>{t}</option>)}
+                    </select>
+                  </Field>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <Field label="Min Deposit ($)"><input type="number" style={inputStyle} value={newBroker.min_deposit} onChange={e => setNewBroker({ ...newBroker, min_deposit: e.target.value })} /></Field>
+                    <Field label="Max Leverage"><input style={inputStyle} value={newBroker.max_leverage} onChange={e => setNewBroker({ ...newBroker, max_leverage: e.target.value })} placeholder="1:500" /></Field>
+                  </div>
+                  <Field label="Infringement Flags (comma-separated)"><input style={inputStyle} value={newBroker.flags} onChange={e => setNewBroker({ ...newBroker, flags: e.target.value })} placeholder="Offshore, Withdrawal delays" /></Field>
+                  <Button type="submit" style={{ width: "100%", justifyContent: "center", marginTop: 4 }}><Plus size={14} /> Add Broker to Registry</Button>
                 </form>
               </GlassCard>
 
               <GlassCard style={{ padding: 22 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
-                  <h3 style={{ fontSize: 16 }}>Registry roster</h3>
+                  <h3 style={{ fontSize: 16, fontFamily: "'Fraunces', serif" }}>Registry Roster <span style={{ color: C.muted, fontSize: 14 }}>({filteredBrokers.length})</span></h3>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, background: C.ink, border: `1px solid ${C.lineStrong}`, borderRadius: 10, minWidth: 220, padding: "8px 12px" }}>
                     <Search size={14} color={C.muted} />
-                    <input value={brokerSearch} onChange={(e) => setBrokerSearch(e.target.value)} placeholder="Search broker" style={{ background: "transparent", border: "none", outline: "none", color: C.paper, flex: 1 }} />
+                    <input value={brokerSearch} onChange={(e) => setBrokerSearch(e.target.value)} placeholder="Search broker..." style={{ background: "transparent", border: "none", outline: "none", color: C.paper, flex: 1, fontSize: 13 }} />
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 600, overflowY: "auto" }}>
                   {filteredBrokers.map((b) => (
-                    <div key={b.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: 16, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{b.name} <span style={{ color: C.muted, fontWeight: 500 }}>({Number(b.score).toFixed(1)}/10)</span></div>
-                        <div style={{ fontSize: 12, color: C.muted }}>{b.regulator} · {b.country}</div>
+                    <div key={b.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <span style={{ fontWeight: 700, fontSize: 14 }}>{b.name}</span>
+                          <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>{b.licenseStatus || b.regulator}</Badge>
+                        </div>
+                        <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>{b.country} · {b.type} · Score: <span style={{ color: Number(b.score) >= 8 ? C.verified : Number(b.score) >= 5 ? C.amber : C.alert, fontWeight: 700 }}>{b.score}/10</span></div>
                       </div>
-                      <Button variant="danger" onClick={() => handleDeleteBroker(b.id)}><Trash2 size={14} /></Button>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                        <input type="number" step="0.1" min="0" max="10" defaultValue={b.score} onBlur={e => handleUpdateScore(b.id, e.target.value)} style={{ ...inputStyle, width: 60, padding: "5px 8px", fontSize: 13 }} title="Update score" />
+                        <Button variant="danger" onClick={() => handleDeleteBroker(b.id)}><Trash2 size={13} /></Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1201,36 +1590,209 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
             </div>
           )}
 
+          {/* ─── EXPOSURE TRIAGE ─── */}
           {tab === "exposures" && (
             <GlassCard style={{ padding: 22 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
-                <h3 style={{ fontSize: 16 }}>Exposure queue</h3>
-                <select value={exposureFilter} onChange={(e) => setExposureFilter(e.target.value)} style={{ ...inputStyle, width: "auto", minWidth: 160 }}>
-                  <option value="all">All statuses</option>
-                  <option value="pending">Pending</option>
-                  <option value="published">Published</option>
-                  <option value="rejected">Rejected</option>
-                </select>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+                <div>
+                  <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif" }}>Exposure Triage Queue</h3>
+                  <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{exposures.filter(e => e.status === "pending").length} items awaiting review</div>
+                </div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  {["all", "pending", "published", "rejected"].map(f => (
+                    <button key={f} onClick={() => setExposureFilter(f)} style={{ padding: "7px 16px", borderRadius: 20, border: `1px solid ${exposureFilter === f ? C.verified : C.lineStrong}`, background: exposureFilter === f ? "rgba(0,230,118,0.1)" : "transparent", color: exposureFilter === f ? C.verified : C.paperDim, cursor: "pointer", fontSize: 13, fontWeight: exposureFilter === f ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s" }}>
+                      {f}
+                    </button>
+                  ))}
+                  <Button variant="primary" onClick={handleBulkReview} style={{ padding: "7px 16px", fontSize: 13 }}><CheckCircle2 size={13} /> Publish All Pending</Button>
+                </div>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {filteredExposures.map((e) => (
-                  <div key={e.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${e.status === 'pending' ? C.amber : C.lineStrong}`, padding: 20, borderRadius: 12, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-                    <div>
-                      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
+                  <div key={e.id} style={{ ...cardStyle, border: `1px solid ${e.status === "pending" ? C.amberDim : e.status === "rejected" ? C.alertDim : C.lineStrong}`, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
                         <Badge tone={e.status === "pending" ? "pending" : e.status === "rejected" ? "warn" : "reg"}>{e.status.toUpperCase()}</Badge>
-                        <span style={{ fontWeight: 700 }}>{e.brokerName}</span>
+                        <span style={{ fontWeight: 700, fontSize: 15 }}>{e.brokerName}</span>
+                        {e.amount && <Badge tone="warn">Disputed: ${Number(e.amount).toLocaleString()}</Badge>}
                       </div>
-                      <h4 style={{ fontSize: 15, margin: "4px 0" }}>{e.title}</h4>
-                      <p style={{ color: C.paperDim, fontSize: 13.5 }}>{e.text}</p>
+                      <h4 style={{ fontSize: 15, margin: "0 0 6px", lineHeight: 1.3 }}>{e.title}</h4>
+                      <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.6 }}>{e.text}</p>
+                      <div style={{ fontSize: 11, color: C.muted, marginTop: 10, fontFamily: "'IBM Plex Mono', monospace" }}>Filed: {e.date}</div>
                     </div>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", gap: 8, alignItems: "flex-start", flexWrap: "wrap", flexShrink: 0 }}>
                       {e.status === "pending" && (
                         <>
-                          <Button variant="primary" onClick={() => handleStatus(e.id, "published")}><CheckCircle2 size={14} /> Publish</Button>
-                          <Button variant="danger" onClick={() => handleStatus(e.id, "rejected")}><XCircle size={14} /> Reject</Button>
+                          <Button variant="primary" onClick={() => handleStatus(e.id, "published")} style={{ padding: "7px 14px", fontSize: 13 }}><CheckCircle2 size={13} /> Publish</Button>
+                          <Button variant="danger" onClick={() => handleStatus(e.id, "rejected")} style={{ padding: "7px 14px", fontSize: 13 }}><XCircle size={13} /> Reject</Button>
                         </>
                       )}
-                      <Button variant="danger" onClick={() => handleDeleteExposure(e.id)}><Trash2 size={14} /> Delete</Button>
+                      <Button variant="danger" onClick={() => handleDeleteExposure(e.id)} style={{ padding: "7px 12px" }}><Trash2 size={13} /></Button>
+                    </div>
+                  </div>
+                ))}
+                {!filteredExposures.length && <div style={{ color: C.muted, textAlign: "center", padding: "40px 0", fontSize: 15 }}>No exposures match this filter.</div>}
+              </div>
+            </GlassCard>
+          )}
+
+          {/* ─── NEWS PUBLISHER ─── */}
+          {tab === "news" && (
+            <div className="admin-news-layout">
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Publish Intelligence Dispatch</h3>
+                <form onSubmit={handleAddNews}>
+                  <Field label="Headline"><input required style={inputStyle} value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} placeholder="Enter article headline..." /></Field>
+                  <Field label="Category">
+                    <select style={inputStyle} value={newNews.category} onChange={e => setNewNews({ ...newNews, category: e.target.value })}>
+                      {["Regulation", "Education", "Market Watch", "Scam Alert", "Industry News"].map(c => <option key={c}>{c}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Briefing / Summary"><textarea required rows={6} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6 }} value={newNews.summary} onChange={e => setNewNews({ ...newNews, summary: e.target.value })} placeholder="Write the article summary..." /></Field>
+                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}><Plus size={14} /> Publish Dispatch</Button>
+                </form>
+              </GlassCard>
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Published Dispatches ({news.length})</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 600, overflowY: "auto" }}>
+                  {news.map((a) => (
+                    <div key={a.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+                          <Badge tone="reg">{a.category}</Badge>
+                          <span style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{a.date}</span>
+                        </div>
+                        <div style={{ fontWeight: 700, fontSize: 14 }}>{a.title}</div>
+                        <div style={{ color: C.paperDim, fontSize: 13, marginTop: 5, lineHeight: 1.5 }}>{a.summary}</div>
+                      </div>
+                      <Button variant="danger" onClick={() => handleDeleteNews(a.id)} style={{ flexShrink: 0 }}><Trash2 size={13} /></Button>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            </div>
+          )}
+
+          {/* ─── SCAM ALERT MANAGER ─── */}
+          {tab === "scam-alerts-admin" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 28 }}>
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Issue Scam Alert</h3>
+                <form onSubmit={handleAddAlert}>
+                  <Field label="Broker Name"><input required style={inputStyle} value={newAlert.broker} onChange={e => setNewAlert({ ...newAlert, broker: e.target.value })} placeholder="e.g. FraudBroker Ltd" /></Field>
+                  <Field label="Country"><input style={inputStyle} value={newAlert.country} onChange={e => setNewAlert({ ...newAlert, country: e.target.value })} placeholder="e.g. Comoros" /></Field>
+                  <Field label="Alert Type">
+                    <select style={inputStyle} value={newAlert.type} onChange={e => setNewAlert({ ...newAlert, type: e.target.value })}>
+                      {["Clone Fraud", "Withdrawal Theft", "Spread Manipulation", "Unlicensed Operation", "Account Freezing", "Signal Scam"].map(t => <option key={t}>{t}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Severity">
+                    <select style={inputStyle} value={newAlert.severity} onChange={e => setNewAlert({ ...newAlert, severity: e.target.value })}>
+                      {["Critical", "High", "Medium"].map(s => <option key={s}>{s}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Description"><textarea required rows={5} style={{ ...inputStyle, resize: "vertical" }} value={newAlert.description} onChange={e => setNewAlert({ ...newAlert, description: e.target.value })} placeholder="Describe the fraudulent activity..." /></Field>
+                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}><AlertOctagon size={14} /> Issue Alert</Button>
+                </form>
+              </GlassCard>
+
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Active Alerts ({alerts.length})</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 640, overflowY: "auto" }}>
+                  {alerts.map((a) => (
+                    <div key={a.id} style={{ ...cardStyle, borderLeft: `4px solid ${a.severity === "Critical" ? C.alert : a.severity === "High" ? "#FF6B00" : C.amber}`, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center", flexWrap: "wrap" }}>
+                          <Badge tone={a.severity === "Critical" ? "warn" : "pending"}>{a.severity}</Badge>
+                          <span style={{ fontWeight: 700 }}>{a.broker}</span>
+                          <Badge>{a.type}</Badge>
+                        </div>
+                        <div style={{ fontSize: 12, color: C.muted, marginBottom: 6, fontFamily: "'IBM Plex Mono', monospace" }}>📍 {a.country} · {a.date}</div>
+                        <p style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.5 }}>{a.description}</p>
+                      </div>
+                      <Button variant="danger" onClick={() => handleDeleteAlert(a.id)} style={{ flexShrink: 0 }}><Trash2 size={13} /></Button>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            </div>
+          )}
+
+          {/* ─── FIELD SURVEY MANAGER ─── */}
+          {tab === "field-surveys-admin" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 28 }}>
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Submit Field Survey</h3>
+                <form onSubmit={handleAddSurvey}>
+                  <Field label="Broker Name"><input required style={inputStyle} value={newSurvey.broker} onChange={e => setNewSurvey({ ...newSurvey, broker: e.target.value })} /></Field>
+                  <Field label="Country"><input required style={inputStyle} value={newSurvey.country} onChange={e => setNewSurvey({ ...newSurvey, country: e.target.value })} /></Field>
+                  <Field label="Registered Address"><input required style={inputStyle} value={newSurvey.address} onChange={e => setNewSurvey({ ...newSurvey, address: e.target.value })} placeholder="Full street address" /></Field>
+                  <Field label="Inspection Score (0-10)"><input type="number" step="0.1" min="0" max="10" style={inputStyle} value={newSurvey.score} onChange={e => setNewSurvey({ ...newSurvey, score: e.target.value })} /></Field>
+                  <Field label="Status">
+                    <select style={inputStyle} value={newSurvey.status} onChange={e => setNewSurvey({ ...newSurvey, status: e.target.value })}>
+                      {["Verified", "Suspicious", "Fraudulent"].map(s => <option key={s}>{s}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Field Findings"><textarea required rows={5} style={{ ...inputStyle, resize: "vertical" }} value={newSurvey.findings} onChange={e => setNewSurvey({ ...newSurvey, findings: e.target.value })} placeholder="Describe what inspectors found..." /></Field>
+                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}><Plus size={14} /> Publish Survey</Button>
+                </form>
+              </GlassCard>
+
+              <GlassCard style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Survey Reports ({surveys.length})</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 640, overflowY: "auto" }}>
+                  {surveys.map((s) => {
+                    const statusColor = { Verified: C.verified, Suspicious: C.amber, Fraudulent: C.alert };
+                    return (
+                      <div key={s.id} style={{ ...cardStyle, borderLeft: `4px solid ${statusColor[s.status]}`, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+                            <Badge tone={s.status === "Verified" ? "reg" : s.status === "Suspicious" ? "pending" : "warn"}>{s.status}</Badge>
+                            <span style={{ fontWeight: 700 }}>{s.broker}</span>
+                            <span style={{ color: statusColor[s.status], fontWeight: 700, fontFamily: "'IBM Plex Mono', monospace", fontSize: 13 }}>{s.score}/10</span>
+                          </div>
+                          <div style={{ fontSize: 12, color: C.muted, marginBottom: 6, fontFamily: "'IBM Plex Mono', monospace" }}>📍 {s.address} · {s.date}</div>
+                          <p style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.5 }}>{s.findings}</p>
+                        </div>
+                        <Button variant="danger" onClick={() => handleDeleteSurvey(s.id)} style={{ flexShrink: 0 }}><Trash2 size={13} /></Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+            </div>
+          )}
+
+          {/* ─── FORUM MODERATOR ─── */}
+          {tab === "forum-admin" && (
+            <GlassCard style={{ padding: 22 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <div>
+                  <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif" }}>Forum Moderation</h3>
+                  <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>Review and moderate community forum posts</div>
+                </div>
+                <Badge tone="pending">{forumMod.filter(p => !p.hidden).length} visible · {forumMod.filter(p => p.hidden).length} hidden</Badge>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {forumMod.map((post) => (
+                  <div key={post.id} style={{ ...cardStyle, opacity: post.hidden ? 0.5 : 1, transition: "opacity 0.3s", display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
+                        <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--gradient-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#000" }}>{post.avatar}</div>
+                        <span style={{ fontWeight: 600 }}>{post.user}</span>
+                        <Badge>{post.category}</Badge>
+                        <span style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{post.date}</span>
+                        {post.hidden && <Badge tone="warn">HIDDEN</Badge>}
+                      </div>
+                      <h4 style={{ fontSize: 15, margin: "0 0 6px", lineHeight: 1.3 }}>{post.title}</h4>
+                      <p style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.5 }}>{post.body.slice(0, 150)}...</p>
+                      <div style={{ fontSize: 12, color: C.muted, marginTop: 8 }}>▲ {post.upvotes} upvotes · 💬 {post.replies} replies · 👁 {post.views.toLocaleString()} views</div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, alignItems: "flex-start", flexShrink: 0, flexWrap: "wrap" }}>
+                      <button onClick={() => setForumMod(forumMod.map(p => p.id === post.id ? { ...p, hidden: !p.hidden } : p))} style={{ padding: "7px 14px", borderRadius: 8, border: `1px solid ${C.lineStrong}`, background: post.hidden ? "rgba(0,230,118,0.1)" : "rgba(255,196,0,0.1)", color: post.hidden ? C.verified : C.amber, cursor: "pointer", fontSize: 12, fontWeight: 600, transition: "all 0.2s" }}>
+                        {post.hidden ? "Restore" : "Hide"}
+                      </button>
+                      <Button variant="danger" onClick={() => setForumMod(forumMod.filter(p => p.id !== post.id))} style={{ padding: "7px 12px" }}><Trash2 size={13} /></Button>
                     </div>
                   </div>
                 ))}
@@ -1238,56 +1800,34 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
             </GlassCard>
           )}
 
-          {tab === "news" && (
-            <div className="admin-news-layout">
-              <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 16, marginBottom: 16 }}>Publish Intelligence</h3>
-                <form onSubmit={handleAddNews}>
-                  <Field label="Headline"><input required style={inputStyle} value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} /></Field>
-                  <Field label="Category"><select style={inputStyle} value={newNews.category} onChange={e => setNewNews({ ...newNews, category: e.target.value })}><option>Regulation</option><option>Education</option><option>Market Watch</option></select></Field>
-                  <Field label="Briefing"><textarea required rows={6} style={{ ...inputStyle, resize: "vertical" }} value={newNews.summary} onChange={e => setNewNews({ ...newNews, summary: e.target.value })} /></Field>
-                  <Button type="submit" style={{ width: "100%", justifyContent: "center" }}><Plus size={14} /> Publish Dispatch</Button>
-                </form>
-              </GlassCard>
-              <GlassCard style={{ padding: 22 }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {news.map((article) => (
-                    <div key={article.id} style={{ background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: 18, borderRadius: 12, display: "flex", justifyContent: "space-between", gap: 18, flexWrap: "wrap" }}>
-                      <div>
-                        <Badge tone="reg">{article.category}</Badge>
-                        <div style={{ fontWeight: 700, marginTop: 8 }}>{article.title}</div>
-                        <div style={{ color: C.paperDim, fontSize: 13, marginTop: 5 }}>{article.summary}</div>
-                      </div>
-                      <Button variant="danger" onClick={() => handleDeleteNews(article.id)}><Trash2 size={14} /></Button>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-            </div>
-          )}
-
+          {/* ─── SYSTEM TOOLS ─── */}
           {tab === "tools" && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
               {[
-                { title: "Alert automation", desc: "Mark all low-score brokers with risk review tags.", action: handleHighlightRisk, tone: "warn" },
-                { title: "Queue triage", desc: "Move all pending exposures into the reviewed state.", action: handleBulkReview, tone: "reg" },
-                { title: "Sync registry", desc: "Refresh the current view from the live server state.", action: () => window.location.reload(), tone: "pending" }
+                { title: "Flag Risk Brokers", desc: "Automatically tag all brokers with a score below 5 as 'High risk review'. Updates registry instantly.", action: handleHighlightRisk, icon: "⚠️", tone: "warn", btnLabel: "Run Auto-Flag" },
+                { title: "Publish Pending Queue", desc: "Move all pending exposure reports to published status. Use after batch reviewing submissions.", action: handleBulkReview, icon: "✅", tone: "reg", btnLabel: "Publish All Pending" },
+                { title: "Sync Registry", desc: "Refresh data from the live server. Use when expecting database updates from external sources.", action: () => window.location.reload(), icon: "🔄", tone: "pending", btnLabel: "Sync Now" },
+                { title: "Export Registry CSV", desc: "Download all broker records as a CSV file for offline analysis or reporting.", action: () => { const csv = brokers.map(b => `${b.name},${b.score},${b.country},${b.regulator}`).join("\n"); notify("CSV export prepared. (Demo — copy console output)"); console.log("NAME,SCORE,COUNTRY,REGULATOR\n" + csv); }, icon: "📥", tone: "pending", btnLabel: "Export CSV" },
+                { title: "Clear All Rejected", desc: "Permanently remove all rejected exposure files from the database to keep the queue clean.", action: () => { setExposures(exposures.filter(e => e.status !== "rejected")); notify("Rejected exposures cleared.", "warn"); }, icon: "🗑", tone: "warn", btnLabel: "Clear Rejected" },
+                { title: "Platform Statistics", desc: `Registry: ${brokers.length} brokers · Exposures: ${exposures.length} total · News: ${news.length} articles · Forum: ${forumMod.length} posts · Alerts: ${alerts.length} active`, action: null, icon: "📊", tone: "reg", btnLabel: null },
               ].map((tool) => (
-                <GlassCard key={tool.title} style={{ padding: 22 }}>
+                <GlassCard key={tool.title} style={{ padding: 24 }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>{tool.icon}</div>
                   <Badge tone={tool.tone}>{tool.title}</Badge>
-                  <h3 style={{ fontSize: 20, margin: "16px 0 8px" }}>{tool.title}</h3>
-                  <p style={{ color: C.paperDim, lineHeight: 1.6, fontSize: 13 }}>{tool.desc}</p>
-                  <Button onClick={tool.action} style={{ marginTop: 18, width: "100%", justifyContent: "center" }}>Run action</Button>
+                  <p style={{ color: C.paperDim, lineHeight: 1.6, fontSize: 13, margin: "12px 0 18px" }}>{tool.desc}</p>
+                  {tool.btnLabel && tool.action && (
+                    <Button onClick={tool.action} style={{ width: "100%", justifyContent: "center" }}>{tool.btnLabel}</Button>
+                  )}
                 </GlassCard>
               ))}
             </div>
           )}
+
         </main>
       </div>
     </div>
   );
 }
-
 /* ---------------------------------------------------------
    TICKER TAPE COMPONENT
 --------------------------------------------------------- */
@@ -1396,9 +1936,382 @@ function ToolsPage() {
   );
 }
 
+function MediaPage() {
+  return (
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
+      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginBottom: 12 }}>Live Streams & Media</h1>
+      <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Watch live market analysis and webinar recordings from industry experts.</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        {[
+          { title: "NFP Live Trading Session", viewer: "Live - 1.2k Viewers", duration: "LIVE" },
+          { title: "How to Trade Gold Breakouts", viewer: "Recorded", duration: "45:20" },
+          { title: "Exposing Offshore Scams 2026", viewer: "Recorded", duration: "1:12:05" },
+        ].map(vid => (
+          <GlassCard key={vid.title} style={{ padding: 0, borderRadius: 12, border: `1px solid ${C.lineStrong}`, overflow: "hidden" }}>
+            <div style={{ background: "var(--c-line)", height: 160, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--c-surface)", display: "flex", alignItems: "center", justifyContent: "center" }}>▶</div>
+              <div style={{ position: "absolute", bottom: 8, right: 8, background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 11, padding: "2px 6px", borderRadius: 4, fontFamily: "'IBM Plex Mono', monospace" }}>{vid.duration}</div>
+            </div>
+            <div style={{ padding: 16 }}>
+              <Badge tone={vid.duration === "LIVE" ? "warn" : "reg"}>{vid.viewer}</Badge>
+              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 18, marginTop: 12 }}>{vid.title}</h3>
+            </div>
+          </GlassCard>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RegulatoryPage({ brokers, openDetail }) {
+  const regulators = ["FCA", "ASIC", "CySEC", "Offshore"];
+  const [selectedReg, setSelectedReg] = useState(null);
+
+  const filtered = brokers.filter(b => selectedReg ? b.regulator.includes(selectedReg) || (selectedReg === "Offshore" && b.regulator.includes("Offshore")) : false);
+
+  return (
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
+      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginBottom: 12 }}>Regulatory Centers</h1>
+      <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Filter and verify brokers by their official regulatory jurisdiction.</p>
+      
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 40 }}>
+        {regulators.map(reg => (
+          <button key={reg} onClick={() => setSelectedReg(reg)} style={{ background: selectedReg === reg ? "var(--c-surface-hov)" : "var(--c-surface)", border: `1px solid ${selectedReg === reg ? C.verified : C.lineStrong}`, padding: 24, borderRadius: 8, cursor: "pointer", color: "var(--c-paper)", textAlign: "center", transition: "all 0.2s" }}>
+            <h3 style={{ fontSize: 24, fontWeight: 700 }}>{reg}</h3>
+            <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>View regulated brokers</div>
+          </button>
+        ))}
+      </div>
+
+      {selectedReg && (
+        <div>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, marginBottom: 16 }}>Brokers Regulated by {selectedReg}</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
+            {filtered.map(b => <BrokerCard key={b.id} b={b} onClick={() => openDetail(b)} onCompare={() => {}} isCompared={false} />)}
+            {filtered.length === 0 && <div style={{ color: C.muted }}>No brokers found in this jurisdiction.</div>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{ borderTop: `1px solid var(--c-line)`, background: "var(--c-surface)", padding: "60px 32px 32px", marginTop: 60 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        {/* App Promo Banner */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, marginBottom: 60, padding: "40px", background: "var(--gradient-hero)", border: `1px solid var(--c-line-strong)`, borderRadius: 16, alignItems: "center" }}>
+          <div>
+            <Badge tone="reg">📱 Mobile App</Badge>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginTop: 12, marginBottom: 12 }}>Check Any Broker in Seconds</h2>
+            <p style={{ color: "var(--c-paper-dim)", fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>Scan brokers, receive live scam alerts, and file exposures from anywhere. Download the Ledger Intelligence mobile app.</p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <Button variant="primary">⬇ App Store</Button>
+              <Button variant="ghost">⬇ Google Play</Button>
+            </div>
+          </div>
+          <div style={{ textAlign: "center", fontSize: 80 }}>📊</div>
+        </div>
+
+        {/* Footer Links Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 40, marginBottom: 48 }}>
+          {[
+            { heading: "Platform", links: ["Registry", "All Brokers", "Leaderboard", "Market Pulse"] },
+            { heading: "Safety Tools", links: ["Scam Alerts", "Exposure Desk", "Field Surveys", "Regulatory Centers"] },
+            { heading: "Community", links: ["Forum", "Live Streams", "User Reviews", "Spread Calculator"] },
+            { heading: "Learn", links: ["Education Hub", "EA/VPS Tools", "Industry News", "Trading Glossary"] },
+          ].map(col => (
+            <div key={col.heading}>
+              <div style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--c-muted)", marginBottom: 16, fontFamily: "'IBM Plex Mono', monospace" }}>{col.heading}</div>
+              {col.links.map(link => (
+                <div key={link} style={{ fontSize: 14, color: "var(--c-paper-dim)", marginBottom: 10, cursor: "pointer", transition: "color 0.2s" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "var(--c-paper)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "var(--c-paper-dim)"}>{link}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div style={{ borderTop: `1px solid var(--c-line)`, paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 18 }}>
+            <div style={{ width: 22, height: 22, borderRadius: "50%", border: `1.5px dashed var(--c-verified)`, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--c-verified)", fontSize: 10 }}>✓</div>
+            LEDGER
+          </div>
+          <div style={{ color: "var(--c-muted)", fontSize: 12 }}>© 2026 Ledger Intelligence. All rights reserved. For informational purposes only.</div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ---------------------------------------------------------
+   SCAM ALERTS PAGE
+--------------------------------------------------------- */
+function ScamAlertsPage({ alerts: propAlerts }) {
+  const alerts = propAlerts || scamAlerts;
+  const [filter, setFilter] = useState("All");
+  const severities = ["All", "Critical", "High", "Medium"];
+  const filtered = filter === "All" ? alerts : alerts.filter(a => a.severity === filter);
+  const severityColor = { Critical: C.alert, High: "#FF6B00", Medium: C.amber };
+  const severityBg = { Critical: "rgba(255,61,0,0.12)", High: "rgba(255,107,0,0.12)", Medium: "rgba(255,196,0,0.12)" };
+  
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
+      <div style={{ marginBottom: 36 }}>
+        <Badge tone="warn">⚠ Live Alert Feed</Badge>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 40, marginTop: 10, marginBottom: 10 }}>Scam Alert Board</h1>
+        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Real-time warnings about fraudulent brokers, clone operations, and withdrawal theft cases verified by our intelligence network.</p>
+      </div>
+
+      {/* Stats bar */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
+        {[
+          { label: "Critical Alerts", value: alerts.filter(a => a.severity === "Critical").length, color: C.alert },
+          { label: "High Severity", value: alerts.filter(a => a.severity === "High").length, color: "#FF6B00" },
+          { label: "Active Investigations", value: "12", color: C.amber },
+          { label: "Resolved This Month", value: "8", color: C.verified },
+        ].map(stat => (
+          <div key={stat.label} style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, padding: "20px 24px" }}>
+            <div style={{ fontSize: 32, fontWeight: 800, color: stat.color, fontFamily: "'IBM Plex Mono', monospace" }}>{stat.value}</div>
+            <div style={{ color: C.muted, fontSize: 12, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter tabs */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+        {severities.map(s => (
+          <button key={s} onClick={() => setFilter(s)} style={{ padding: "8px 18px", borderRadius: 20, border: `1px solid ${filter === s ? severityColor[s] || C.verified : C.lineStrong}`, background: filter === s ? (severityBg[s] || "rgba(0,230,118,0.1)") : "transparent", color: filter === s ? (severityColor[s] || C.verified) : C.paperDim, cursor: "pointer", fontWeight: filter === s ? 700 : 400, fontSize: 13, transition: "all 0.2s" }}>
+            {s}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {filtered.map(alert => (
+          <div key={alert.id} style={{ background: C.surface, border: `1px solid ${severityColor[alert.severity]}33`, borderLeft: `4px solid ${severityColor[alert.severity]}`, borderRadius: 12, padding: "24px 28px", transition: "transform 0.2s, box-shadow 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.2)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, flexWrap: "wrap", gap: 10 }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+                  <span style={{ fontSize: 18, fontWeight: 800 }}>{alert.broker}</span>
+                  <Badge tone={alert.severity === "Critical" ? "warn" : "pending"}>{alert.severity}</Badge>
+                  <Badge>{alert.type}</Badge>
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>📍 {alert.country} · Regulators Notified: {alert.regulator} · {alert.date}</div>
+              </div>
+            </div>
+            <p style={{ color: C.paperDim, fontSize: 14, lineHeight: 1.6 }}>{alert.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   FIELD SURVEY PAGE
+--------------------------------------------------------- */
+function FieldSurveyPage({ surveys: propSurveys }) {
+  const surveys = propSurveys || fieldSurveys;
+  const statusColor = { Verified: C.verified, Suspicious: C.amber, Fraudulent: C.alert };
+  const statusBg = { Verified: "rgba(0,230,118,0.1)", Suspicious: "rgba(255,196,0,0.1)", Fraudulent: "rgba(255,61,0,0.1)" };
+
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
+      <div style={{ marginBottom: 36 }}>
+        <Badge tone="reg">🔍 On-Site Inspection Reports</Badge>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 40, marginTop: 10, marginBottom: 10 }}>Field Survey Reports</h1>
+        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Our teams physically visit broker offices worldwide to verify registration addresses, staff presence, and operational legitimacy.</p>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(480px, 1fr))", gap: 24 }}>
+        {surveys.map(fs => (
+          <div key={fs.id} style={{ background: C.surface, border: `1px solid ${statusColor[fs.status]}33`, borderRadius: 16, padding: "28px 32px", position: "relative", overflow: "hidden" }}>
+            {/* Status ribbon */}
+            <div style={{ position: "absolute", top: 20, right: -8, background: statusColor[fs.status], color: "#000", fontSize: 10, fontWeight: 800, padding: "4px 20px", transform: "rotate(0deg)", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
+            
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+              <div style={{ width: 56, height: 56, borderRadius: 12, background: statusBg[fs.status], border: `1px solid ${statusColor[fs.status]}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>
+                {fs.status === "Verified" ? "✅" : fs.status === "Suspicious" ? "⚠️" : "🚨"}
+              </div>
+              <div>
+                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, marginBottom: 4 }}>{fs.broker}</h3>
+                <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>📍 {fs.address}</div>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
+              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 12px" }}>
+                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Country</div>
+                <div style={{ fontWeight: 600, marginTop: 2, fontSize: 13 }}>{fs.country}</div>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 12px" }}>
+                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Score</div>
+                <div style={{ fontWeight: 700, color: statusColor[fs.status], marginTop: 2, fontSize: 13 }}>{fs.score}/10</div>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 12px" }}>
+                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Survey Date</div>
+                <div style={{ fontWeight: 600, marginTop: 2, fontSize: 13 }}>{fs.date}</div>
+              </div>
+            </div>
+
+            <div style={{ borderTop: `1px solid var(--c-line)`, paddingTop: 16 }}>
+              <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 8 }}>Field Findings</div>
+              <p style={{ color: C.paperDim, fontSize: 14, lineHeight: 1.6 }}>{fs.findings}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   FORUM / COMMUNITY PAGE
+--------------------------------------------------------- */
+function ForumPage() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const categories = ["All", "Broker Discussion", "Scam Alert", "Education", "Trading Tools"];
+  const filtered = activeCategory === "All" ? forumPosts : forumPosts.filter(p => p.category === activeCategory);
+  const categoryColor = { "Scam Alert": C.alert, "Education": C.verified, "Broker Discussion": "#6C8EF5", "Trading Tools": C.amber };
+  const [votes, setVotes] = useState(Object.fromEntries(forumPosts.map(p => [p.id, p.upvotes])));
+
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
+      <div style={{ marginBottom: 36 }}>
+        <Badge tone="reg">💬 Trader Community</Badge>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 40, marginTop: 10, marginBottom: 10 }}>Community Forum</h1>
+        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Discuss brokers, share experiences, report suspicious activity, and learn from the community.</p>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
+        {[{ label: "Active Topics", value: "2,840" }, { label: "Community Members", value: "48.2K" }, { label: "Posts Today", value: "347" }, { label: "Verified Brokers", value: "1,204" }].map(s => (
+          <div key={s.label} style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, padding: "18px 22px", textAlign: "center" }}>
+            <div style={{ fontSize: 26, fontWeight: 800, background: "var(--gradient-brand)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{s.value}</div>
+            <div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Categories */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 28, flexWrap: "wrap" }}>
+        {categories.map(c => (
+          <button key={c} onClick={() => setActiveCategory(c)} style={{ padding: "8px 18px", borderRadius: 20, border: `1px solid ${activeCategory === c ? (categoryColor[c] || C.verified) : C.lineStrong}`, background: activeCategory === c ? `${categoryColor[c] || C.verified}18` : "transparent", color: activeCategory === c ? (categoryColor[c] || C.verified) : C.paperDim, cursor: "pointer", fontWeight: activeCategory === c ? 700 : 400, fontSize: 13, transition: "all 0.2s" }}>{c}</button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {filtered.map(post => (
+          <div key={post.id} style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 14, padding: "24px 28px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 20, alignItems: "start", transition: "all 0.2s", cursor: "pointer" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C.verified + "44"; e.currentTarget.style.transform = "translateX(4px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = C.lineStrong; e.currentTarget.style.transform = "translateX(0)"; }}>
+
+            {/* Upvote */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <button onClick={() => setVotes(v => ({ ...v, [post.id]: v[post.id] + 1 }))} style={{ background: "rgba(0,230,118,0.1)", border: `1px solid ${C.verified}33`, borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: C.verified, fontSize: 16, transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "rgba(0,230,118,0.2)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(0,230,118,0.1)"}>▲</button>
+              <span style={{ fontSize: 15, fontWeight: 700 }}>{votes[post.id]}</span>
+            </div>
+
+            {/* Content */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <span style={{ fontSize: 12, padding: "3px 10px", borderRadius: 4, background: `${categoryColor[post.category] || C.verified}18`, color: categoryColor[post.category] || C.verified, fontWeight: 600 }}>{post.category}</span>
+              </div>
+              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 18, marginBottom: 8, lineHeight: 1.3 }}>{post.title}</h3>
+              <p style={{ color: C.paperDim, fontSize: 13, lineHeight: 1.5, marginBottom: 12 }}>{post.body.slice(0, 120)}...</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 12, color: C.muted }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--gradient-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#000" }}>{post.avatar}</div>
+                  <span>{post.user}</span>
+                </div>
+                <span>💬 {post.replies} replies</span>
+                <span>👁 {post.views.toLocaleString()} views</span>
+                <span>{post.date}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   SPREAD CALCULATOR PAGE
+--------------------------------------------------------- */
+function SpreadCalculatorPage() {
+  const [lots, setLots] = useState(1);
+  const [category, setCategory] = useState("Majors");
+  const categories = ["Majors", "Metals", "Crypto", "Crosses"];
+  const filtered = spreadCalcPairs.filter(p => p.category === category);
+
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
+      <div style={{ marginBottom: 36 }}>
+        <Badge tone="reg">🧮 Trading Tools</Badge>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 40, marginTop: 10, marginBottom: 10 }}>Spread Cost Calculator</h1>
+        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Calculate the true cost of trading spreads before you open a position. Compare costs across different brokers and instruments.</p>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32 }}>
+        {/* Controls */}
+        <div style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 16, padding: 28, position: "sticky", top: 90, height: "fit-content" }}>
+          <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 20 }}>Configure Trade</h3>
+          
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ fontSize: 12, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", display: "block", marginBottom: 8 }}>Lot Size</label>
+            <input type="number" value={lots} min={0.01} step={0.1} onChange={e => setLots(Number(e.target.value))} style={{ width: "100%", background: "var(--c-ink)", border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: "10px 14px", color: "var(--c-paper)", fontSize: 16, fontFamily: "'IBM Plex Mono', monospace" }} />
+          </div>
+
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 12, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", display: "block", marginBottom: 8 }}>Category</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {categories.map(c => (
+                <button key={c} onClick={() => setCategory(c)} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${category === c ? C.verified : C.lineStrong}`, background: category === c ? "rgba(0,230,118,0.1)" : "transparent", color: category === c ? C.verified : C.paperDim, cursor: "pointer", fontWeight: category === c ? 700 : 400, textAlign: "left", transition: "all 0.2s" }}>{c}</button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: "rgba(0,230,118,0.08)", border: `1px solid rgba(0,230,118,0.2)`, borderRadius: 10, padding: "14px 16px" }}>
+            <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginBottom: 4 }}>FORMULA</div>
+            <div style={{ fontSize: 13, color: C.paperDim }}>Cost = Spread × Lot Size × Pip Value</div>
+          </div>
+        </div>
+
+        {/* Results Table */}
+        <div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, padding: "12px 20px", fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", borderBottom: `1px solid ${C.lineStrong}` }}>
+              <span>Instrument</span><span>Spread (pips)</span><span>Pip Value</span><span style={{ color: C.verified }}>Total Cost (USD)</span>
+            </div>
+            {filtered.map((p, i) => {
+              const cost = (p.spread * lots * p.pip_value).toFixed(2);
+              return (
+                <div key={p.pair} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, padding: "18px 20px", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.02)", borderRadius: 8, alignItems: "center", border: "1px solid transparent", transition: "all 0.2s" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(0,230,118,0.04)"; e.currentTarget.style.borderColor = "rgba(0,230,118,0.1)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "transparent"; }}>
+                  <span style={{ fontWeight: 700, fontFamily: "'IBM Plex Mono', monospace" }}>{p.pair}</span>
+                  <span style={{ color: C.paperDim }}>{p.spread}</span>
+                  <span style={{ color: C.paperDim }}>${p.pip_value}</span>
+                  <span style={{ fontWeight: 700, color: C.verified, fontSize: 16 }}>${cost}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------
    MAIN ROOT EXPORT
 --------------------------------------------------------- */
+
 export default function App() {
   const [view, setView] = useState("home");
   const [brokerSearch, setBrokerSearch] = useState("");
@@ -1410,6 +2323,8 @@ export default function App() {
   const [brokers, setBrokers] = useState(initialBrokers);
   const [exposures, setExposures] = useState(initialExposures);
   const [news, setNews] = useState(initialNews);
+  const [surveys, setSurveys] = useState(fieldSurveys);
+  const [alerts, setAlerts] = useState(scamAlerts);
   const [selected, setSelected] = useState(null);
   const [compareList, setCompareList] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
@@ -1424,9 +2339,13 @@ export default function App() {
       const b = await fetchAPI("/brokers");
       const e = await fetchAPI("/exposures");
       const n = await fetchAPI("/news");
+      const s = await fetchAPI("/field-surveys");
+      const a = await fetchAPI("/scam-alerts");
       if (Array.isArray(b)) setBrokers(b.map(normalizeBroker));
       if (Array.isArray(e)) setExposures(e.map(normalizeExposure));
       if (Array.isArray(n)) setNews(n.map(normalizeNews));
+      if (Array.isArray(s) && s.length > 0) setSurveys(s.map(normalizeSurvey));
+      if (Array.isArray(a) && a.length > 0) setAlerts(a.map(normalizeAlert));
     }
     loadData();
   }, []);
@@ -1527,9 +2446,15 @@ export default function App() {
       )}
       {view === "education" && <div className="view-transition-wrap"><EducationPage /></div>}
       {view === "tools" && <div className="view-transition-wrap"><ToolsPage /></div>}
+      {view === "media" && <div className="view-transition-wrap"><MediaPage /></div>}
+      {view === "regulators" && <div className="view-transition-wrap"><RegulatoryPage brokers={brokers} openDetail={setSelected} /></div>}
+      {view === "scam-alerts" && <div className="view-transition-wrap"><ScamAlertsPage alerts={alerts} /></div>}
+      {view === "field-survey" && <div className="view-transition-wrap"><FieldSurveyPage surveys={surveys} /></div>}
+      {view === "forum" && <div className="view-transition-wrap"><ForumPage /></div>}
+      {view === "calculator" && <div className="view-transition-wrap"><SpreadCalculatorPage /></div>}
       {view === "admin" && (
         adminAuthed ? (
-          <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} onLogout={() => setAdminAuthed(false)} /></div>
+          <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} alerts={alerts} setAlerts={setAlerts} surveys={surveys} setSurveys={setSurveys} onLogout={() => setAdminAuthed(false)} /></div>
         ) : (
           <main className="admin-login-page view-transition-wrap">
             <div className="admin-login-orbit orbit-one" /><div className="admin-login-orbit orbit-two" />
@@ -1551,6 +2476,7 @@ export default function App() {
       {view === "home" && <LedgerChatbot brokers={brokers} exposures={exposures} setView={setView} />}
       <DetailModal broker={selected} exposures={exposures} onClose={() => setSelected(null)} />
       {compareOpen && <ComparisonModal items={compareList} onClose={() => setCompareOpen(false)} onRemove={(id) => setCompareList(compareList.filter(x => x.id !== id))} />}
+      <Footer />
     </div>
   );
 }

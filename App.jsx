@@ -2461,10 +2461,12 @@ export default function App() {
 
   function handleLogout() {
     setAdminAuthed(false);
+    setAdminPasscode("");
+    setAdminLoginError("");
     localStorage.removeItem("ledger_admin_authed");
-    localStorage.setItem("ledger_current_view", "home");
-    window.location.hash = "home";
-    setView("home");
+    localStorage.setItem("ledger_current_view", "admin");
+    window.location.hash = "admin";
+    setView("admin");
   }
 
   useEffect(() => {

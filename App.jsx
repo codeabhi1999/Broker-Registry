@@ -29,6 +29,8 @@ const C = {
   amberDim: "var(--c-amber-dim)",
   line: "var(--c-line)",
   lineStrong: "var(--c-line-strong)",
+  blue: "var(--c-blue)",
+  blueDim: "var(--c-blue-dim)",
 };
 
 const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');`;
@@ -1454,7 +1456,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
     { id: "tools", Icon: SlidersHorizontal, label: "System Tools", meta: "Actions" },
   ];
 
-  const cardStyle = { background: "rgba(7,14,24,0.55)", border: `1px solid ${C.lineStrong}`, padding: "18px 20px", borderRadius: 12 };
+  const cardStyle = { background: "var(--admin-card-bg)", border: `1px solid ${C.lineStrong}`, padding: "18px 20px", borderRadius: 12 };
   const rowHover = { transition: "background 0.2s" };
 
   return (
@@ -1480,7 +1482,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 
       {/* Notification */}
       {adminMessage && (
-        <div role="status" style={{ marginBottom: 20, padding: "12px 16px", border: `1px solid ${msgType === "success" ? C.verifiedDim : C.amberDim}`, background: `${msgType === "success" ? "rgba(0,230,118,0.08)" : "rgba(255,196,0,0.08)"}`, color: msgType === "success" ? C.verified : C.amber, borderRadius: 10, fontSize: 13, fontWeight: 500 }}>
+        <div role="status" style={{ marginBottom: 20, padding: "12px 16px", border: `1px solid ${msgType === "success" ? C.verifiedDim : C.amberDim}`, background: msgType === "success" ? C.verifiedDim : C.amberDim, color: msgType === "success" ? C.verified : C.amber, borderRadius: 10, fontSize: 13, fontWeight: 500 }}>
           {adminMessage}
         </div>
       )}
@@ -1521,7 +1523,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                 {[
                   { label: "Broker Records", value: brokers.length, color: C.verified, icon: "🏦" },
                   { label: "Pending Review", value: exposures.filter(e => e.status === "pending").length, color: C.amber, icon: "⏳" },
-                  { label: "Published Alerts", value: exposures.filter(e => e.status === "published").length, color: "#6C8EF5", icon: "📣" },
+                  { label: "Published Alerts", value: exposures.filter(e => e.status === "published").length, color: C.blue, icon: "📣" },
                   { label: "Scam Alerts", value: alerts.length, color: C.alert, icon: "🚨" },
                   { label: "Field Surveys", value: surveys.length, color: C.amber, icon: "🔍" },
                   { label: "News Dispatches", value: news.length, color: C.verified, icon: "📰" },
@@ -1582,9 +1584,9 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                 <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 16 }}>Registry Score Distribution</h3>
                 <div className="admin-distrib-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))", gap: 14 }}>
                   {[
-                    { label: "High Trust (8–10)", count: brokers.filter(b => Number(b.score) >= 8).length, color: C.verified, bg: "rgba(0,230,118,0.08)" },
-                    { label: "Medium (5–7.9)", count: brokers.filter(b => Number(b.score) >= 5 && Number(b.score) < 8).length, color: C.amber, bg: "rgba(255,196,0,0.08)" },
-                    { label: "High Risk (<5)", count: brokers.filter(b => Number(b.score) < 5).length, color: C.alert, bg: "rgba(255,61,0,0.08)" },
+                    { label: "High Trust (8–10)", count: brokers.filter(b => Number(b.score) >= 8).length, color: C.verified, bg: C.verifiedDim },
+                    { label: "Medium (5–7.9)", count: brokers.filter(b => Number(b.score) >= 5 && Number(b.score) < 8).length, color: C.amber, bg: C.amberDim },
+                    { label: "High Risk (<5)", count: brokers.filter(b => Number(b.score) < 5).length, color: C.alert, bg: C.alertDim },
                   ].map(({ label, count, color, bg }) => {
                     const pct = brokers.length ? Math.round((count / brokers.length) * 100) : 0;
                     return (
@@ -1594,7 +1596,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                           <div style={{ fontSize: 11, color, fontFamily: "'IBM Plex Mono', monospace" }}>{pct}% of registry</div>
                         </div>
                         <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>{label}</div>
-                        <div style={{ marginTop: 10, background: "rgba(255,255,255,0.08)", borderRadius: 4, height: 4 }}>
+                        <div style={{ marginTop: 10, background: "var(--c-line-strong)", borderRadius: 4, height: 4 }}>
                           <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 4, transition: "width 1s ease" }} />
                         </div>
                       </div>
@@ -1680,7 +1682,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                 <div className="admin-actions-wrap" style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                   <div style={{ display: "flex", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", maxWidth: "100%", paddingBottom: 2 }}>
                     {["all", "pending", "published", "rejected"].map(f => (
-                      <button key={f} onClick={() => setExposureFilter(f)} style={{ padding: "7px 16px", borderRadius: 20, border: `1px solid ${exposureFilter === f ? C.verified : C.lineStrong}`, background: exposureFilter === f ? "rgba(0,230,118,0.1)" : "transparent", color: exposureFilter === f ? C.verified : C.paperDim, cursor: "pointer", fontSize: 13, fontWeight: exposureFilter === f ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s", whiteSpace: "nowrap" }}>
+                      <button key={f} onClick={() => setExposureFilter(f)} style={{ padding: "7px 16px", borderRadius: 20, border: `1px solid ${exposureFilter === f ? C.verified : C.lineStrong}`, background: exposureFilter === f ? C.verifiedDim : "transparent", color: exposureFilter === f ? C.verified : C.paperDim, cursor: "pointer", fontSize: 13, fontWeight: exposureFilter === f ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s", whiteSpace: "nowrap" }}>
                         {f}
                       </button>
                     ))}
@@ -1870,7 +1872,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                       <div style={{ fontSize: 12, color: C.muted, marginTop: 8 }}>▲ {post.upvotes} upvotes · 💬 {post.replies} replies · 👁 {post.views.toLocaleString()} views</div>
                     </div>
                     <div style={{ display: "flex", gap: 8, alignItems: "flex-start", flexShrink: 0, flexWrap: "wrap" }}>
-                      <button onClick={() => setForumMod(forumMod.map(p => p.id === post.id ? { ...p, hidden: !p.hidden } : p))} style={{ padding: "7px 14px", borderRadius: 8, border: `1px solid ${C.lineStrong}`, background: post.hidden ? "rgba(0,230,118,0.1)" : "rgba(255,196,0,0.1)", color: post.hidden ? C.verified : C.amber, cursor: "pointer", fontSize: 12, fontWeight: 600, transition: "all 0.2s" }}>
+                      <button onClick={() => setForumMod(forumMod.map(p => p.id === post.id ? { ...p, hidden: !p.hidden } : p))} style={{ padding: "7px 14px", borderRadius: 8, border: `1px solid ${C.lineStrong}`, background: post.hidden ? C.verifiedDim : C.amberDim, color: post.hidden ? C.verified : C.amber, cursor: "pointer", fontSize: 12, fontWeight: 600, transition: "all 0.2s" }}>
                         {post.hidden ? "Restore" : "Hide"}
                       </button>
                       <Button variant="danger" onClick={() => setForumMod(forumMod.filter(p => p.id !== post.id))} style={{ padding: "7px 12px" }}><Trash2 size={13} /></Button>

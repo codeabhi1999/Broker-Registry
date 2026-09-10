@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   Search, ShieldCheck, AlertTriangle, TrendingUp, TrendingDown, Newspaper,
   LayoutDashboard, LogOut, Plus, Trash2, Pencil, X, CheckCircle2,
-  XCircle, Lock, ArrowRight, Radar, FileText, ChevronRight, Menu,
+  XCircle, Lock, ArrowRight, Radar, FileText, ChevronRight, ChevronDown, Menu,
   LogIn, Bell, UserCircle2, Activity, Mail, Eye, EyeOff, AlertOctagon,
   ArrowUpDown, Scale, ExternalLink, SlidersHorizontal, DollarSign, Globe, Sparkles, BarChart3, Sun, Moon, MessageCircle, Send
 } from "lucide-react";
@@ -353,63 +353,87 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
               <Scale size={15} /> Compare Selected ({compareList.length})
             </button>
           )}
-        </nav>
-        <div className="ledger-actions" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {compareList.length > 0 && (
-            <Button variant="primary" onClick={openCompare} style={{ padding: "6px 12px", fontSize: 12 }}>
-              <Scale size={13} /> Compare ({compareList.length})
-            </Button>
-          )}
-        </div>
-        {compareList.length > 0 && (
-          <button
-            type="button"
-            className="mobile-compare-pill"
-            onClick={openCompare}
-            title="View comparison"
-            aria-label={`Compare ${compareList.length} brokers`}
-          >
-            <Scale size={13} /> {compareList.length}
-          </button>
-        )}
-        <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"} title={isLight ? "Switch to dark mode" : "Switch to light mode"}>
-          {isLight ? <Moon size={17} /> : <Sun size={17} />}
-        </button>
 
-        {/* Premium Login / Admin button */}
-        {adminAuthed ? (
-          <div className="header-admin-pill">
-            <div className="header-admin-avatar">
-              <UserCircle2 size={17} />
+          {adminAuthed && (
+            <div className="mobile-admin-menu-footer">
+              <div className="mobile-admin-menu-header">
+                <UserCircle2 size={16} color="var(--c-verified)" />
+                <span>Logged in as <strong>Administrator</strong></span>
+              </div>
+              <div className="mobile-admin-menu-actions">
+                <button
+                  type="button"
+                  className="mobile-admin-panel-btn"
+                  onClick={() => { setView("admin"); setMenuOpen(false); }}
+                >
+                  <ShieldCheck size={14} /> Admin Panel
+                </button>
+                <button
+                  type="button"
+                  className="mobile-admin-logout-btn"
+                  onClick={() => { onLogout(); setMenuOpen(false); }}
+                >
+                  <LogOut size={14} /> Sign Out
+                </button>
+              </div>
             </div>
-            <span className="header-admin-label">Admin</span>
+          )}
+        </nav>
+        <div className="ledger-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div className="ledger-actions" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {compareList.length > 0 && (
+              <Button variant="primary" onClick={openCompare} style={{ padding: "6px 12px", fontSize: 12 }}>
+                <Scale size={13} /> Compare ({compareList.length})
+              </Button>
+            )}
+          </div>
+          {compareList.length > 0 && (
             <button
               type="button"
-              className="header-admin-logout"
-              onClick={onLogout}
-              title="Sign out"
-              aria-label="Sign out from admin"
+              className="mobile-compare-pill"
+              onClick={openCompare}
+              title="View comparison"
+              aria-label={`Compare ${compareList.length} brokers`}
             >
-              <LogOut size={13} />
+              <Scale size={13} /> {compareList.length}
             </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="header-login-btn"
-            id="header-login-btn"
-            onClick={onLoginClick}
-            aria-label="Login to admin panel"
-            onMouseEnter={() => setLoginHover(true)}
-            onMouseLeave={() => setLoginHover(false)}
-          >
-            <span className="header-login-icon-wrap">
-              <UserCircle2 size={16} />
-            </span>
+          )}
+          <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"} title={isLight ? "Switch to dark mode" : "Switch to light mode"}>
+            {isLight ? <Moon size={17} /> : <Sun size={17} />}
           </button>
-        )}
 
-        <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}><Menu size={20} /></button>
+          {/* Premium Login / Admin button */}
+          {adminAuthed ? (
+            <button
+              type="button"
+              className="header-admin-pill"
+              onClick={() => setView("admin")}
+              title="Open Admin Panel"
+              aria-label="Open Admin Panel"
+            >
+              <div className="header-admin-avatar">
+                <UserCircle2 size={16} />
+              </div>
+              <span className="header-admin-label">Admin</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="header-login-btn"
+              id="header-login-btn"
+              onClick={onLoginClick}
+              aria-label="Login to admin panel"
+              onMouseEnter={() => setLoginHover(true)}
+              onMouseLeave={() => setLoginHover(false)}
+            >
+              <span className="header-login-icon-wrap">
+                <UserCircle2 size={16} />
+              </span>
+            </button>
+          )}
+
+          <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}><Menu size={20} /></button>
+        </div>
       </div>
     </header>
   );
@@ -1430,16 +1454,21 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
   return (
     <div className="admin-shell" style={{ maxWidth: 1440, margin: "0 auto", padding: "36px 28px 70px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, borderBottom: `1px solid ${C.line}`, paddingBottom: 20, gap: 16, flexWrap: "wrap" }}>
+      <div className="admin-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, borderBottom: `1px solid ${C.line}`, paddingBottom: 20, gap: 16, flexWrap: "wrap" }}>
         <div>
           <div style={{ fontSize: 11, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>🛡 Ledger Intelligence</div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 28 }}>Admin Control Centre</h1>
-          <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>Full platform management · Logged in as Administrator</div>
+          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(22px, 5vw, 28px)", marginBottom: 4 }}>Admin Control Centre</h1>
+          <div style={{ fontSize: 13, color: C.muted }}>Full platform management · Logged in as Administrator</div>
         </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <Button variant="ghost" onClick={handleHighlightRisk}><AlertTriangle size={14} /> Flag Risk</Button>
-          <Button variant="subtle" onClick={handleBulkReview}><CheckCircle2 size={14} /> Bulk Review</Button>
-          <Button variant="danger" onClick={onLogout}><LogOut size={14} /> Logout</Button>
+        <div className="admin-header-actions">
+          <div className="admin-header-tools">
+            <Button variant="ghost" onClick={handleHighlightRisk}><AlertTriangle size={14} /> Flag Risk</Button>
+            <Button variant="subtle" onClick={handleBulkReview}><CheckCircle2 size={14} /> Bulk Review</Button>
+          </div>
+          <div className="admin-header-separator" />
+          <Button variant="danger" onClick={onLogout} className="admin-header-logout" title="Sign out of Administrator session">
+            <LogOut size={14} /> Sign Out
+          </Button>
         </div>
       </div>
 
@@ -1461,16 +1490,28 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
               </button>
             ))}
           </nav>
-          <div className="admin-sidebar-status"><i /> Database connected<strong>PostgreSQL</strong></div>
+          <div className="admin-sidebar-status">
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <i /> Database connected<strong>PostgreSQL</strong>
+            </div>
+            <button
+              type="button"
+              className="admin-sidebar-logout-btn"
+              onClick={onLogout}
+              title="Sign out of Administrator session"
+            >
+              <LogOut size={13} /> Sign Out
+            </button>
+          </div>
         </aside>
 
         <main className="admin-content">
 
           {/* ─── OVERVIEW DASHBOARD ─── */}
           {tab === "overview" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24, width: "100%", minWidth: 0 }}>
               {/* KPI row */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 14 }}>
+              <div className="admin-overview-kpi-grid">
                 {[
                   { label: "Broker Records", value: brokers.length, color: C.verified, icon: "🏦" },
                   { label: "Pending Review", value: exposures.filter(e => e.status === "pending").length, color: C.amber, icon: "⏳" },
@@ -1479,9 +1520,9 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                   { label: "Field Surveys", value: surveys.length, color: C.amber, icon: "🔍" },
                   { label: "News Dispatches", value: news.length, color: C.verified, icon: "📰" },
                 ].map(({ label, value, color, icon }) => (
-                  <div key={label} style={{ ...cardStyle, textAlign: "center", position: "relative", overflow: "hidden" }}>
-                    <div style={{ fontSize: 28, marginBottom: 8 }}>{icon}</div>
-                    <div style={{ fontSize: 32, fontWeight: 800, color, fontFamily: "'IBM Plex Mono', monospace" }}>{value}</div>
+                  <div key={label} className="admin-overview-kpi-card" style={{ ...cardStyle, textAlign: "center", position: "relative", overflow: "hidden" }}>
+                    <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
+                    <div className="admin-overview-kpi-val" style={{ fontSize: 30, fontWeight: 800, color, fontFamily: "'IBM Plex Mono', monospace", lineHeight: 1.1 }}>{value}</div>
                     <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 4 }}>{label}</div>
                   </div>
                 ))}
@@ -1496,12 +1537,12 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {[...exposures].slice(0, 5).map((item) => (
-                      <div key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 12, borderBottom: `1px solid ${C.line}`, paddingBottom: 10, alignItems: "center" }}>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: 14 }}>{item.brokerName}</div>
-                          <div style={{ color: C.paperDim, fontSize: 12, marginTop: 2 }}>{item.title}</div>
+                      <div key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 12, borderBottom: `1px solid ${C.line}`, paddingBottom: 10, alignItems: "center", flexWrap: "wrap" }}>
+                        <div style={{ minWidth: "min(100%, 180px)", flex: 1 }}>
+                          <div style={{ fontWeight: 700, fontSize: 14, wordBreak: "break-word" }}>{item.brokerName}</div>
+                          <div style={{ color: C.paperDim, fontSize: 12, marginTop: 2, wordBreak: "break-word" }}>{item.title}</div>
                         </div>
-                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
                           {item.amount && <Badge tone="warn">${Number(item.amount).toLocaleString()}</Badge>}
                           <Badge tone={item.status === "pending" ? "pending" : item.status === "rejected" ? "warn" : "reg"}>{item.status}</Badge>
                         </div>
@@ -1518,11 +1559,11 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {riskWatch.map((b) => (
                       <div key={b.id} style={{ background: "rgba(255,61,0,0.06)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: "12px 14px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <strong style={{ fontSize: 14 }}>{b.name}</strong>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          <strong style={{ fontSize: 14, wordBreak: "break-word" }}>{b.name}</strong>
                           <Badge tone="warn">{Number(b.score).toFixed(1)}/10</Badge>
                         </div>
-                        <div style={{ color: C.paperDim, fontSize: 12, marginTop: 5 }}>{(b.flags || []).join(" · ") || "Due for review"}</div>
+                        <div style={{ color: C.paperDim, fontSize: 12, marginTop: 5, wordBreak: "break-word" }}>{(b.flags || []).join(" · ") || "Due for review"}</div>
                       </div>
                     ))}
                     {!riskWatch.length && <div style={{ color: C.muted, fontSize: 13, textAlign: "center", padding: "24px 0" }}>No critical risk signals detected</div>}
@@ -1542,12 +1583,14 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                     const pct = brokers.length ? Math.round((count / brokers.length) * 100) : 0;
                     return (
                       <div key={label} style={{ background: bg, border: `1px solid ${color}33`, borderRadius: 12, padding: "16px 20px" }}>
-                        <div style={{ fontSize: 28, fontWeight: 800, color }}>{count}</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                          <div style={{ fontSize: 28, fontWeight: 800, color }}>{count}</div>
+                          <div style={{ fontSize: 11, color, fontFamily: "'IBM Plex Mono', monospace" }}>{pct}% of registry</div>
+                        </div>
                         <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>{label}</div>
                         <div style={{ marginTop: 10, background: "rgba(255,255,255,0.08)", borderRadius: 4, height: 4 }}>
                           <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 4, transition: "width 1s ease" }} />
                         </div>
-                        <div style={{ fontSize: 11, color, marginTop: 4, fontFamily: "'IBM Plex Mono', monospace" }}>{pct}% of registry</div>
                       </div>
                     );
                   })}
@@ -1565,7 +1608,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                 <h3 style={{ fontSize: 16, marginBottom: 16, fontFamily: "'Fraunces', serif" }}>Add New Broker</h3>
                 <form onSubmit={handleAddBroker}>
                   <Field label="Broker Name"><input required style={inputStyle} value={newBroker.name} onChange={e => setNewBroker({ ...newBroker, name: e.target.value })} placeholder="e.g. Global FX Ltd" /></Field>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                     <Field label="Years Active"><input type="number" min={0} style={inputStyle} value={newBroker.years} onChange={e => setNewBroker({ ...newBroker, years: e.target.value })} /></Field>
                     <Field label="Trust Score (0-10)"><input type="number" step="0.1" min="0" max="10" style={inputStyle} value={newBroker.score} onChange={e => setNewBroker({ ...newBroker, score: e.target.value })} /></Field>
                   </div>
@@ -1582,7 +1625,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                       {["ECN", "STP", "Market Maker", "DMA", "Hybrid"].map(t => <option key={t}>{t}</option>)}
                     </select>
                   </Field>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                     <Field label="Min Deposit ($)"><input type="number" style={inputStyle} value={newBroker.min_deposit} onChange={e => setNewBroker({ ...newBroker, min_deposit: e.target.value })} /></Field>
                     <Field label="Max Leverage"><input style={inputStyle} value={newBroker.max_leverage} onChange={e => setNewBroker({ ...newBroker, max_leverage: e.target.value })} placeholder="1:500" /></Field>
                   </div>
@@ -1601,15 +1644,15 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 600, overflowY: "auto" }}>
                   {filteredBrokers.map((b) => (
-                    <div key={b.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div key={b.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                      <div style={{ flex: 1, minWidth: "min(100%, 200px)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                           <span style={{ fontWeight: 700, fontSize: 14 }}>{b.name}</span>
                           <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>{b.licenseStatus || b.regulator}</Badge>
                         </div>
                         <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>{b.country} · {b.type} · Score: <span style={{ color: Number(b.score) >= 8 ? C.verified : Number(b.score) >= 5 ? C.amber : C.alert, fontWeight: 700 }}>{b.score}/10</span></div>
                       </div>
-                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
                         <input type="number" step="0.1" min="0" max="10" defaultValue={b.score} onBlur={e => handleUpdateScore(b.id, e.target.value)} style={{ ...inputStyle, width: 60, padding: "5px 8px", fontSize: 13 }} title="Update score" />
                         <Button variant="danger" onClick={() => handleDeleteBroker(b.id)}><Trash2 size={13} /></Button>
                       </div>
@@ -1628,25 +1671,27 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                   <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif" }}>Exposure Triage Queue</h3>
                   <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{exposures.filter(e => e.status === "pending").length} items awaiting review</div>
                 </div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  {["all", "pending", "published", "rejected"].map(f => (
-                    <button key={f} onClick={() => setExposureFilter(f)} style={{ padding: "7px 16px", borderRadius: 20, border: `1px solid ${exposureFilter === f ? C.verified : C.lineStrong}`, background: exposureFilter === f ? "rgba(0,230,118,0.1)" : "transparent", color: exposureFilter === f ? C.verified : C.paperDim, cursor: "pointer", fontSize: 13, fontWeight: exposureFilter === f ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s" }}>
-                      {f}
-                    </button>
-                  ))}
+                <div className="admin-actions-wrap" style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", maxWidth: "100%", paddingBottom: 2 }}>
+                    {["all", "pending", "published", "rejected"].map(f => (
+                      <button key={f} onClick={() => setExposureFilter(f)} style={{ padding: "7px 16px", borderRadius: 20, border: `1px solid ${exposureFilter === f ? C.verified : C.lineStrong}`, background: exposureFilter === f ? "rgba(0,230,118,0.1)" : "transparent", color: exposureFilter === f ? C.verified : C.paperDim, cursor: "pointer", fontSize: 13, fontWeight: exposureFilter === f ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s", whiteSpace: "nowrap" }}>
+                        {f}
+                      </button>
+                    ))}
+                  </div>
                   <Button variant="primary" onClick={handleBulkReview} style={{ padding: "7px 16px", fontSize: 13 }}><CheckCircle2 size={13} /> Publish All Pending</Button>
                 </div>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {filteredExposures.map((e) => (
                   <div key={e.id} style={{ ...cardStyle, border: `1px solid ${e.status === "pending" ? C.amberDim : e.status === "rejected" ? C.alertDim : C.lineStrong}`, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1, minWidth: "min(100%, 240px)" }}>
                       <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
                         <Badge tone={e.status === "pending" ? "pending" : e.status === "rejected" ? "warn" : "reg"}>{e.status.toUpperCase()}</Badge>
                         <span style={{ fontWeight: 700, fontSize: 15 }}>{e.brokerName}</span>
                         {e.amount && <Badge tone="warn">Disputed: ${Number(e.amount).toLocaleString()}</Badge>}
                       </div>
-                      <h4 style={{ fontSize: 15, margin: "0 0 6px", lineHeight: 1.3 }}>{e.title}</h4>
+                      <h4 style={{ fontSize: 15, margin: "0 0 6px", lineHeight: 1.3, wordBreak: "break-word" }}>{e.title}</h4>
                       <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.6 }}>{e.text}</p>
                       <div style={{ fontSize: 11, color: C.muted, marginTop: 10, fontFamily: "'IBM Plex Mono', monospace" }}>Filed: {e.date}</div>
                     </div>

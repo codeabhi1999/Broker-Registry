@@ -10,9 +10,8 @@ import {
 /* ---------------------------------------------------------
    CONFIG & DESIGN TOKENS
 
-   abhijeet
 --------------------------------------------------------- */
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 const C = {
   ink: "var(--c-ink)",
@@ -2341,9 +2340,9 @@ export default function App() {
       const n = await fetchAPI("/news");
       const s = await fetchAPI("/field-surveys");
       const a = await fetchAPI("/scam-alerts");
-      if (Array.isArray(b)) setBrokers(b.map(normalizeBroker));
-      if (Array.isArray(e)) setExposures(e.map(normalizeExposure));
-      if (Array.isArray(n)) setNews(n.map(normalizeNews));
+      if (Array.isArray(b) && b.length > 0) setBrokers(b.map(normalizeBroker));
+      if (Array.isArray(e) && e.length > 0) setExposures(e.map(normalizeExposure));
+      if (Array.isArray(n) && n.length > 0) setNews(n.map(normalizeNews));
       if (Array.isArray(s) && s.length > 0) setSurveys(s.map(normalizeSurvey));
       if (Array.isArray(a) && a.length > 0) setAlerts(a.map(normalizeAlert));
     }

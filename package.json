@@ -1,19 +1,20 @@
 {
-  "name": "server",
+  "name": "broker-registry",
   "version": "1.0.0",
-  "description": "",
+  "description": "Broker Registry Platform with Supabase & Express backend",
   "main": "ledger-client/server/server.js",
+  "type": "module",
   "scripts": {
     "dev": "concurrently -n \"server,client\" -c \"blue,green\" \"npm run server\" \"npm run client\"",
-    "start": "concurrently -n \"server,client\" -c \"blue,green\" \"npm run server\" \"npm run client\"",
+    "start": "node ledger-client/server/server.js",
     "server": "node ledger-client/server/server.js",
     "client": "npm --prefix ledger-client run dev",
-    "build": "npm --prefix ledger-client run build"
+    "build": "npm --prefix ledger-client run build",
+    "postinstall": "npm --prefix ledger-client install"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
+  "workspaces": [
+    "ledger-client"
+  ],
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.116.0",

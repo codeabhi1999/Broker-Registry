@@ -474,14 +474,61 @@ async function initializeDatabase() {
   `);
 }
 
-initializeDatabase()
-  .then(() => {
-    if (!useSupabase) console.log('Database connected and initialized successfully.');
-  })
-  .catch((err) => {
-    console.warn(`Database connection notice: ${err.message}`);
-    console.warn('Server will continue running. (API endpoints requiring PostgreSQL will return errors until database is reachable)');
-  })
-  .finally(() => {
-    app.listen(PORT, () => console.log(`Ledger API operational on port ${PORT}`));
+// Base API info & Health checks
+app.get('/api', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'Broker Ledger API',
+    database: useSupabase ? 'Supabase Cloud SDK' : 'PostgreSQL'
   });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    database: useSupabase ? 'supabase' : 'postgresql',
+    time: new Date().toISOString()
+  });
+});
+
+app.post('/api/seed', async (req, res) => {
+  try {
+    const seedBrokers = [
+      { name: "Solaris Prime", years_active: 16, score: 9.4, regulator: "FCA, ASIC, FSCA", license_no: "UK-771102", country: "United Kingdom", account_type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: [], license_status: "Regulated", trading_env: "AAA", field_survey: "Physical office verified in London.", user_rating: 4.8 },
+      { name: "Vantage Global", years_active: 12, score: 9.1, regulator: "ASIC, FCA", license_no: "MM-208841", country: "Australia", account_type: "ECN", min_deposit: 50, max_leverage: "1:500", flags: [], license_status: "Regulated", trading_env: "AA", field_survey: "Verified presence in Sydney.", user_rating: 4.6 },
+      { name: "Halcyon Capital", years_active: 9, score: 8.6, regulator: "CySEC", license_no: "CY-118820", country: "Cyprus", account_type: "STP", min_deposit: 200, max_leverage: "1:30", flags: [], license_status: "Regulated", trading_env: "A", field_survey: "Office located in Limassol.", user_rating: 4.2 },
+      { name: "Northbridge FX", years_active: 4, score: 5.2, regulator: "Offshore (SVG)", license_no: "SVG-33211", country: "St. Vincent", account_type: "Market Maker", min_deposit: 10, max_leverage: "1:1000", flags: ["Offshore registration"], license_status: "Offshore Regulatory", trading_env: "C", field_survey: "Virtual mailbox only.", user_rating: 2.5 },
+      { name: "Copperline Trade", years_active: 2, score: 4.1, regulator: "Offshore (Vanuatu)", license_no: "VU-44092", country: "Vanuatu", account_type: "Market Maker", min_deposit: 20, max_leverage: "1:2000", flags: ["Frequent withdrawal delays"], license_status: "Suspicious", trading_env: "D", field_survey: "Unable to verify physical operations.", user_rating: 1.8 },
+      { name: "Reef Markets", years_active: 1, score: 2.8, regulator: "Unregistered", license_no: "—", country: "Unknown", account_type: "Unknown", min_deposit: 250, max_leverage: "1:500", flags: ["No physical registry", "Open dispute cases"], license_status: "Unregulated Clone", trading_env: "F", field_survey: "Entity is a suspected clone.", user_rating: 1.0 }
+    ];
+    if (useSupabase) {
+      const { data: existing } = await supabase.from('brokers').select('id').limit(1);
+      if (!existing || existing.length === 0) {
+        const { error } = await supabase.from('brokers').insert(seedBrokers);
+        if (error) throw error;
+        return res.json({ success: true, message: "Seed brokers inserted into Supabase" });
+      }
+      return res.json({ success: true, message: "Brokers already exist" });
+    }
+    return res.json({ success: true, message: "Database is configured" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Start server locally, or export app for serverless platforms like Vercel
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
+  initializeDatabase()
+    .then(() => {
+      if (!useSupabase) console.log('Database connected and initialized successfully.');
+    })
+    .catch((err) => {
+      console.warn(`Database connection notice: ${err.message}`);
+      console.warn('Server will continue running. (API endpoints requiring PostgreSQL will return errors until database is reachable)');
+    })
+    .finally(() => {
+      app.listen(PORT, () => console.log(`Ledger API operational on port ${PORT}`));
+    });
+}
+
+export default app;

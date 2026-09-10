@@ -1273,7 +1273,13 @@ function DetailModal({ broker, exposures, onClose }) {
    ADMIN PANEL (Full Database Management)
 --------------------------------------------------------- */
 function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNews, alerts: propsAlerts, setAlerts: propsSetAlerts, surveys: propsSurveys, setSurveys: propsSetSurveys, onLogout }) {
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState(() => {
+    return localStorage.getItem("ledger_admin_tab") || "overview";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("ledger_admin_tab", tab);
+  }, [tab]);
   const [newBroker, setNewBroker] = useState({ name: "", years: 5, score: 8.0, regulator: "", license: "", country: "", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: "", licenseStatus: "Regulated" });
   const [newNews, setNewNews] = useState({ title: "", summary: "", category: "Regulation" });
   const [newAlert, setNewAlert] = useState({ broker: "", country: "", type: "Clone Fraud", severity: "High", description: "" });
@@ -2387,7 +2393,23 @@ function SpreadCalculatorPage() {
 --------------------------------------------------------- */
 
 export default function App() {
-  const [view, setView] = useState("home");
+  const VALID_VIEWS = [
+    "home", "brokers", "market", "rankings", "exposure", "news",
+    "education", "tools", "media", "regulators", "scam-alerts",
+    "field-survey", "forum", "calculator", "admin"
+  ];
+
+  const [view, setView] = useState(() => {
+    const hash = window.location.hash.replace(/^#\/?/, "").toLowerCase();
+    if (VALID_VIEWS.includes(hash)) {
+      return hash;
+    }
+    const saved = localStorage.getItem("ledger_current_view");
+    if (saved && VALID_VIEWS.includes(saved)) {
+      return saved;
+    }
+    return "home";
+  });
   const [brokerSearch, setBrokerSearch] = useState("");
   const [isLight, setIsLight] = useState(() => {
     const saved = localStorage.getItem("ledger-theme") === "light";
@@ -2402,11 +2424,48 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [compareList, setCompareList] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
-  const [adminAuthed, setAdminAuthed] = useState(false);
+  const [adminAuthed, setAdminAuthed] = useState(() => {
+    return localStorage.getItem("ledger_admin_authed") === "true";
+  });
   const [adminUser, setAdminUser] = useState("");
   const [adminPasscode, setAdminPasscode] = useState("");
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [adminLoginError, setAdminLoginError] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("ledger_current_view", view);
+    const hash = window.location.hash.replace(/^#\/?/, "").toLowerCase();
+    if (hash !== view) {
+      window.location.hash = view;
+    }
+  }, [view]);
+
+  useEffect(() => {
+    function handleHashChange() {
+      const hash = window.location.hash.replace(/^#\/?/, "").toLowerCase();
+      if (VALID_VIEWS.includes(hash)) {
+        setView(hash);
+      }
+    }
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    if (adminAuthed) {
+      localStorage.setItem("ledger_admin_authed", "true");
+    } else {
+      localStorage.removeItem("ledger_admin_authed");
+    }
+  }, [adminAuthed]);
+
+  function handleLogout() {
+    setAdminAuthed(false);
+    localStorage.removeItem("ledger_admin_authed");
+    localStorage.setItem("ledger_current_view", "home");
+    window.location.hash = "home";
+    setView("home");
+  }
 
   useEffect(() => {
     async function loadData() {
@@ -2471,6 +2530,7 @@ export default function App() {
     event.preventDefault();
     if (adminUser.trim().toLowerCase() === "admin" && adminPasscode === "admin123") {
       setAdminAuthed(true);
+      localStorage.setItem("ledger_admin_authed", "true");
       setAdminLoginError("");
       return;
     }
@@ -2493,7 +2553,7 @@ export default function App() {
         toggleTheme={toggleTheme}
         adminAuthed={adminAuthed}
         onLoginClick={() => setView("admin")}
-        onLogout={() => { setAdminAuthed(false); setView("home"); }}
+        onLogout={handleLogout}
       />
 
       <TickerTape pairs={marketPairs} />
@@ -2528,7 +2588,7 @@ export default function App() {
       {view === "calculator" && <div className="view-transition-wrap"><SpreadCalculatorPage /></div>}
       {view === "admin" && (
         adminAuthed ? (
-          <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} alerts={alerts} setAlerts={setAlerts} surveys={surveys} setSurveys={setSurveys} onLogout={() => setAdminAuthed(false)} /></div>
+          <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} alerts={alerts} setAlerts={setAlerts} surveys={surveys} setSurveys={setSurveys} onLogout={handleLogout} /></div>
         ) : (
           <main className="admin-login-page view-transition-wrap">
             <div className="admin-login-orbit orbit-one" /><div className="admin-login-orbit orbit-two" />

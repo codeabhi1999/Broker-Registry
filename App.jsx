@@ -301,45 +301,207 @@ const inputStyle = {
 function Header({ view, setView, compareList, openCompare, isLight, toggleTheme, adminAuthed, onLoginClick, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginHover, setLoginHover] = useState(false);
-  const items = [
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const dropdownTimerRef = React.useRef(null);
+
+  const directItems = [
     { id: "home", label: "Registry" },
     { id: "brokers", label: "Brokers" },
     { id: "rankings", label: "Rankings" },
-    { id: "exposure", label: "Exposures" },
-    { id: "scam-alerts", label: "🚨 Scam Alerts" },
-    { id: "field-survey", label: "Field Survey" },
-    { id: "forum", label: "Forum" },
     { id: "market", label: "Markets" },
-    { id: "news", label: "News" },
-    { id: "education", label: "Education" },
-    { id: "calculator", label: "Spread Calc" },
-    { id: "tools", label: "EA/VPS" },
-    { id: "media", label: "Live" },
-    { id: "regulators", label: "Regulatory" },
   ];
+
+  const dropdownSections = [
+    {
+      id: "safety",
+      label: "Safety Desk",
+      kicker: "Risk & Fraud Verification",
+      badge: "LIVE",
+      items: [
+        { id: "scam-alerts", label: "Scam Alerts", meta: "Real-time clone & fraud alerts", icon: AlertOctagon, tone: "warn", badge: "Live" },
+        { id: "exposure", label: "Exposure Desk", meta: "Public disputes & complaint triage", icon: ShieldCheck },
+        { id: "field-survey", label: "Field Surveys", meta: "Physical office inspections", icon: Globe },
+        { id: "regulators", label: "Regulatory Hub", meta: "Global regulatory verification", icon: Scale },
+      ]
+    },
+    {
+      id: "community",
+      label: "Community",
+      kicker: "Trader Network & Insights",
+      items: [
+        { id: "forum", label: "Trader Forum", meta: "Debates, reviews & discussions", icon: MessageCircle },
+        { id: "news", label: "Dispatches", meta: "Market analysis & intelligence", icon: Newspaper },
+        { id: "media", label: "Live Broadcasts", meta: "Market streams & video briefings", icon: Activity },
+      ]
+    },
+    {
+      id: "tools",
+      label: "Tools & Learn",
+      kicker: "Analytics & Academy",
+      items: [
+        { id: "calculator", label: "Spread Calculator", meta: "Pip cost & fee audits", icon: DollarSign },
+        { id: "tools", label: "EA / VPS Center", meta: "Low latency hosting & tools", icon: SlidersHorizontal },
+        { id: "education", label: "Education Academy", meta: "Trading guides & risk education", icon: FileText },
+      ]
+    }
+  ];
+
+  const handleMouseEnter = (id) => {
+    if (dropdownTimerRef.current) clearTimeout(dropdownTimerRef.current);
+    setActiveDropdown(id);
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimerRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 160);
+  };
+
+  const closeDropdowns = () => {
+    if (dropdownTimerRef.current) clearTimeout(dropdownTimerRef.current);
+    setActiveDropdown(null);
+  };
+
+  React.useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (!e.target.closest('.nav-dropdown-wrap')) {
+        closeDropdowns();
+      }
+    };
+    document.addEventListener('pointerdown', handleOutsideClick);
+    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+  }, []);
+
   return (
     <header style={{ position: "sticky", top: 0, zIndex: 60, background: "var(--header-bg)", backdropFilter: "blur(12px)", borderBottom: `1px solid var(--c-line)`, transition: "background 0.3s ease" }}>
 
       <div className="ledger-header-inner" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 22, cursor: "pointer" }} onClick={() => setView("home")}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 22, cursor: "pointer" }} onClick={() => { setView("home"); closeDropdowns(); }}>
           <div style={{ width: 28, height: 28, borderRadius: "50%", border: `1.5px dashed ${C.verified}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.verified, fontSize: 13 }}>✓</div>
           LEDGER
         </div>
-        <nav className={`ledger-nav ${menuOpen ? "is-open" : ""}`}>
-          {items.map((it) => (
-            <span
+
+        {/* Desktop Navigation */}
+        <nav className="ledger-nav ledger-nav-desktop" aria-label="Main Navigation">
+          {directItems.map((it) => (
+            <button
               key={it.id}
-              onClick={() => { setView(it.id); setMenuOpen(false); }}
-              style={{
-                cursor: "pointer", color: view === it.id ? C.paper : C.paperDim,
-                fontWeight: view === it.id ? 600 : 400,
-                borderBottom: view === it.id ? `2px solid ${C.verified}` : "2px solid transparent",
-                paddingBottom: 4, transition: "color 0.2s"
-              }}
+              type="button"
+              className={`nav-tab-btn ${view === it.id ? "is-active" : ""}`}
+              onClick={() => { setView(it.id); closeDropdowns(); }}
             >
               {it.label}
-            </span>
+            </button>
           ))}
+
+          {dropdownSections.map((sec) => {
+            const isDropdownActive = sec.items.some(it => it.id === view);
+            const isOpen = activeDropdown === sec.id;
+            return (
+              <div
+                key={sec.id}
+                className="nav-dropdown-wrap"
+                onMouseEnter={() => handleMouseEnter(sec.id)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <button
+                  type="button"
+                  className={`nav-tab-btn nav-dropdown-trigger ${isDropdownActive ? "is-active" : ""} ${isOpen ? "is-open" : ""}`}
+                  onClick={() => setActiveDropdown(isOpen ? null : sec.id)}
+                  aria-expanded={isOpen}
+                >
+                  <span>{sec.label}</span>
+                  {sec.badge && <span className="nav-alert-beacon" title="Live scam alerts active" />}
+                  <ChevronDown size={13} className={`nav-chevron ${isOpen ? "is-rotated" : ""}`} />
+                </button>
+
+                {isOpen && (
+                  <div className="nav-dropdown-menu" role="menu">
+                    <div className="nav-dropdown-header">
+                      <span className="nav-dropdown-title">{sec.label}</span>
+                      <span className="nav-dropdown-kicker">{sec.kicker}</span>
+                    </div>
+                    <div className="nav-dropdown-items">
+                      {sec.items.map((it) => {
+                        const Icon = it.icon;
+                        const isItemActive = view === it.id;
+                        return (
+                          <button
+                            key={it.id}
+                            type="button"
+                            className={`nav-dropdown-item ${isItemActive ? "is-active" : ""}`}
+                            onClick={() => {
+                              setView(it.id);
+                              closeDropdowns();
+                            }}
+                            role="menuitem"
+                          >
+                            <div className={`nav-item-icon-box tone-${it.tone || "default"}`}>
+                              <Icon size={16} />
+                            </div>
+                            <div className="nav-item-text">
+                              <div className="nav-item-label-row">
+                                <strong className="nav-item-label">{it.label}</strong>
+                                {it.badge && <span className="nav-item-badge">{it.badge}</span>}
+                              </div>
+                              <span className="nav-item-meta">{it.meta}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* Mobile Drawer Navigation */}
+        <nav className={`ledger-nav ledger-nav-mobile ${menuOpen ? "is-open" : ""}`} aria-label="Mobile Navigation">
+          <div className="mobile-nav-content">
+            <div className="mobile-nav-group">
+              <div className="mobile-nav-group-label">DIRECTORY</div>
+              <div className="mobile-nav-links">
+                {directItems.map((it) => (
+                  <button
+                    key={it.id}
+                    type="button"
+                    className={`mobile-nav-link ${view === it.id ? "is-active" : ""}`}
+                    onClick={() => { setView(it.id); setMenuOpen(false); }}
+                  >
+                    {it.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {dropdownSections.map((sec) => (
+              <div key={sec.id} className="mobile-nav-group">
+                <div className="mobile-nav-group-label">{sec.label.toUpperCase()}</div>
+                <div className="mobile-nav-links">
+                  {sec.items.map((it) => {
+                    const Icon = it.icon;
+                    return (
+                      <button
+                        key={it.id}
+                        type="button"
+                        className={`mobile-nav-link ${view === it.id ? "is-active" : ""}`}
+                        onClick={() => { setView(it.id); setMenuOpen(false); }}
+                      >
+                        <div className={`mobile-nav-icon tone-${it.tone || "default"}`}>
+                          <Icon size={14} />
+                        </div>
+                        <span style={{ flex: 1 }}>{it.label}</span>
+                        {it.badge && <span className="nav-item-badge">{it.badge}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
           {compareList.length > 0 && (
             <button
               type="button"

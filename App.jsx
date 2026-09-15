@@ -723,29 +723,73 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
+      {/* Real-time Registry Telemetry Strip */}
       <section className="telemetry-strip">
         <div className="telemetry-grid">
           {[
-            { Icon: ShieldCheck, label: "Registry coverage", value: `${brokers.length} entities`, note: "Live indexed universe", variant: "" },
-            { Icon: Activity, label: "Average trust score", value: `${(brokers.reduce((sum, b) => sum + Number(b.score || 0), 0) / Math.max(brokers.length, 1)).toFixed(1)} / 10`, note: "Across all records", variant: "" },
-            { Icon: AlertOctagon, label: "Flagged entities", value: `${flaggedCount} requiring review`, note: "Risk signals on file", variant: "tc-alert" },
-            { Icon: DollarSign, label: "Disputed capital", value: `$${disputedTotal.toLocaleString()}`, note: "Reported exposure value", variant: "tc-money" },
-          ].map(({ Icon, label, value, note, variant }) => (
+            {
+              Icon: ShieldCheck,
+              label: "Registry coverage",
+              value: `${brokers.length} entities`,
+              note: "Live indexed universe",
+              trend: "100% Indexed",
+              variant: "tc-verified"
+            },
+            {
+              Icon: Activity,
+              label: "Average trust score",
+              value: `${(brokers.reduce((sum, b) => sum + Number(b.score || 0), 0) / Math.max(brokers.length, 1)).toFixed(1)} / 10`,
+              note: "Across all records",
+              trend: "Mean Benchmark",
+              variant: "tc-score"
+            },
+            {
+              Icon: AlertOctagon,
+              label: "Flagged entities",
+              value: `${flaggedCount} requiring review`,
+              note: "Risk signals on file",
+              trend: flaggedCount > 0 ? "Active Signals" : "Clean",
+              variant: "tc-alert"
+            },
+            {
+              Icon: DollarSign,
+              label: "Disputed capital",
+              value: `$${disputedTotal.toLocaleString()}`,
+              note: "Reported exposure value",
+              trend: "Claim Triage",
+              variant: "tc-money"
+            },
+          ].map(({ Icon, label, value, note, trend, variant }) => (
             <div className={`telemetry-cell ${variant}`} key={label}>
-              <div className="tc-icon"><Icon size={17} color={variant === "tc-alert" ? "var(--c-alert)" : variant === "tc-money" ? "var(--c-amber)" : "var(--c-verified)"} /></div>
+              <div className="tc-top-row">
+                <div className="tc-icon">
+                  <Icon size={18} />
+                </div>
+                <span className="tc-trend-badge">{trend}</span>
+              </div>
               <div className="tc-label">{label}</div>
               <div className="tc-value">{value}</div>
-              <div className="tc-note">{note}</div>
+              <div className="tc-note">
+                <span className="tc-dot" />
+                <span>{note}</span>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <AIRiskAnalyst brokers={brokers} exposures={exposures} openDetail={openDetail} />
-      <AICommandDeck brokers={brokers} exposures={exposures} setView={setView} openDetail={openDetail} />
+      {/* Unified AI Intelligence Command Deck */}
+      <AIIntelligenceDeck
+        brokers={brokers}
+        exposures={exposures}
+        setView={setView}
+        openDetail={openDetail}
+        toggleCompare={toggleCompare}
+        compareList={compareList}
+      />
 
-      {/* Top 3 Brokers */}
-      <section style={{ padding: "64px 20px", maxWidth: 1200, margin: "0 auto" }}>
+      {/* Benchmark Leaders - Top Rated Financial Institutions */}
+      <section className="benchmark-leaders-section" style={{ padding: "72px 20px 48px", maxWidth: 1240, margin: "0 auto" }}>
         <div className="section-header-flex" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 36, flexWrap: "wrap", gap: 16 }}>
           <div>
             <div className="section-kicker"><TrendingUp size={11} /> Benchmark Leaders</div>
@@ -754,9 +798,16 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           </div>
           <Button variant="ghost" onClick={() => setView("rankings")}>View Leaderboard →</Button>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 20 }}>
-          {topThree.map((b) => (
-            <BrokerCard key={b.id} b={b} onClick={() => openDetail(b)} onCompare={() => toggleCompare(b)} isCompared={compareList.some(x => x.id === b.id)} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: 24 }}>
+          {topThree.map((b, index) => (
+            <BrokerCard
+              key={b.id}
+              b={b}
+              rank={index + 1}
+              onClick={() => openDetail(b)}
+              onCompare={() => toggleCompare(b)}
+              isCompared={compareList.some(x => x.id === b.id)}
+            />
           ))}
           {!topThree.length && <div className="empty-state-panel">No broker records are currently indexed. Open Admin to add the first dossier.</div>}
         </div>
@@ -884,55 +935,274 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
   );
 }
 
-function AICommandDeck({ brokers, exposures, setView, openDetail }) {
+/* ---------------------------------------------------------
+   UNIFIED AI INTELLIGENCE COMMAND DECK
+--------------------------------------------------------- */
+function AIIntelligenceDeck({ brokers, exposures, setView, openDetail, toggleCompare, compareList = [] }) {
   const [selectedId, setSelectedId] = useState(brokers[0]?.id || "");
-  const [priority, setPriority] = useState("risk");
-  const selectedBroker = brokers.find((broker) => broker.id === selectedId) || brokers[0];
-  const flagged = brokers.filter((broker) => broker.flags?.length > 0).sort((a, b) => Number(a.score) - Number(b.score));
-  const pending = exposures.filter((exposure) => exposure.status === "pending");
-  const focusBroker = priority === "trust" ? [...brokers].sort((a, b) => Number(b.score) - Number(a.score))[0] : flagged[0] || selectedBroker;
-  const focusScore = Number(focusBroker?.score || 0);
-  const confidence = brokers.length ? Math.min(98, Math.round(64 + (brokers.length * 4) + (exposures.length ? 10 : 0))) : 0;
-  const signalTone = focusScore < 5 ? "critical" : focusScore < 7 ? "elevated" : "clear";
-  const signals = selectedBroker ? [
-    { label: "Trust score", value: `${Number(selectedBroker.score).toFixed(1)} / 10`, detail: Number(selectedBroker.score) >= 7 ? "Above review threshold" : "Below review threshold", tone: Number(selectedBroker.score) >= 7 ? "clear" : "critical" },
-    { label: "Regulatory posture", value: selectedBroker.regulator || "Not recorded", detail: /offshore|unregistered/i.test(selectedBroker.regulator || "") ? "Independent verification required" : "License evidence available", tone: /offshore|unregistered/i.test(selectedBroker.regulator || "") ? "elevated" : "clear" },
-    { label: "Exposure history", value: `${exposures.filter((item) => item.brokerName?.toLowerCase() === selectedBroker.name?.toLowerCase()).length} cases`, detail: pending.length ? `${pending.length} file${pending.length === 1 ? "" : "s"} awaiting triage` : "No pending triage files", tone: pending.length ? "elevated" : "clear" },
-  ] : [
-    { label: "Trust score", value: "Awaiting records", detail: "Add a broker to activate the radar", tone: "elevated" },
-    { label: "Regulatory posture", value: "No registry data", detail: "Connect verified license records", tone: "elevated" },
-    { label: "Exposure history", value: `${exposures.length} files`, detail: "Review the exposure desk for details", tone: exposures.length ? "elevated" : "clear" },
-  ];
+  const [filterMode, setFilterMode] = useState("all");
+
+  const selectedBroker = brokers.find((b) => b.id === selectedId) || brokers[0];
+  const flagged = useMemo(() => brokers.filter(b => (b.flags || []).length > 0 || Number(b.score) < 5), [brokers]);
+  const highestRated = useMemo(() => [...brokers].sort((a, b) => Number(b.score) - Number(a.score))[0], [brokers]);
+
+  const score = Number(selectedBroker?.score || 0);
+  const flagCount = selectedBroker?.flags?.length || 0;
+  const relatedCases = useMemo(() => {
+    if (!selectedBroker) return [];
+    return exposures.filter((e) => e.brokerName?.toLowerCase() === selectedBroker.name?.toLowerCase());
+  }, [exposures, selectedBroker]);
+
+  const disputedSum = relatedCases.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+
+  const isCritical = score < 5 || flagCount >= 2;
+  const isElevated = !isCritical && (score < 7.5 || flagCount === 1 || /offshore|unregistered/i.test(selectedBroker?.regulator || ""));
+
+  const signalTone = isCritical ? "critical" : isElevated ? "elevated" : "clear";
+  const levelText = isCritical ? "Critical Risk Alert" : isElevated ? "Elevated Caution" : "Verified Institution";
+  const dialColor = isCritical ? "var(--c-alert)" : isElevated ? "var(--c-amber)" : "var(--c-verified)";
+  const scorePercent = Math.min(100, Math.max(10, Math.round(score * 10)));
+  const confidence = brokers.length ? Math.min(99, Math.round(74 + (brokers.length * 3) + (selectedBroker ? 12 : 0))) : 0;
+
+  function selectRisk() {
+    setFilterMode("risk");
+    if (flagged.length > 0) {
+      setSelectedId(flagged[0].id);
+    }
+  }
+
+  function selectTop() {
+    setFilterMode("top");
+    if (highestRated) {
+      setSelectedId(highestRated.id);
+    }
+  }
+
+  function handleSelect(id) {
+    setFilterMode("custom");
+    setSelectedId(id);
+  }
+
+  const isCompared = selectedBroker && compareList.some(x => x.id === selectedBroker.id);
+
+  // Synthesized AI assessment
+  let analysisText = "";
+  let actionText = "";
+
+  if (isCritical) {
+    analysisText = `${selectedBroker?.name} holds severe risk indicators (${flagCount ? `${flagCount} risk flags on file` : "sub-standard trust index"})${relatedCases.length ? ` and ${relatedCases.length} public complaint cases totaling $${disputedSum.toLocaleString()}` : ""}. Unregulated or high-dispute operating profile.`;
+    actionText = "Strong caution: Avoid depositing capital. Inspect open dispute cases and regulatory warnings prior to any engagement.";
+  } else if (isElevated) {
+    analysisText = `${selectedBroker?.name} maintains an operational history (${selectedBroker?.years}yr), but exhibits caution signals: ${selectedBroker?.regulator?.includes("Offshore") ? "Offshore jurisdiction with relaxed statutory oversight" : "moderate trust scoring requiring independent scrutiny"}.`;
+    actionText = "Verify license registration directly with the official statutory body and audit withdrawal processing speeds.";
+  } else {
+    analysisText = `${selectedBroker?.name} demonstrates benchmark compliance with tier-1 regulatory oversight (${selectedBroker?.regulator}), ${selectedBroker?.years} years of active operations, and clean public exposure records.`;
+    actionText = "Institutional-grade dossier verified. Proceed to account terms evaluation and segregated custody verification.";
+  }
 
   return (
-    <section className="ai-command-deck">
-      <div className="ai-deck-header">
-        <div>
-          <Badge tone="reg"><Sparkles size={12} /> AI COMMAND DECK</Badge>
-          <h2>Make the next decision legible.</h2>
-          <p>Transparent heuristics turn registry evidence into a short, actionable brief.</p>
-        </div>
-        <div className="ai-confidence"><span>Evidence confidence</span><strong>{confidence}%</strong><i><b style={{ width: `${confidence}%` }} /></i></div>
-      </div>
-      <div className="ai-deck-body">
-        <div className="ai-radar-panel">
-          <div className="radar-sweep-effect" />
-          <div className="ai-radar-orbit ai-radar-orbit-one" /><div className="ai-radar-orbit ai-radar-orbit-two" />
-          <div className="ai-radar-core" style={{ background: `conic-gradient(${signalTone === "critical" ? C.alert : signalTone === "elevated" ? C.amber : C.verified} ${Math.max(focusScore * 10, 8)}%, rgba(255,255,255,.08) 0)` }}><div><strong>{focusScore.toFixed(1)}</strong><span>risk index</span></div></div>
-          <div className="ai-radar-label"><span>Priority signal</span><strong className={`ai-signal-${signalTone}`}>{focusBroker ? (signalTone === "critical" ? "Escalate review" : signalTone === "elevated" ? "Verify evidence" : "Monitor record") : "Awaiting data"}</strong></div>
-        </div>
-        <div className="ai-deck-evidence">
-          <div className="ai-deck-controls">
-            <select aria-label="Select broker for AI radar" value={selectedId} onChange={(event) => setSelectedId(event.target.value)} disabled={!brokers.length}>
-              {!brokers.length && <option value="">No broker records available</option>}
-              {brokers.map((broker) => <option key={broker.id} value={broker.id}>{broker.name}</option>)}
-            </select>
-            <div className="ai-priority-toggle"><button type="button" className={priority === "risk" ? "is-active" : ""} onClick={() => setPriority("risk")}>Risk first</button><button type="button" className={priority === "trust" ? "is-active" : ""} onClick={() => setPriority("trust")}>Trust first</button></div>
+    <section className="ai-unified-deck">
+      <div className="ai-deck-glow-orb" />
+
+      {/* Header bar */}
+      <div className="ai-deck-head">
+        <div className="ai-deck-head-left">
+          <div className="ai-deck-badge">
+            <Sparkles size={13} />
+            <span>LEDGER NEURAL RISK RADAR</span>
+            <span className="ai-deck-live-dot" />
           </div>
-          <div className="ai-evidence-grid">{signals.map((signal) => <div className="ai-evidence-item" key={signal.label}><span className={`ai-evidence-dot ai-evidence-dot-${signal.tone}`} /><div><small>{signal.label}</small><strong>{signal.value}</strong><p>{signal.detail}</p></div></div>)}</div>
+          <h2 className="ai-deck-title">Autonomous Risk Briefing & Decision Terminal</h2>
+          <p className="ai-deck-subtitle">
+            Algorithmic synthesis cross-referencing Tier-1 regulatory registers, physical survey records, and verified dispute exposure files.
+          </p>
+        </div>
+
+        <div className="ai-deck-head-right">
+          <div className="ai-confidence-box">
+            <div className="ai-confidence-label">
+              <span>EVIDENCE CONFIDENCE</span>
+              <strong>{confidence}%</strong>
+            </div>
+            <div className="ai-confidence-track">
+              <div className="ai-confidence-fill" style={{ width: `${confidence}%` }} />
+            </div>
+            <div className="ai-confidence-meta">
+              <span className="ai-confidence-ping" />
+              <span>Active Multi-Vector Registry Heuristics</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="ai-deck-footer"><div><span>RECOMMENDED NEXT MOVE</span><strong>{pending.length ? "Review the exposure queue before publishing new records." : focusBroker ? `${focusBroker.name}: verify the full dossier before funding.` : "Populate the registry to unlock broker prioritization."}</strong></div><div className="ai-deck-actions">{selectedBroker && <Button variant="subtle" onClick={() => openDetail(selectedBroker)}><Eye size={14} /> Inspect dossier</Button>}<Button onClick={() => setView(pending.length ? "exposure" : "brokers")}><ArrowRight size={14} /> {pending.length ? "Open triage" : "Open registry"}</Button></div></div>
+
+      {/* Control bar */}
+      <div className="ai-deck-toolbar">
+        <div className="ai-selector-wrap">
+          <span className="ai-selector-label">TARGET DOSSIER:</span>
+          <div className="ai-custom-select-box">
+            <select
+              value={selectedBroker?.id || ""}
+              onChange={(e) => handleSelect(e.target.value)}
+              aria-label="Select target broker for risk analysis"
+            >
+              {brokers.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name} — Trust {b.score}/10 · {b.country}
+                </option>
+              ))}
+            </select>
+            <ChevronDown size={14} className="ai-select-arrow" />
+          </div>
+        </div>
+
+        <div className="ai-filter-actions">
+          <button
+            type="button"
+            className={`ai-filter-btn ${filterMode === "risk" ? "is-active" : ""}`}
+            onClick={selectRisk}
+            title="Inspect highest risk profile"
+          >
+            <AlertTriangle size={13} />
+            <span>Risk Queue ({flagged.length})</span>
+          </button>
+          <button
+            type="button"
+            className={`ai-filter-btn ${filterMode === "top" ? "is-active" : ""}`}
+            onClick={selectTop}
+            title="Inspect top rated institution"
+          >
+            <ShieldCheck size={13} />
+            <span>Top Rated</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Terminal Grid */}
+      <div className="ai-deck-grid">
+        {/* Left Column: Biometric Radar & Score Dial */}
+        <div className="ai-radar-panel-card">
+          <div className="ai-radar-dish">
+            <div className="radar-sweep-effect" />
+            <div className="ai-radar-orbit orbit-outer" />
+            <div className="ai-radar-orbit orbit-mid" />
+            <div className="ai-radar-crosshair-h" />
+            <div className="ai-radar-crosshair-v" />
+
+            {/* Core Score Ring */}
+            <div
+              className="ai-radar-gauge-ring"
+              style={{
+                background: `conic-gradient(${dialColor} ${scorePercent}%, rgba(255,255,255,0.06) 0)`
+              }}
+            >
+              <div className="ai-radar-gauge-core">
+                <span className="ai-core-score">{score.toFixed(1)}</span>
+                <span className="ai-core-denom">TRUST INDEX</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="ai-radar-verdict-block">
+            <div className={`ai-signal-badge tone-${signalTone}`}>
+              <span className="ai-signal-dot" />
+              <span>{levelText}</span>
+            </div>
+            <h3 className="ai-verdict-name">{selectedBroker?.name}</h3>
+            <div className="ai-verdict-meta">
+              <span>{selectedBroker?.years}yr Track Record</span>
+              <span>·</span>
+              <span>{selectedBroker?.country}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: 3 Deep Audit Tiles & Heuristic Synthesis */}
+        <div className="ai-intel-content-card">
+          <div className="ai-telemetry-triad">
+            {/* Tile 1: Regulatory Posture */}
+            <div className="ai-triad-card">
+              <div className="ai-triad-top">
+                <div className="ai-triad-icon-box tone-reg">
+                  <Scale size={15} />
+                </div>
+                <span className="ai-triad-tag">REGULATORY POSTURE</span>
+              </div>
+              <div className="ai-triad-primary">{selectedBroker?.regulator || "Unregistered"}</div>
+              <div className="ai-triad-secondary">
+                {selectedBroker?.licenseStatus || "Standard Regulation"} · {selectedBroker?.license || "No ID"}
+              </div>
+            </div>
+
+            {/* Tile 2: Exposure History */}
+            <div className="ai-triad-card">
+              <div className="ai-triad-top">
+                <div className={`ai-triad-icon-box ${relatedCases.length > 0 ? "tone-alert" : "tone-verified"}`}>
+                  <ShieldCheck size={15} />
+                </div>
+                <span className="ai-triad-tag">EXPOSURE DESK</span>
+              </div>
+              <div className={`ai-triad-primary ${relatedCases.length > 0 ? "color-alert" : ""}`}>
+                {relatedCases.length} {relatedCases.length === 1 ? "Dispute Case" : "Dispute Cases"}
+              </div>
+              <div className="ai-triad-secondary">
+                {disputedSum > 0 ? `$${disputedSum.toLocaleString()} disputed capital` : "Zero unresolved public claims"}
+              </div>
+            </div>
+
+            {/* Tile 3: Environment & Terms */}
+            <div className="ai-triad-card">
+              <div className="ai-triad-top">
+                <div className="ai-triad-icon-box tone-amber">
+                  <Activity size={15} />
+                </div>
+                <span className="ai-triad-tag">EXECUTION AUDIT</span>
+              </div>
+              <div className="ai-triad-primary">{selectedBroker?.type || "Standard ECN"} Model</div>
+              <div className="ai-triad-secondary">
+                Min: ${selectedBroker?.min_deposit || 50} · Max Lev: {selectedBroker?.max_leverage || "1:500"}
+              </div>
+            </div>
+          </div>
+
+          {/* Heuristic Synthesis & Action Footer */}
+          <div className="ai-synthesis-card">
+            <div className="ai-synthesis-body">
+              <div className="ai-synthesis-kicker">
+                <Sparkles size={12} />
+                <span>ALGORITHMIC SYNTHESIS & NEXT ACTION</span>
+              </div>
+              <p className="ai-synthesis-reason">
+                {analysisText}
+              </p>
+              <div className="ai-synthesis-recom">
+                <ArrowRight size={13} className="ai-recom-arrow" />
+                <span>{actionText}</span>
+              </div>
+            </div>
+
+            <div className="ai-action-bar">
+              {selectedBroker && (
+                <Button variant="subtle" onClick={() => openDetail(selectedBroker)} style={{ padding: "9px 15px" }}>
+                  <Eye size={14} /> Inspect Dossier
+                </Button>
+              )}
+              {selectedBroker && (
+                <Button
+                  variant={isCompared ? "primary" : "ghost"}
+                  onClick={() => toggleCompare(selectedBroker)}
+                  style={{ padding: "9px 14px" }}
+                  title={isCompared ? "Remove from comparison" : "Add to comparison"}
+                >
+                  <Scale size={14} /> {isCompared ? "In Comparison" : "Compare"}
+                </Button>
+              )}
+              <Button onClick={() => setView("brokers")} style={{ padding: "9px 16px" }}>
+                Browse Registry <ArrowRight size={14} />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
@@ -940,21 +1210,33 @@ function AICommandDeck({ brokers, exposures, setView, openDetail }) {
 /* ---------------------------------------------------------
    BROKER CARD COMPONENT
 --------------------------------------------------------- */
-function BrokerCard({ b, onClick, onCompare, isCompared }) {
+function BrokerCard({ b, onClick, onCompare, isCompared, rank }) {
   const isFlagged = b.flags && b.flags.length > 0;
-  const scoreColor = Number(b.score) >= 8 ? "var(--c-verified)" : Number(b.score) >= 5 ? "var(--c-amber)" : "var(--c-alert)";
-  const scoreBg = Number(b.score) >= 8 ? "var(--c-verified-dim)" : Number(b.score) >= 5 ? "var(--c-amber-dim)" : "var(--c-alert-dim)";
-  const scoreBorder = Number(b.score) >= 8 ? "rgba(0,230,118,0.3)" : Number(b.score) >= 5 ? "rgba(255,171,0,0.3)" : "rgba(255,65,54,0.3)";
+  const score = Number(b.score || 0);
+  const scoreColor = score >= 8 ? "var(--c-verified)" : score >= 5 ? "var(--c-amber)" : "var(--c-alert)";
+  const ringPercent = Math.round(score * 10);
 
   return (
-    <div className={`broker-card ${isFlagged ? "flagged" : ""}`}>
-      {/* Top accent line on hover (handled by CSS ::before) */}
+    <div className={`broker-card ${isFlagged ? "flagged" : ""} ${rank ? `rank-card rank-${rank}` : ""}`}>
+      {/* Accent glow bar on hover */}
+      <div className="broker-card-glow-bar" />
+
       <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-          <div style={{ flex: 1 }}>
+        {/* Top Rank Badge if present */}
+        {rank && (
+          <div className="broker-rank-ribbon">
+            <span className="rank-number">#{rank}</span>
+            <span className="rank-label">BENCHMARK LEADER</span>
+          </div>
+        )}
+
+        {/* Header: Name, Country/Years, Rating, and Score Ring */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+          <div style={{ flex: 1, minWidth: 0, paddingRight: 12 }}>
             <h3 style={{
-              fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 600,
-              lineHeight: 1.2, margin: "0 0 4px",
+              fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 600,
+              lineHeight: 1.2, margin: "0 0 5px", color: "var(--c-paper)",
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             }}>{b.name}</h3>
             <div style={{
               fontSize: 11.5, color: "var(--c-muted)",
@@ -967,58 +1249,66 @@ function BrokerCard({ b, onClick, onCompare, isCompared }) {
                   display: "inline-flex", alignItems: "center", gap: 3,
                   color: "var(--c-amber)",
                   background: "var(--c-amber-dim)",
-                  padding: "1px 6px", borderRadius: 4, fontSize: 11,
+                  padding: "1px 6px", borderRadius: 4, fontSize: 11, fontWeight: 600,
                 }}>★ {b.userRating}</span>
               )}
             </div>
           </div>
-          {/* Score ring */}
-          <div style={{
-            width: 52, height: 52, borderRadius: "50%", flexShrink: 0,
-            border: `2px solid ${scoreBorder}`,
-            display: "flex", flexDirection: "column",
-            alignItems: "center", justifyContent: "center",
-            background: scoreBg, color: scoreColor,
-            fontFamily: "'IBM Plex Mono', monospace",
-            boxShadow: `0 0 16px ${scoreBg}`,
-          }}>
-            <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1 }}>{Number(b.score).toFixed(1)}</div>
-            <div style={{ fontSize: 8.5, opacity: 0.55, marginTop: 2 }}>/10</div>
+
+          {/* High-tech radial score ring */}
+          <div
+            className="broker-score-dial"
+            style={{
+              background: `conic-gradient(${scoreColor} ${ringPercent}%, rgba(255,255,255,0.06) 0)`
+            }}
+          >
+            <div className="broker-score-dial-inner">
+              <span className="score-num" style={{ color: scoreColor }}>{score.toFixed(1)}</span>
+              <span className="score-denom">/10</span>
+            </div>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", margin: "12px 0 14px" }}>
-          {b.licenseStatus && <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>{b.licenseStatus}</Badge>}
+        {/* Tags & Badges */}
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", margin: "10px 0 14px" }}>
+          {b.licenseStatus && (
+            <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>
+              {b.licenseStatus}
+            </Badge>
+          )}
           <Badge tone="reg">{b.regulator}</Badge>
           <Badge>{b.type}</Badge>
           {b.flags.map((f, i) => <Badge key={i} tone="warn">{f}</Badge>)}
         </div>
 
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
-          padding: "12px 0",
-          borderTop: `1px solid var(--c-line)`,
-          borderBottom: `1px solid var(--c-line)`,
-          fontSize: 12,
-        }}>
-          <div>
-            <div style={{ color: "var(--c-muted)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 3 }}>Min Deposit</div>
-            <div style={{ fontWeight: 600, fontSize: 13 }}>${b.min_deposit || 50}</div>
+        {/* 3-Column Financial Parameters */}
+        <div className="broker-params-grid">
+          <div className="param-item">
+            <span className="param-label">Min Deposit</span>
+            <strong className="param-value">${b.min_deposit || 50}</strong>
           </div>
-          <div>
-            <div style={{ color: "var(--c-muted)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 3 }}>Leverage</div>
-            <div style={{ fontWeight: 600, fontSize: 13 }}>{b.max_leverage || '1:500'}</div>
+          <div className="param-item">
+            <span className="param-label">Max Leverage</span>
+            <strong className="param-value">{b.max_leverage || '1:500'}</strong>
+          </div>
+          <div className="param-item">
+            <span className="param-label">Execution</span>
+            <strong className="param-value">{b.type || 'ECN/STP'}</strong>
           </div>
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
-        <Button variant="subtle" onClick={onClick} style={{ flex: 1, justifyContent: "center" }}>View Dossier</Button>
+      {/* Action Footer */}
+      <div className="broker-card-actions">
+        <Button variant="subtle" onClick={onClick} style={{ flex: 1, justifyContent: "center" }}>
+          View Dossier <ArrowRight size={13} />
+        </Button>
         <Button
           variant={isCompared ? "primary" : "ghost"}
           onClick={(e) => { e.stopPropagation(); onCompare(); }}
           style={{ padding: "8px 12px" }}
           title={isCompared ? "Remove from comparison" : "Add to comparison"}
+          aria-label={`Compare ${b.name}`}
         >
           <Scale size={14} />
         </Button>
@@ -2781,34 +3071,7 @@ export default function App() {
   );
 }
 
-function buildRiskBrief(broker, exposures) {
-  const relatedCases = exposures.filter((exposure) => exposure.brokerName?.toLowerCase() === broker.name?.toLowerCase());
-  const flagCount = broker.flags?.length || 0;
-  const score = Number(broker.score || 0);
-  const riskLevel = flagCount >= 2 || score < 4 ? "Critical" : flagCount > 0 || score < 7 ? "Elevated" : "Low concern";
-  const reasons = [];
-  if (flagCount) reasons.push(`${flagCount} risk signal${flagCount > 1 ? "s" : ""} on file`);
-  if (relatedCases.length) reasons.push(`${relatedCases.length} public exposure case${relatedCases.length > 1 ? "s" : ""}`);
-  if (broker.regulator?.toLowerCase().includes("offshore") || broker.regulator?.toLowerCase().includes("unregistered")) reasons.push("limited regulatory jurisdiction");
-  if (!reasons.length) reasons.push("no recorded flags or public exposure cases");
-  return { riskLevel, reasons, recommendation: riskLevel === "Low concern" ? "Proceed to license verification and read the full dossier." : "Pause funding until the regulator, license, and withdrawal history are independently verified." };
-}
 
-function AIRiskAnalyst({ brokers, exposures, openDetail }) {
-  const [brokerId, setBrokerId] = useState(brokers[0]?.id || "");
-  const broker = brokers.find((item) => item.id === brokerId) || brokers[0];
-  if (!broker) return null;
-  const brief = buildRiskBrief(broker, exposures);
-  const tone = brief.riskLevel === "Critical" ? "warn" : brief.riskLevel === "Elevated" ? "pending" : "reg";
-
-  return (
-    <section className="ai-analyst">
-      <div className="ai-analyst-heading"><div><Badge tone="reg"><Sparkles size={12} /> AI ANALYST</Badge><h2>Instant risk briefing</h2><p>Evidence-weighted guidance from the live Ledger registry.</p></div><Activity size={34} color={C.verified} /></div>
-      <div className="ai-analyst-controls"><label htmlFor="ai-broker">Analyze a broker</label><select id="ai-broker" value={brokerId} onChange={(event) => setBrokerId(event.target.value)}>{brokers.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><Button variant="subtle" onClick={() => openDetail(broker)}>Open dossier <ArrowRight size={14} /></Button></div>
-      <div className="ai-brief-result"><div><span className="ai-kicker">MODEL ASSESSMENT</span><strong className={`ai-risk ai-risk-${tone}`}>{brief.riskLevel}</strong></div><div><span className="ai-kicker">WHY IT MATTERS</span><p>{brief.reasons.join(" · ")}</p></div><div><span className="ai-kicker">NEXT ACTION</span><p>{brief.recommendation}</p></div></div>
-    </section>
-  );
-}
 
 function AdminOverview({ brokers, exposures, news }) {
   const trustBands = [

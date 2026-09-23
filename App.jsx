@@ -494,7 +494,7 @@ function normalizeAlert(alert) {
 function Stamp({ score, alert, size = 52 }) {
   const s = alert ? "var(--c-alert)" : "var(--c-verified)";
   const bg = alert ? "var(--c-alert-dim)" : "var(--c-verified-dim)";
-  const borderColor = alert ? "rgba(255,65,54,0.3)" : "rgba(0,230,118,0.3)";
+  const borderColor = alert ? "var(--c-alert)" : "var(--c-verified)";
   return (
     <div
       style={{
@@ -504,7 +504,7 @@ function Stamp({ score, alert, size = 52 }) {
         alignItems: "center", justifyContent: "center", color: s,
         background: bg, transform: "rotate(-6deg)",
         fontFamily: "'IBM Plex Mono', monospace",
-        boxShadow: alert ? "0 0 12px rgba(255,65,54,0.18)" : "0 0 12px rgba(0,230,118,0.15)",
+        boxShadow: alert ? "var(--c-alert-glow)" : "var(--c-verified-glow)",
       }}
     >
       <div style={{ fontSize: size * 0.28, fontWeight: 700, lineHeight: 1 }}>{Number(score).toFixed(1)}</div>
@@ -558,8 +558,9 @@ function Button({ children, onClick, variant = "primary", type = "button", style
   };
   const variants = {
     primary: {
-      background: "var(--gradient-brand)", color: "#03030A",
-      boxShadow: "0 4px 16px rgba(0, 230, 118, 0.25), 0 2px 4px rgba(0,0,0,0.3)"
+      background: "var(--gradient-brand)", color: "#FFFFFF",
+      textShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
+      boxShadow: "0 4px 16px rgba(0, 230, 118, 0.25), 0 2px 4px rgba(0,0,0,0.15)"
     },
     ghost: {
       background: "transparent", color: "var(--c-paper)",
@@ -1013,12 +1014,14 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
               id="header-login-btn"
               onClick={onLoginClick}
               aria-label="Login to admin panel"
+              title="Admin Access"
               onMouseEnter={() => setLoginHover(true)}
               onMouseLeave={() => setLoginHover(false)}
             >
               <span className="header-login-icon-wrap">
-                <UserCircle2 size={16} />
+                <UserCircle2 size={15} />
               </span>
+              <span className="header-login-text">Admin</span>
             </button>
           )}
 
@@ -1106,20 +1109,21 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
     <div className="fade-in-up">
       {/* ── High-Impact Hero Section ── */}
       <section className="home-hero tech-grid" style={{
-        position: "relative", overflow: "hidden",
+        position: "relative",
+        zIndex: 20,
         padding: "105px 24px 80px",
         borderBottom: `1px solid var(--c-line)`,
         background: "var(--gradient-hero)",
         transition: "background 0.3s ease"
       }}>
-        {/* Ambient glow orbs */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+        {/* Ambient glow orbs with isolated overflow hidden */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
           <div className="ambient-orb" style={{ width: 550, height: 550, background: "rgba(0,230,118,1)", top: -200, right: -100, animationDelay: "0s" }} />
           <div className="ambient-orb" style={{ width: 440, height: 440, background: "rgba(41,121,255,1)", bottom: -180, left: -80, animationDelay: "4s" }} />
           <div className="ambient-orb" style={{ width: 300, height: 300, background: "rgba(255,171,0,0.35)", top: "35%", right: "22%", animationDelay: "2s", opacity: 0.08 }} />
         </div>
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 10 }}>
           {/* Institutional Status Pill */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 9,
@@ -1163,7 +1167,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           </p>
 
           {/* Search bar with Live Autocomplete */}
-          <div style={{ position: "relative", maxWidth: 720 }}>
+          <div style={{ position: "relative", maxWidth: 720, zIndex: 80 }}>
             <div className={`hero-search-bar ${searchFocused ? "is-focused" : ""}`} style={{
               display: "flex",
               alignItems: "center",
@@ -1290,7 +1294,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
                 display: "flex", alignItems: "center", gap: 8,
                 color: "var(--c-paper-dim)", fontSize: 12,
                 fontFamily: "'IBM Plex Mono', monospace",
-                background: "rgba(255,255,255,0.02)",
+                background: "var(--c-surface-hi)",
                 padding: "4px 10px", borderRadius: 8,
                 border: "1px solid var(--c-line)"
               }}>
@@ -1427,7 +1431,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             >
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid var(--c-line)", display: "grid", placeItems: "center", color: "var(--c-verified)" }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 10, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)", display: "grid", placeItems: "center", color: "var(--c-verified)" }}>
                     <item.icon size={20} />
                   </div>
                   <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)", fontFamily: "'IBM Plex Mono', monospace", color: "var(--c-paper-dim)" }}>
@@ -1954,7 +1958,7 @@ function AIIntelligenceDeck({ brokers, exposures, setView, openDetail, toggleCom
             <div
               className="ai-radar-gauge-ring"
               style={{
-                background: `conic-gradient(${dialColor} ${scorePercent}%, rgba(255,255,255,0.06) 0)`
+                background: `conic-gradient(${dialColor} ${scorePercent}%, var(--c-line-strong) 0)`
               }}
             >
               <div className="ai-radar-gauge-core">
@@ -2121,7 +2125,7 @@ function BrokerCard({ b, onClick, onCompare, isCompared, rank }) {
           <div
             className="broker-score-dial"
             style={{
-              background: `conic-gradient(${scoreColor} ${ringPercent}%, rgba(255,255,255,0.06) 0)`
+              background: `conic-gradient(${scoreColor} ${ringPercent}%, var(--c-line-strong) 0)`
             }}
           >
             <div className="broker-score-dial-inner">
@@ -3547,7 +3551,7 @@ function FieldSurveyPage({ surveys: propSurveys }) {
               </div>
 
               {/* Inspector & GPS coordinates */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", fontSize: 12, color: C.paperDim, padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 10, border: `1px solid var(--c-line)` }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", fontSize: 12, color: C.paperDim, padding: "10px 14px", background: "var(--c-surface-hi)", borderRadius: 10, border: `1px solid var(--c-line)` }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 5, color: C.verified }}>
                   <ShieldCheck size={14} /> {fs.inspector || "Verified Auditor"}
                 </span>
@@ -3783,7 +3787,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
                 <span style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Visual Hierarchy Graph</span>
                 <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, margin: "2px 0 0" }}>{activeNetwork.brokerName} Group Architecture</h3>
               </div>
-              <span style={{ fontSize: 12, color: C.paperDim, padding: "4px 10px", borderRadius: 6, background: "rgba(255,255,255,0.05)", fontFamily: "'IBM Plex Mono', monospace" }}>
+              <span style={{ fontSize: 12, color: C.paperDim, padding: "4px 10px", borderRadius: 6, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)", fontFamily: "'IBM Plex Mono', monospace" }}>
                 {activeNetwork.regNo}
               </span>
             </div>
@@ -4153,7 +4157,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "rgba(255,255,255,0.06)", color: "var(--c-paper)", fontFamily: "'IBM Plex Mono', monospace" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)", color: "var(--c-paper)", fontFamily: "'IBM Plex Mono', monospace" }}>
                       {c.id}
                     </span>
                     <Badge tone={isResolved ? "reg" : isAlert ? "warn" : "pending"}>{c.status}</Badge>
@@ -4199,7 +4203,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
                 })}
               </div>
 
-              <div style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.5, background: "rgba(255,255,255,0.02)", padding: "10px 14px", borderRadius: 8, borderLeft: `3px solid ${isResolved ? C.verified : isAlert ? C.alert : C.amber}` }}>
+              <div style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.5, background: "var(--c-surface-hi)", padding: "10px 14px", borderRadius: 8, borderLeft: `3px solid ${isResolved ? C.verified : isAlert ? C.alert : C.amber}` }}>
                 <strong style={{ color: "var(--c-paper)" }}>Mediation Log: </strong>{c.auditNotes}
               </div>
             </div>
@@ -4243,7 +4247,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
                       style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
                     >
                       {brokers?.map(b => (
-                        <option key={b.id || b.name} value={b.name} style={{ background: "#0a0a18" }}>{b.name}</option>
+                        <option key={b.id || b.name} value={b.name}>{b.name}</option>
                       ))}
                     </select>
                   </div>
@@ -4268,10 +4272,10 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
                       onChange={(e) => setFormCategory(e.target.value)}
                       style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
                     >
-                      <option value="Delayed Principal Withdrawal" style={{ background: "#0a0a18" }}>Delayed Principal Withdrawal</option>
-                      <option value="Execution Slippage Manipulation" style={{ background: "#0a0a18" }}>Execution Slippage Manipulation</option>
-                      <option value="Arbitrary Balance Deduction" style={{ background: "#0a0a18" }}>Arbitrary Balance Deduction</option>
-                      <option value="Account Lockout / Unresponsive" style={{ background: "#0a0a18" }}>Account Lockout / Unresponsive</option>
+                      <option value="Delayed Principal Withdrawal">Delayed Principal Withdrawal</option>
+                      <option value="Execution Slippage Manipulation">Execution Slippage Manipulation</option>
+                      <option value="Arbitrary Balance Deduction">Arbitrary Balance Deduction</option>
+                      <option value="Account Lockout / Unresponsive">Account Lockout / Unresponsive</option>
                     </select>
                   </div>
                   <div>
@@ -4408,7 +4412,7 @@ function RebatePage({ rebates: propRebates }) {
                 style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
               >
                 {rebates.map(r => (
-                  <option key={r.id} value={r.id} style={{ background: "#0a0a18" }}>
+                  <option key={r.id} value={r.id}>
                     {r.brokerName} (${r.rebatePerLot.toFixed(2)}/lot)
                   </option>
                 ))}
@@ -4425,14 +4429,14 @@ function RebatePage({ rebates: propRebates }) {
                 style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
               >
                 {Object.keys(pairMeta).map(pair => (
-                  <option key={pair} value={pair} style={{ background: "#0a0a18" }}>{pair}</option>
+                  <option key={pair} value={pair}>{pair}</option>
                 ))}
               </select>
             </div>
           </div>
 
           {/* Slider */}
-          <div style={{ background: "rgba(255,255,255,0.03)", padding: "18px 20px", borderRadius: 12, border: "1px solid var(--c-line)", marginBottom: 20 }}>
+          <div style={{ background: "var(--c-surface-hi)", padding: "18px 20px", borderRadius: 12, border: "1px solid var(--c-line)", marginBottom: 20 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <span style={{ fontSize: 13, color: "var(--c-paper)", fontWeight: 600 }}>Monthly Volume Traded:</span>
               <span style={{ fontSize: 18, fontWeight: 800, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>
@@ -4627,9 +4631,9 @@ function RebatePage({ rebates: propRebates }) {
                 <div>
                   <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Rebate Payout Method</label>
                   <select style={{ width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}>
-                    <option style={{ background: "#0a0a18" }}>Credit Directly to MT4/MT5 Balance (Daily)</option>
-                    <option style={{ background: "#0a0a18" }}>USDT TRC20 / ERC20 Crypto Wallet</option>
-                    <option style={{ background: "#0a0a18" }}>Bank Wire Transfer (Monthly)</option>
+                    <option>Credit Directly to MT4/MT5 Balance (Daily)</option>
+                    <option>USDT TRC20 / ERC20 Crypto Wallet</option>
+                    <option>Bank Wire Transfer (Monthly)</option>
                   </select>
                 </div>
                 <Button type="submit" style={{ width: "100%", justifyContent: "center", padding: "13px 16px", marginTop: 6 }}>
@@ -4766,9 +4770,9 @@ function SpreadCalculatorPage() {
             {filtered.map((p, i) => {
               const cost = (p.spread * lots * p.pip_value).toFixed(2);
               return (
-                <div key={p.pair} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, padding: "18px 20px", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.02)", borderRadius: 8, alignItems: "center", border: "1px solid transparent", transition: "all 0.2s" }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(0,230,118,0.04)"; e.currentTarget.style.borderColor = "rgba(0,230,118,0.1)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "transparent"; }}>
+                <div key={p.pair} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, padding: "18px 20px", background: i % 2 === 0 ? "transparent" : "var(--c-surface-hi)", borderRadius: 8, alignItems: "center", border: "1px solid transparent", transition: "all 0.2s" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--c-verified-dim)"; e.currentTarget.style.borderColor = "var(--c-line-accent)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "var(--c-surface-hi)"; e.currentTarget.style.borderColor = "transparent"; }}>
                   <span style={{ fontWeight: 700, fontFamily: "'IBM Plex Mono', monospace" }}>{p.pair}</span>
                   <span style={{ color: C.paperDim }}>{p.spread}</span>
                   <span style={{ color: C.paperDim }}>${p.pip_value}</span>

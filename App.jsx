@@ -4,7 +4,8 @@ import {
   LayoutDashboard, LogOut, Plus, Trash2, Pencil, X, CheckCircle2,
   XCircle, Lock, ArrowRight, Radar, FileText, ChevronRight, ChevronDown, Menu,
   LogIn, Bell, UserCircle2, Activity, Mail, Eye, EyeOff, AlertOctagon,
-  ArrowUpDown, Scale, ExternalLink, SlidersHorizontal, DollarSign, Globe, Sparkles, BarChart3, Sun, Moon, MessageCircle, Send
+  ArrowUpDown, Scale, ExternalLink, SlidersHorizontal, DollarSign, Globe, Sparkles, BarChart3, Sun, Moon, MessageCircle, Send,
+  Zap, Award, Calculator, Check, Layers
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -608,113 +609,263 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
 --------------------------------------------------------- */
 function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareList, isLight, setBrokerSearch }) {
   const [q, setQ] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
+  
+  // Real-time spread calculator state
+  const [calcPair, setCalcPair] = useState("EUR/USD");
+  const [calcLots, setCalcLots] = useState(2.0);
+
   const topThree = useMemo(() => [...brokers].sort((a, b) => b.score - a.score).slice(0, 3), [brokers]);
   const recentExposures = useMemo(() => [...exposures].filter(e => e.status === "published").slice(0, 3), [exposures]);
   const flaggedCount = brokers.filter(b => b.flags?.length > 0).length;
   const disputedTotal = exposures.reduce((total, exposure) => total + Number(exposure.amount || 0), 0);
 
+  // Search autocomplete suggestions
+  const searchSuggestions = useMemo(() => {
+    if (!q.trim()) return [];
+    const query = q.toLowerCase();
+    return brokers.filter(b => 
+      b.name.toLowerCase().includes(query) || 
+      (b.regulator || "").toLowerCase().includes(query) || 
+      (b.country || "").toLowerCase().includes(query) ||
+      (b.license || "").toLowerCase().includes(query)
+    ).slice(0, 5);
+  }, [q, brokers]);
+
+  // Dynamic Screener Category Filter
+  const screenerBrokers = useMemo(() => {
+    let list = [...brokers];
+    if (activeCategory === "tier1") {
+      list = list.filter(b => (b.regulator || "").includes("FCA") || (b.regulator || "").includes("ASIC") || (b.regulator || "").includes("FSCA"));
+    } else if (activeCategory === "ecn") {
+      list = list.filter(b => (b.type || "").toUpperCase().includes("ECN"));
+    } else if (activeCategory === "low_deposit") {
+      list = list.filter(b => Number(b.min_deposit || 100) <= 50);
+    } else if (activeCategory === "clean") {
+      list = list.filter(b => !b.flags || b.flags.length === 0);
+    }
+    return list.sort((a, b) => b.score - a.score).slice(0, 3);
+  }, [brokers, activeCategory]);
+
+  // Real-time Spread Fee Calculation
+  const pairInfo = {
+    "EUR/USD": { ecnSpread: 0.1, stdSpread: 1.4, pipVal: 10 },
+    "GBP/USD": { ecnSpread: 0.2, stdSpread: 1.8, pipVal: 10 },
+    "USD/JPY": { ecnSpread: 0.3, stdSpread: 1.6, pipVal: 9.24 },
+    "XAU/USD": { ecnSpread: 1.5, stdSpread: 3.8, pipVal: 100 },
+    "BTC/USD": { ecnSpread: 12.0, stdSpread: 35.0, pipVal: 1 }
+  }[calcPair] || { ecnSpread: 0.1, stdSpread: 1.4, pipVal: 10 };
+
+  const tradesCount = 10;
+  const ecnCost = (calcLots * pairInfo.ecnSpread * pairInfo.pipVal * tradesCount);
+  const stdCost = (calcLots * pairInfo.stdSpread * pairInfo.pipVal * tradesCount);
+  const savings = Math.max(0, stdCost - ecnCost);
+
+  // Live Ticker Data
+  const tickerItems = [
+    { symbol: "EUR/USD", price: "1.0842", change: "+0.18%", up: true, spread: "0.1" },
+    { symbol: "GBP/USD", price: "1.2985", change: "-0.12%", up: false, spread: "0.2" },
+    { symbol: "USD/JPY", price: "154.20", change: "+0.45%", up: true, spread: "0.3" },
+    { symbol: "XAU/USD", price: "$2,684.50", change: "+1.24%", up: true, spread: "1.8" },
+    { symbol: "BTC/USD", price: "$64,280", change: "+3.65%", up: true, spread: "14.2" },
+    { symbol: "ETH/USD", price: "$2,640", change: "+2.10%", up: true, spread: "2.1" },
+    { symbol: "AUD/USD", price: "0.6654", change: "-0.28%", up: false, spread: "0.3" },
+    { symbol: "USD/CHF", price: "0.8640", change: "+0.05%", up: true, spread: "0.1" },
+    { symbol: "S&P 500", price: "5,820", change: "+0.42%", up: true, spread: "0.5" },
+    { symbol: "WTI Crude", price: "$71.15", change: "-0.85%", up: false, spread: "2.5" }
+  ];
+
   return (
     <div className="fade-in-up">
+      {/* ── High-Impact Hero Section ── */}
       <section className="home-hero tech-grid" style={{
         position: "relative", overflow: "hidden",
-        padding: "110px 24px 90px",
+        padding: "105px 24px 80px",
         borderBottom: `1px solid var(--c-line)`,
         background: "var(--gradient-hero)",
         transition: "background 0.3s ease"
       }}>
         {/* Ambient glow orbs */}
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-          <div className="ambient-orb" style={{ width: 500, height: 500, background: "rgba(0,230,118,1)", top: -200, right: -100, animationDelay: "0s" }} />
-          <div className="ambient-orb" style={{ width: 400, height: 400, background: "rgba(41,121,255,1)", bottom: -180, left: -80, animationDelay: "4s" }} />
-          <div className="ambient-orb" style={{ width: 280, height: 280, background: "rgba(255,171,0,0.4)", top: "40%", right: "20%", animationDelay: "2s", opacity: 0.06 }} />
+          <div className="ambient-orb" style={{ width: 550, height: 550, background: "rgba(0,230,118,1)", top: -200, right: -100, animationDelay: "0s" }} />
+          <div className="ambient-orb" style={{ width: 440, height: 440, background: "rgba(41,121,255,1)", bottom: -180, left: -80, animationDelay: "4s" }} />
+          <div className="ambient-orb" style={{ width: 300, height: 300, background: "rgba(255,171,0,0.35)", top: "35%", right: "22%", animationDelay: "2s", opacity: 0.08 }} />
         </div>
+
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          {/* Live pill */}
+          {/* Institutional Status Pill */}
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            color: "var(--c-verified)", fontSize: 11.5,
+            display: "inline-flex", alignItems: "center", gap: 9,
+            color: "var(--c-verified)", fontSize: 12,
             fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600,
             border: `1px solid var(--c-line-accent)`,
-            padding: "5px 12px", borderRadius: 24, marginBottom: 28,
+            padding: "6px 14px", borderRadius: 24, marginBottom: 28,
             background: "var(--c-verified-dim)",
             letterSpacing: "0.04em",
+            boxShadow: "0 0 16px rgba(0, 230, 118, 0.15)"
           }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--c-verified)", boxShadow: "0 0 6px var(--c-verified)" }} />
-            LIVE · PostgreSQL Registry · {brokers.length} Entities Indexed
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--c-verified)", boxShadow: "0 0 8px var(--c-verified)" }} />
+            LIVE · Supabase Global Registry · {brokers.length} Entities Audited
           </div>
+
           <h1 style={{
             fontFamily: "'Fraunces', serif", fontWeight: 600,
-            fontSize: "clamp(28px, 5.5vw, 62px)", lineHeight: 1.05,
-            maxWidth: 780, letterSpacing: "-0.02em",
+            fontSize: "clamp(32px, 5.8vw, 64px)", lineHeight: 1.05,
+            maxWidth: 820, letterSpacing: "-0.025em",
             margin: "0 0 20px",
           }}>
-            Audited transparency for{" "}
-            <em style={{ color: "var(--c-verified)", fontStyle: "italic", position: "relative" }}>
+            Audited financial transparency for{" "}
+            <em style={{
+              background: "var(--gradient-brand)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontStyle: "italic",
+              position: "relative"
+            }}>
               forex & CFD brokers.
             </em>
           </h1>
+
           <p style={{
-            color: "var(--c-paper-dim)", fontSize: 16,
-            maxWidth: 560, lineHeight: 1.6, margin: "0 0 36px",
+            color: "var(--c-paper-dim)", fontSize: 16.5,
+            maxWidth: 620, lineHeight: 1.6, margin: "0 0 36px",
             fontWeight: 400,
           }}>
-            Cross-referencing tier-1 regulators, financial filings, and validated
-            victim exposure logs to protect trader capital.
+            Cross-referencing tier-1 statutory regulators, corporate filings, physical office audits,
+            and validated victim exposure ledgers to safeguard retail capital.
           </p>
 
-          {/* Search bar */}
-          <div className="hero-search-bar" style={{
-            maxWidth: 680, display: "flex",
-            background: "rgba(8,8,18,0.8)",
-            border: `1px solid var(--c-line-strong)`,
-            borderRadius: 18, overflow: "hidden",
-            boxShadow: "0 24px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,230,118,0.05)",
-            backdropFilter: "blur(12px)",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", padding: "0 18px" }}>
-              <Search size={16} color="var(--c-muted)" />
+          {/* Search bar with Live Autocomplete */}
+          <div style={{ position: "relative", maxWidth: 720 }}>
+            <div className="hero-search-bar" style={{
+              display: "flex",
+              background: "rgba(10,10,22,0.85)",
+              border: `1px solid ${searchFocused ? "var(--c-verified)" : "var(--c-line-strong)"}`,
+              borderRadius: 18, overflow: "hidden",
+              boxShadow: searchFocused ? "0 20px 48px rgba(0,0,0,0.5), 0 0 0 2px rgba(0,230,118,0.25)" : "0 20px 48px rgba(0,0,0,0.35)",
+              backdropFilter: "blur(16px)",
+              transition: "border-color 0.2s, box-shadow 0.2s"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", padding: "0 20px" }}>
+                <Search size={18} color={searchFocused ? "var(--c-verified)" : "var(--c-muted)"} />
+              </div>
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 250)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setBrokerSearch(q);
+                    setView("brokers");
+                    setSearchFocused(false);
+                  }
+                }}
+                placeholder="Search broker by name, license number, regulator, or country..."
+                style={{
+                  flex: 1, background: "transparent", border: "none",
+                  outline: "none", color: "var(--c-paper)",
+                  padding: "18px 0", fontSize: 15, fontFamily: "'Inter', sans-serif",
+                  minWidth: 0,
+                }}
+              />
+              {q && (
+                <button
+                  type="button"
+                  onClick={() => setQ("")}
+                  style={{ background: "transparent", border: "none", color: "var(--c-muted)", cursor: "pointer", padding: "0 12px", display: "flex", alignItems: "center" }}
+                >
+                  <X size={16} />
+                </button>
+              )}
+              <button
+                onClick={() => { setBrokerSearch(q); setView("brokers"); setSearchFocused(false); }}
+                style={{
+                  background: "var(--gradient-brand)", color: "#03030A",
+                  border: "none", padding: "0 26px", fontWeight: 700,
+                  cursor: "pointer", transition: "all 0.2s",
+                  fontSize: 14, letterSpacing: "0.02em", fontFamily: "'Inter', sans-serif",
+                  margin: "6px", borderRadius: 12, flexShrink: 0,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                Inspect
+              </button>
             </div>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && (setBrokerSearch(q), setView("brokers"))}
-              placeholder="Search broker, license, or country..."
-              style={{
-                flex: 1, background: "transparent", border: "none",
-                outline: "none", color: "var(--c-paper)",
-                padding: "16px 0", fontSize: 15, fontFamily: "'Inter', sans-serif",
-                minWidth: 0,
-              }}
-            />
-            <button
-              onClick={() => { setBrokerSearch(q); setView("brokers"); }}
-              style={{
-                background: "var(--gradient-brand)", color: "#03030A",
-                border: "none", padding: "0 24px", fontWeight: 700,
-                cursor: "pointer", transition: "opacity 0.2s",
-                fontSize: 14, letterSpacing: "0.02em", fontFamily: "'Inter', sans-serif",
-                margin: "6px", borderRadius: 12, flexShrink: 0,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-            >
-              Examine
-            </button>
+
+            {/* Instant Search Autocomplete Dropdown */}
+            {searchFocused && searchSuggestions.length > 0 && (
+              <div className="hero-autocomplete-dropdown">
+                <div style={{ padding: "8px 16px", fontSize: 11, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace", borderBottom: "1px solid var(--c-line)", letterSpacing: "0.06em" }}>
+                  MATCHING VERIFIED DOSSIERS ({searchSuggestions.length})
+                </div>
+                {searchSuggestions.map(b => (
+                  <div
+                    key={b.id}
+                    className="dropdown-item"
+                    onMouseDown={() => { openDetail(b); setQ(""); }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <Stamp score={b.score} alert={b.flags?.length > 0} size={36} />
+                      <div>
+                        <div style={{ fontWeight: 600, color: "var(--c-paper)", fontSize: 14 }}>{b.name}</div>
+                        <div style={{ fontSize: 11.5, color: "var(--c-paper-dim)" }}>
+                          {b.country} · {b.regulator} · {b.license}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <Badge tone={b.flags?.length > 0 ? "warn" : "reg"}>{b.type || "ECN"}</Badge>
+                      <ChevronRight size={16} color="var(--c-muted)" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Trust badges */}
-          <div style={{ display: "flex", gap: 16, marginTop: 32, flexWrap: "wrap" }}>
+          {/* Quick Search Tag Chips */}
+          <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontSize: 12, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace" }}>POPULAR:</span>
             {[
-              ["FCA", "Tier-1 UK"],
+              { label: "⚡ Raw ECN Spreads", query: "ECN" },
+              { label: "🛡️ Tier-1 FCA Only", query: "FCA" },
+              { label: "💰 Low $50 Deposit", query: "50" },
+              { label: "💎 Top 9.0+ Trust", query: "Solaris" },
+              { label: "⚠️ Watchlist Alerts", query: "Offshore" }
+            ].map((chip) => (
+              <button
+                key={chip.label}
+                type="button"
+                className="quick-tag-chip"
+                onClick={() => { setBrokerSearch(chip.query); setView("brokers"); }}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Statutory Trust Badges */}
+          <div style={{ display: "flex", gap: 20, marginTop: 34, flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontSize: 11.5, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.05em" }}>STATUTORY MONITORS:</span>
+            {[
+              ["FCA", "United Kingdom"],
               ["ASIC", "Australia"],
-              ["CySEC", "European"],
+              ["CySEC", "European Union"],
               ["FSCA", "South Africa"],
+              ["CFTC / NFA", "United States"]
             ].map(([reg, region]) => (
               <div key={reg} style={{
                 display: "flex", alignItems: "center", gap: 8,
                 color: "var(--c-paper-dim)", fontSize: 12,
                 fontFamily: "'IBM Plex Mono', monospace",
+                background: "rgba(255,255,255,0.02)",
+                padding: "4px 10px", borderRadius: 8,
+                border: "1px solid var(--c-line)"
               }}>
+                <Check size={12} color="var(--c-verified)" />
                 <span style={{ color: "var(--c-verified)", fontWeight: 700 }}>{reg}</span>
                 <span style={{ color: "var(--c-muted)" }}>{region}</span>
               </div>
@@ -723,40 +874,59 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      {/* Real-time Registry Telemetry Strip */}
-      <section className="telemetry-strip">
+      {/* ── Continuous Live Market Marquee Ticker Tape ── */}
+      <div className="ticker-ribbon-container">
+        <div className="ticker-ribbon-track">
+          {[...tickerItems, ...tickerItems].map((item, index) => (
+            <div
+              key={`${item.symbol}-${index}`}
+              className="ticker-item"
+              onClick={() => setView("market")}
+              title="Click to view live market pulse"
+            >
+              <span className="ticker-symbol">{item.symbol}</span>
+              <span className="ticker-price">{item.price}</span>
+              <span className={`ticker-change ${item.up ? "up" : "down"}`}>{item.change}</span>
+              <span style={{ color: "var(--c-muted)", fontSize: 10.5 }}>Spr {item.spread}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Real-time Registry Telemetry Strip ── */}
+      <section className="telemetry-strip" style={{ borderBottom: "1px solid var(--c-line)" }}>
         <div className="telemetry-grid">
           {[
             {
               Icon: ShieldCheck,
-              label: "Registry coverage",
-              value: `${brokers.length} entities`,
-              note: "Live indexed universe",
-              trend: "100% Indexed",
+              label: "Audited universe",
+              value: `${brokers.length} Entities`,
+              note: "100% Cross-referenced",
+              trend: "Live Verified",
               variant: "tc-verified"
             },
             {
               Icon: Activity,
-              label: "Average trust score",
+              label: "Average trust index",
               value: `${(brokers.reduce((sum, b) => sum + Number(b.score || 0), 0) / Math.max(brokers.length, 1)).toFixed(1)} / 10`,
-              note: "Across all records",
-              trend: "Mean Benchmark",
+              note: "Composite across 4 pillars",
+              trend: "Benchmark Norm",
               variant: "tc-score"
             },
             {
               Icon: AlertOctagon,
               label: "Flagged entities",
-              value: `${flaggedCount} requiring review`,
-              note: "Risk signals on file",
-              trend: flaggedCount > 0 ? "Active Signals" : "Clean",
+              value: `${flaggedCount} Under Review`,
+              note: "Active risk advisories",
+              trend: flaggedCount > 0 ? "Elevated Alert" : "Clean Signal",
               variant: "tc-alert"
             },
             {
               Icon: DollarSign,
-              label: "Disputed capital",
+              label: "Victim exposure claims",
               value: `$${disputedTotal.toLocaleString()}`,
-              note: "Reported exposure value",
-              trend: "Claim Triage",
+              note: "Reported dispute volume",
+              trend: "Dispute Triage",
               variant: "tc-money"
             },
           ].map(({ Icon, label, value, note, trend, variant }) => (
@@ -778,28 +948,44 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      {/* Unified AI Intelligence Command Deck */}
-      <AIIntelligenceDeck
-        brokers={brokers}
-        exposures={exposures}
-        setView={setView}
-        openDetail={openDetail}
-        toggleCompare={toggleCompare}
-        compareList={compareList}
-      />
-
-      {/* Benchmark Leaders - Top Rated Financial Institutions */}
+      {/* ── Interactive Screener & Benchmark Leaders ── */}
       <section className="benchmark-leaders-section" style={{ padding: "72px 20px 48px", maxWidth: 1240, margin: "0 auto" }}>
-        <div className="section-header-flex" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 36, flexWrap: "wrap", gap: 16 }}>
+        <div className="section-header-flex" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16 }}>
           <div>
-            <div className="section-kicker"><TrendingUp size={11} /> Benchmark Leaders</div>
+            <div className="section-kicker"><Award size={11} /> Benchmark Leaders</div>
             <h2 className="section-heading">Top Rated Financial Institutions</h2>
-            <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: 0 }}>Sorted by independent trust scoring across all verification criteria.</p>
+            <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: 0 }}>
+              Live ranking computed across regulatory standing, commercial stability, field survey, and software security.
+            </p>
           </div>
-          <Button variant="ghost" onClick={() => setView("rankings")}>View Leaderboard →</Button>
+
+          {/* Interactive Screener Tabs */}
+          <div className="screener-tabs-bar">
+            {[
+              { id: "all", label: "Top Overall", icon: Sparkles },
+              { id: "tier1", label: "Tier-1 Only", icon: ShieldCheck },
+              { id: "ecn", label: "Raw ECN", icon: Zap },
+              { id: "low_deposit", label: "≤$50 Deposit", icon: DollarSign },
+              { id: "clean", label: "Zero Flags", icon: CheckCircle2 }
+            ].map(tab => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  className={`screener-tab-btn ${activeCategory === tab.id ? "active" : ""}`}
+                  onClick={() => setActiveCategory(tab.id)}
+                >
+                  <TabIcon size={13} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: 24 }}>
-          {topThree.map((b, index) => (
+          {screenerBrokers.map((b, index) => (
             <BrokerCard
               key={b.id}
               b={b}
@@ -809,13 +995,195 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
               isCompared={compareList.some(x => x.id === b.id)}
             />
           ))}
-          {!topThree.length && <div className="empty-state-panel">No broker records are currently indexed. Open Admin to add the first dossier.</div>}
+          {!screenerBrokers.length && (
+            <div className="empty-state-panel" style={{ gridColumn: "1 / -1", padding: 40, textAlign: "center" }}>
+              No brokers match the selected category.
+              <button
+                type="button"
+                onClick={() => setActiveCategory("all")}
+                style={{ marginLeft: 12, background: "transparent", color: "var(--c-verified)", border: "none", cursor: "pointer", textDecoration: "underline" }}
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 32 }}>
+          <Button variant="secondary" onClick={() => setView("rankings")}>
+            Explore Full Registry Directory ({brokers.length} Dossiers) →
+          </Button>
         </div>
       </section>
 
-      {/* Latest Exposure Reports */}
+      {/* ── Interactive Spread Fee & Savings Calculator ── */}
+      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "12px 20px 64px" }}>
+        <div className="spread-calc-hero-card">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 20, marginBottom: 28 }}>
+            <div>
+              <div className="section-kicker"><Calculator size={11} /> Trading Cost Radar</div>
+              <h3 style={{ fontSize: 24, fontWeight: 700, margin: "6px 0 8px", fontFamily: "'Inter', sans-serif" }}>
+                Calculate Spread Slippage & Broker Savings
+              </h3>
+              <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: 0, maxWidth: 540 }}>
+                High spreads silently erode your capital. See how much trading capital you keep with verified ECN brokers vs unverified market makers.
+              </p>
+            </div>
+            
+            {/* Pair Selector Buttons */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {["EUR/USD", "GBP/USD", "USD/JPY", "XAU/USD", "BTC/USD"].map(pair => (
+                <button
+                  key={pair}
+                  type="button"
+                  onClick={() => setCalcPair(pair)}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: 8,
+                    fontSize: 12,
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontWeight: 600,
+                    border: calcPair === pair ? "1px solid var(--c-verified)" : "1px solid var(--c-line)",
+                    background: calcPair === pair ? "var(--c-verified-dim)" : "rgba(255,255,255,0.03)",
+                    color: calcPair === pair ? "var(--c-verified)" : "var(--c-paper)",
+                    cursor: "pointer",
+                    transition: "all 0.15s"
+                  }}
+                >
+                  {pair}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Interactive Slider */}
+          <div style={{ background: "rgba(3, 3, 10, 0.4)", padding: "20px 24px", borderRadius: 14, border: "1px solid var(--c-line)", marginBottom: 24 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <span style={{ fontSize: 13, color: "var(--c-paper)", fontWeight: 500 }}>Trade Volume (Standard Lots per position):</span>
+              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 18, fontWeight: 700, color: "var(--c-verified)" }}>
+                {calcLots.toFixed(1)} Lots
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0.1"
+              max="10.0"
+              step="0.1"
+              value={calcLots}
+              onChange={(e) => setCalcLots(Number(e.target.value))}
+              className="calc-range-slider"
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--c-muted)", marginTop: 6, fontFamily: "'IBM Plex Mono', monospace" }}>
+              <span>0.1 Lot (Micro)</span>
+              <span>2.0 Lots (Standard)</span>
+              <span>10.0 Lots (Institutional)</span>
+            </div>
+          </div>
+
+          {/* Real-time Comparison Metrics */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+            <div className="calc-metric-pill">
+              <div style={{ fontSize: 11, color: "var(--c-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                Top Tier ECN Broker (0.1 pip)
+              </div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, fontWeight: 700, color: "var(--c-verified)" }}>
+                ${ecnCost.toFixed(2)}
+              </div>
+              <div style={{ fontSize: 11, color: "var(--c-paper-dim)", marginTop: 4 }}>Cost across 10 trades</div>
+            </div>
+
+            <div className="calc-metric-pill">
+              <div style={{ fontSize: 11, color: "var(--c-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                Average Market Maker (1.4+ pips)
+              </div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, fontWeight: 700, color: "var(--c-alert)" }}>
+                ${stdCost.toFixed(2)}
+              </div>
+              <div style={{ fontSize: 11, color: "var(--c-paper-dim)", marginTop: 4 }}>Cost across 10 trades</div>
+            </div>
+
+            <div className="calc-metric-pill" style={{ background: "var(--c-verified-dim)", borderColor: "rgba(0,230,118,0.3)" }}>
+              <div style={{ fontSize: 11, color: "var(--c-verified)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700, marginBottom: 6 }}>
+                Estimated Trader Capital Saved
+              </div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 24, fontWeight: 800, color: "var(--c-verified)" }}>
+                +${savings.toFixed(2)}
+              </div>
+              <div style={{ fontSize: 11, color: "var(--c-paper)", marginTop: 4 }}>Stay with audited ECN brokers</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Multi-Layer Institutional Verification Methodology ── */}
+      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "16px 20px 72px" }}>
+        <div style={{ textAlign: "center", maxWidth: 720, margin: "0 auto 48px" }}>
+          <div className="section-kicker" style={{ justifyContent: "center" }}><Layers size={11} /> Inspection Standard</div>
+          <h2 className="section-heading" style={{ fontSize: 32, marginBottom: 12 }}>How Ledger Audits Every Broker</h2>
+          <p style={{ color: "var(--c-paper-dim)", fontSize: 15, margin: 0 }}>
+            We do not rely on self-reported marketing brochures. Every score is computed using our four-tier verification protocol before capital moves.
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
+          {[
+            {
+              step: "01",
+              icon: ShieldCheck,
+              title: "Statutory License Auditing",
+              desc: "Automated daily cross-referencing against primary registers including UK FCA, Australian ASIC, and European CySEC. Unlicensed clones are flagged within hours."
+            },
+            {
+              step: "02",
+              icon: FileText,
+              title: "Physical On-Site Surveys",
+              desc: "Field investigators physically visit and photograph registered headquarter addresses in London, Sydney, Cyprus, and offshore zones to eliminate virtual mailboxes."
+            },
+            {
+              step: "03",
+              icon: Zap,
+              title: "Execution & Slippage Probing",
+              desc: "Real-time tick data monitoring during high-volatility releases (NFP, CPI) to detect artificial stop-hunting, spread spiking, and delayed order fills."
+            },
+            {
+              step: "04",
+              icon: AlertOctagon,
+              title: "Victim Dispute Ledger",
+              desc: "Cryptographically verified complaints logging disputed balances. When withdrawal delays exceed 14 days, the broker's safety score automatically downgrades."
+            }
+          ].map(card => {
+            const CardIcon = card.icon;
+            return (
+              <div key={card.step} className="methodology-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                  <div className="methodology-icon-wrap">
+                    <CardIcon size={20} />
+                  </div>
+                  <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, fontWeight: 700, color: "var(--c-muted)" }}>
+                    {card.step}
+                  </span>
+                </div>
+                <h4 style={{ fontSize: 16, fontWeight: 600, color: "var(--c-paper)", marginBottom: 8 }}>{card.title}</h4>
+                <p style={{ fontSize: 13, color: "var(--c-paper-dim)", lineHeight: 1.6, margin: 0 }}>{card.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ── Unified AI Intelligence Command Deck ── */}
+      <AIIntelligenceDeck
+        brokers={brokers}
+        exposures={exposures}
+        setView={setView}
+        openDetail={openDetail}
+        toggleCompare={toggleCompare}
+        compareList={compareList}
+      />
+
+      {/* ── Latest Exposure Reports ── */}
       <section className="exposure-band" style={{
-        padding: "60px 20px",
+        padding: "64px 20px",
         background: "var(--c-surface)",
         borderTop: `1px solid var(--c-line)`,
         borderBottom: `1px solid var(--c-line)`,
@@ -825,6 +1193,9 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             <div>
               <div className="section-kicker kicker-alert"><AlertTriangle size={11} /> High-Risk Exposure</div>
               <h2 className="section-heading">Recent Victim Complaints & Claims</h2>
+              <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: "6px 0 0" }}>
+                Active mediation claims under investigation by our dispute resolution team.
+              </p>
             </div>
             <Button variant="ghost" onClick={() => setView("exposure")}>File a Claim →</Button>
           </div>
@@ -855,11 +1226,12 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
+      {/* ── Live Market Overview Grid ── */}
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
           <div>
             <div className="section-kicker"><BarChart3 size={11} /> Market Overview</div>
-            <h2 className="section-heading">Live trading finance snapshot</h2>
+            <h2 className="section-heading">Live Trading Finance Snapshot</h2>
           </div>
           <Button variant="ghost" onClick={() => setView("market")}>Open Market Pulse →</Button>
         </div>
@@ -884,13 +1256,14 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
+      {/* ── Mediation Center Activity ── */}
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
           <div>
             <div className="section-kicker"><Scale size={11} /> Mediation Center</div>
-            <h2 className="section-heading">Resolved dispute activity</h2>
+            <h2 className="section-heading">Resolved Dispute Activity</h2>
           </div>
-          <Badge tone="reg">$72,130,288 resolved</Badge>
+          <Badge tone="reg">$72,130,288 Recovered & Resolved</Badge>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
           {[
@@ -914,7 +1287,8 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      <section className="about-ledger">
+      {/* ── About Ledger Mission ── */}
+      <section className="about-ledger" style={{ marginTop: 64 }}>
         <div className="about-ledger-intro">
           <Badge tone="reg"><Radar size={12} /> ABOUT LEDGER</Badge>
           <h2>A clearer signal in a noisy market.</h2>

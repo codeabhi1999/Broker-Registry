@@ -1788,7 +1788,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
       notify("✅ Broker saved directly to Supabase!");
       setNewBroker({ name: "", years: 5, score: 8.0, regulator: "", license: "", country: "", type: "ECN", min_deposit: 100, max_leverage: "1:500", flags: "", licenseStatus: "Regulated" });
     } else {
-      const errMsg = saved?.error || "Check backend / Supabase RLS policies.";
+      const errMsg = saved?.error || (saved === null ? "Cannot reach backend server. Ensure 'npm run server' is running on port 5000." : "Check backend / Supabase RLS policies.");
       notify(`⚠️ ${errMsg}`, "alert");
     }
   }

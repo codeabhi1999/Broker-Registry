@@ -14,25 +14,34 @@ dotenv.config({ path: path.resolve(__dirname, '../client/src/.env') });
 dotenv.config();
 
 const { Pool } = pg;
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:1234@localhost:5432/ledger_db';
-const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+
+// Supabase Project Fallback Credentials
+const DEFAULT_SUPABASE_URL = 'https://ioentbqwacrzhaczybtg.supabase.co';
+const DEFAULT_SUPABASE_KEY = 'sb_publishable_pDFYhslNxNTFR1pf-rgEIA_Qccv22Pv';
 
 // Supabase REST Client
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_KEY;
 const useSupabase = Boolean(supabaseUrl && supabaseKey);
 const supabase = useSupabase ? createClient(supabaseUrl, supabaseKey) : null;
 
+const connectionString = process.env.DATABASE_URL;
+const isLocal = connectionString ? (connectionString.includes('localhost') || connectionString.includes('127.0.0.1')) : false;
+
 if (useSupabase) {
   console.log(`[DB Config] Connected to Supabase Cloud via SDK: ${supabaseUrl}`);
+} else if (connectionString) {
+  console.log(`[DB Config] Connecting to PostgreSQL: ${isLocal ? 'Local (localhost:5432)' : 'Cloud Database (URI)'}`);
 } else {
-  console.log(`[DB Config] Connecting to: ${isLocal ? 'Local PostgreSQL (localhost:5432)' : 'Cloud Database (Postgres URI)'}`);
+  console.warn(`[DB Config] No database configured. Supabase credentials or DATABASE_URL required.`);
 }
 
-const pool = new Pool({
-  connectionString,
-  ssl: isLocal ? false : { rejectUnauthorized: false },
-});
+const pool = (!useSupabase && connectionString)
+  ? new Pool({
+      connectionString,
+      ssl: isLocal ? false : { rejectUnauthorized: false },
+    })
+  : null;
 
 const app = express();
 app.use(cors());
@@ -408,6 +417,11 @@ async function initializeDatabase() {
     return;
   }
 
+  if (!pool) {
+    console.warn('⚠️ [DB Notice] PostgreSQL pool not initialized. Supabase is the primary backend.');
+    return;
+  }
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS brokers (
       id SERIAL PRIMARY KEY,
@@ -527,7 +541,14 @@ if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
       console.warn('Server will continue running. (API endpoints requiring PostgreSQL will return errors until database is reachable)');
     })
     .finally(() => {
-      app.listen(PORT, () => console.log(`Ledger API operational on port ${PORT}`));
+      const server = app.listen(PORT, () => console.log(`Ledger API operational on port ${PORT}`));
+      server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          console.error(`⚠️ Port ${PORT} is already in use by another process. Please terminate the process using port ${PORT} or configure a different PORT in .env.`);
+        } else {
+          console.error(`Server error:`, err.message);
+        }
+      });
     });
 }
 

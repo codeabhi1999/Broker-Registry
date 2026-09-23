@@ -2284,7 +2284,7 @@ function MarketPage() {
   const winners = [...marketPairs].sort((a, b) => Math.abs(b.change) - Math.abs(a.change)).slice(0, 4);
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
+    <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 32 }}>
         <div>
           <div style={{ fontSize: 12, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Live market intelligence</div>
@@ -2596,6 +2596,15 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
   const [tab, setTab] = useState(() => {
     return localStorage.getItem("ledger_admin_tab") || "overview";
   });
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setMobileSidebarOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("ledger_admin_tab", tab);
@@ -2805,13 +2814,77 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
         </div>
       )}
 
+      {/* Admin Mobile Top Bar & Quick Switcher */}
+      <div className="admin-mobile-bar">
+        <button
+          type="button"
+          className="admin-mobile-nav-trigger"
+          onClick={() => setMobileSidebarOpen(true)}
+          aria-expanded={mobileSidebarOpen}
+          aria-label="Open Admin Navigation Sidebar"
+        >
+          <div className="admin-mobile-nav-trigger-left">
+            <Menu size={18} />
+            <span className="admin-mobile-nav-title">Navigation</span>
+            <span className="admin-mobile-nav-current">{sidebarItems.find(s => s.id === tab)?.label || "Dashboard"}</span>
+          </div>
+          <div className="admin-mobile-nav-trigger-right">
+            <span className="admin-mobile-nav-meta">{sidebarItems.find(s => s.id === tab)?.meta}</span>
+            <ChevronDown size={15} />
+          </div>
+        </button>
+      </div>
+
+      <div className="admin-mobile-quick-pills">
+        {sidebarItems.map(({ id, Icon, label, meta }) => (
+          <button
+            key={id}
+            type="button"
+            className={`admin-mobile-pill ${tab === id ? "is-active" : ""}`}
+            onClick={() => setTab(id)}
+          >
+            <Icon size={13} />
+            <span>{label}</span>
+            <small>{meta}</small>
+          </button>
+        ))}
+      </div>
+
       <div className="admin-layout">
+        {/* Backdrop for mobile drawer */}
+        {mobileSidebarOpen && (
+          <div
+            className="admin-sidebar-backdrop"
+            onClick={() => setMobileSidebarOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Sidebar */}
-        <aside className="admin-sidebar" aria-label="Admin sections">
-          <div className="admin-sidebar-label">Navigation</div>
+        <aside className={`admin-sidebar ${mobileSidebarOpen ? "is-mobile-open" : ""}`} aria-label="Admin sections">
+          <div className="admin-sidebar-header">
+            <div className="admin-sidebar-label">Navigation</div>
+            <button
+              type="button"
+              className="admin-sidebar-close-btn"
+              onClick={() => setMobileSidebarOpen(false)}
+              aria-label="Close navigation"
+              title="Close navigation"
+            >
+              <X size={18} />
+            </button>
+          </div>
           <nav className="admin-sidebar-nav">
             {sidebarItems.map(({ id, Icon, label, meta }) => (
-              <button key={id} type="button" className={`admin-sidebar-link ${tab === id ? "is-active" : ""}`} onClick={() => setTab(id)}>
+              <button
+                key={id}
+                type="button"
+                className={`admin-sidebar-link ${tab === id ? "is-active" : ""}`}
+                onClick={() => {
+                  setTab(id);
+                  setMobileSidebarOpen(false);
+                }}
+              >
                 <Icon size={16} /><span>{label}</span><small>{meta}</small>
               </button>
             ))}
@@ -3203,7 +3276,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 
           {/* ─── SYSTEM TOOLS ─── */}
           {tab === "tools" && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 18 }}>
               {[
                 { title: "Flag Risk Brokers", desc: "Automatically tag all brokers with a score below 5 as 'High risk review'. Updates registry instantly.", action: handleHighlightRisk, icon: "⚠️", tone: "warn", btnLabel: "Run Auto-Flag" },
                 { title: "Publish Pending Queue", desc: "Move all pending exposure reports to published status. Use after batch reviewing submissions.", action: handleBulkReview, icon: "✅", tone: "reg", btnLabel: "Publish All Pending" },
@@ -3536,15 +3609,15 @@ function FieldSurveyPage({ surveys: propSurveys }) {
           const currentPhoto = fs.photos?.find(p => p.tab === currentTab) || fs.photos?.[0] || { label: "Office Overview", desc: fs.findings };
 
           return (
-            <div key={fs.id} style={{ background: C.surface, border: `1px solid ${statusColor[fs.status]}33`, borderRadius: 18, padding: "26px 28px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", gap: 16 }}>
+            <div key={fs.id} className="survey-card" style={{ background: C.surface, border: `1px solid ${statusColor[fs.status]}33`, borderRadius: 18, padding: "26px 28px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", gap: 16 }}>
               {/* Status ribbon */}
-              <div style={{ position: "absolute", top: 20, right: 20, background: statusColor[fs.status], color: "#000", fontSize: 10, fontWeight: 800, padding: "4px 14px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
+              <div className="survey-status-ribbon" style={{ background: statusColor[fs.status], color: "#000", fontSize: 10, fontWeight: 800, padding: "4px 14px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{ width: 52, height: 52, borderRadius: 12, background: statusBg[fs.status], border: `1px solid ${statusColor[fs.status]}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
                   {fs.status === "Verified" ? "✅" : fs.status === "Suspicious" ? "⚠️" : "🚨"}
                 </div>
-                <div style={{ minWidth: 0, paddingRight: 90 }}>
+                <div className="survey-card-title-box" style={{ minWidth: 0 }}>
                   <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, marginBottom: 4, wordBreak: "break-word" }}>{fs.broker}</h3>
                   <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", wordBreak: "break-word" }}>📍 {fs.address}</div>
                 </div>
@@ -3779,7 +3852,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
 
       {/* Main Interactive Diagram & Dossier */}
       {activeNetwork && (
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 0.9fr", gap: 28, alignItems: "start" }}>
+        <div className="network-main-grid" style={{ display: "grid", gap: 28, alignItems: "start" }}>
           {/* Visual Graph Layout */}
           <div className="network-graph-wrap">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, borderBottom: "1px solid var(--c-line)", paddingBottom: 14 }}>
@@ -4238,7 +4311,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
               </div>
             ) : (
               <form onSubmit={handleSubmitClaim} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="protection-form-row" style={{ display: "grid", gap: 12 }}>
                   <div>
                     <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Target Broker</label>
                     <select
@@ -4264,7 +4337,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 12 }}>
+                <div className="protection-form-row" style={{ display: "grid", gap: 12 }}>
                   <div>
                     <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Incident Type</label>
                     <select
@@ -4291,7 +4364,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="protection-form-row" style={{ display: "grid", gap: 12 }}>
                   <div>
                     <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>MT4/MT5 Account ID</label>
                     <input
@@ -4401,7 +4474,7 @@ function RebatePage({ rebates: propRebates }) {
             Calculate Your Trading Rebates
           </h2>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+          <div className="rebate-form-row" style={{ display: "grid", gap: 16, marginBottom: 20 }}>
             <div>
               <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 6, fontFamily: "'IBM Plex Mono', monospace" }}>
                 Select Broker
@@ -4458,7 +4531,7 @@ function RebatePage({ rebates: propRebates }) {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="rebate-stats-row" style={{ display: "grid", gap: 12 }}>
             <div style={{ padding: "12px 16px", borderRadius: 10, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)" }}>
               <span style={{ fontSize: 11, color: C.muted }}>Net Effective Spread</span>
               <div style={{ fontSize: 18, fontWeight: 700, color: "var(--c-paper)", marginTop: 2 }}>
@@ -4516,48 +4589,50 @@ function RebatePage({ rebates: propRebates }) {
           <Badge tone="reg">100% Zero Markup Guaranteed</Badge>
         </div>
 
-        <div style={{ overflowX: "auto" }}>
-          {/* Table Header */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.2fr", padding: "12px 18px", borderBottom: "1px solid var(--c-line-strong)", color: C.muted, fontSize: 11, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>
-            <span>Broker & Tier</span>
-            <span>Raw Spread</span>
-            <span>Rebate / Lot</span>
-            <span>Payout Frequency</span>
-            <span style={{ textAlign: "right" }}>Action</span>
-          </div>
-
-          {/* Rows */}
-          {rebates.map(r => (
-            <div key={r.id} className="rebate-table-row">
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--c-paper)" }}>{r.brokerName}</div>
-                <div style={{ fontSize: 11, color: C.muted }}>{r.regulator} • {r.accountType}</div>
-              </div>
-              <div>
-                <span style={{ fontSize: 13, fontFamily: "'IBM Plex Mono', monospace", color: "var(--c-paper)" }}>{r.rawSpread}</span>
-              </div>
-              <div>
-                <span style={{ fontSize: 15, fontWeight: 800, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>
-                  ${r.rebatePerLot.toFixed(2)}
-                </span>
-                <span style={{ fontSize: 11, color: C.muted }}> / lot</span>
-              </div>
-              <div>
-                <span style={{ fontSize: 12, color: C.paperDim }}>{r.payoutFreq}</span>
-                <div style={{ fontSize: 10, color: C.verified }}>{r.depositBonus}</div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <Button onClick={() => setClaimModal(r)} style={{ padding: "8px 14px", fontSize: 12 }}>
-                  Activate Rebate
-                </Button>
-              </div>
+        <div className="rebate-table-scroll-wrap" style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <div style={{ minWidth: 600 }}>
+            {/* Table Header */}
+            <div className="rebate-table-header" style={{ display: "grid", padding: "12px 18px", borderBottom: "1px solid var(--c-line-strong)", color: C.muted, fontSize: 11, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>
+              <span>Broker & Tier</span>
+              <span>Raw Spread</span>
+              <span>Rebate / Lot</span>
+              <span>Payout Frequency</span>
+              <span style={{ textAlign: "right" }}>Action</span>
             </div>
-          ))}
+
+            {/* Rows */}
+            {rebates.map(r => (
+              <div key={r.id} className="rebate-table-row">
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--c-paper)" }}>{r.brokerName}</div>
+                  <div style={{ fontSize: 11, color: C.muted }}>{r.regulator} • {r.accountType}</div>
+                </div>
+                <div>
+                  <span style={{ fontSize: 13, fontFamily: "'IBM Plex Mono', monospace", color: "var(--c-paper)" }}>{r.rawSpread}</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>
+                    ${r.rebatePerLot.toFixed(2)}
+                  </span>
+                  <span style={{ fontSize: 11, color: C.muted }}> / lot</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 12, color: C.paperDim }}>{r.payoutFreq}</span>
+                  <div style={{ fontSize: 10, color: C.verified }}>{r.depositBonus}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <Button onClick={() => setClaimModal(r)} style={{ padding: "8px 14px", fontSize: 12 }}>
+                    Activate Rebate
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* How Forex Rebates Work */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 20 }}>
         {[
           {
             icon: "🤝",
@@ -4738,7 +4813,7 @@ function SpreadCalculatorPage() {
 
       <div className="calc-layout" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32 }}>
         {/* Controls */}
-        <div style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 16, padding: 28, position: "sticky", top: 90, height: "fit-content" }}>
+        <div className="calc-controls-panel" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 16, padding: 28, height: "fit-content" }}>
           <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, marginBottom: 20 }}>Configure Trade</h3>
           
           <div style={{ marginBottom: 20 }}>
@@ -4991,7 +5066,7 @@ export default function App() {
       {view === "rankings" && <div className="view-transition-wrap"><LeaderboardPage brokers={brokers} /></div>}
       {view === "exposure" && <div className="view-transition-wrap"><ExposurePage exposures={exposures} brokers={brokers} onSubmitReport={handleAddExposure} /></div>}
       {view === "news" && (
-        <div className="view-transition-wrap" style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px" }}>
+        <div className="view-transition-wrap page-container" style={{ maxWidth: 800, margin: "0 auto" }}>
           <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 32, marginBottom: 24 }}>Dispatches & Intelligence</h1>
           {news.map(n => (
             <div key={n.id} style={{ borderBottom: `1px solid ${C.line}`, paddingBottom: 24, marginBottom: 24 }}>

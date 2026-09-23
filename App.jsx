@@ -4847,7 +4847,7 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      <TickerTape pairs={marketPairs} />
+      {view !== "admin" && <TickerTape pairs={marketPairs} />}
 
       {view === "home" && <div className="view-transition-wrap"><Home brokers={brokers} exposures={exposures} setView={setView} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} isLight={isLight} setBrokerSearch={setBrokerSearch} /></div>}
       {view === "brokers" && <div className="view-transition-wrap"><BrokersPage brokers={brokers} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} initialQuery={brokerSearch} /></div>}

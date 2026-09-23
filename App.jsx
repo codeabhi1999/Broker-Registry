@@ -609,11 +609,39 @@ const inputStyle = {
 /* ---------------------------------------------------------
    NAVBAR
 --------------------------------------------------------- */
-function Header({ view, setView, compareList, openCompare, isLight, toggleTheme, adminAuthed, onLoginClick, onLogout }) {
+function Header({ view, setView, compareList, openCompare, isLight, toggleTheme, adminAuthed, onLoginClick, onLogout, brokers = [], setBrokerSearch, openDetail }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginHover, setLoginHover] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownTimerRef = React.useRef(null);
+
+  // Direct Interactive Header Search state
+  const [headerQuery, setHeaderQuery] = useState("");
+  const [headerSearchFocused, setHeaderSearchFocused] = useState(false);
+  const headerSearchInputRef = React.useRef(null);
+
+  const headerSuggestions = useMemo(() => {
+    if (!headerQuery.trim() || !brokers) return [];
+    const q = headerQuery.toLowerCase();
+    return brokers.filter(b => 
+      b.name.toLowerCase().includes(q) || 
+      (b.regulator || "").toLowerCase().includes(q) || 
+      (b.country || "").toLowerCase().includes(q) ||
+      (b.license || "").toLowerCase().includes(q)
+    ).slice(0, 5);
+  }, [headerQuery, brokers]);
+
+  useEffect(() => {
+    function handleHeaderKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        headerSearchInputRef.current?.focus();
+        headerSearchInputRef.current?.select();
+      }
+    }
+    window.addEventListener("keydown", handleHeaderKeyDown);
+    return () => window.removeEventListener("keydown", handleHeaderKeyDown);
+  }, []);
 
   const directItems = [
     { id: "home", label: "Registry" },
@@ -690,9 +718,11 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
     <header style={{ position: "sticky", top: 0, zIndex: 60, background: "var(--header-bg)", backdropFilter: "blur(12px)", borderBottom: `1px solid var(--c-line)`, transition: "background 0.3s ease" }}>
 
       <div className="ledger-header-inner" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 22, cursor: "pointer" }} onClick={() => { setView("home"); closeDropdowns(); }}>
-          <div style={{ width: 28, height: 28, borderRadius: "50%", border: `1.5px dashed ${C.verified}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.verified, fontSize: 13 }}>✓</div>
-          LEDGER
+        <div style={{ display: "flex", alignItems: "center", gap: 11, cursor: "pointer" }} onClick={() => { setView("home"); closeDropdowns(); }}>
+          <div className="brand-logo-badge">
+            <ShieldCheck size={18} />
+          </div>
+          <span className="brand-title">LEDGER<span className="brand-title-accent">.</span></span>
         </div>
 
         {/* Desktop Navigation */}
@@ -858,6 +888,88 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
           )}
         </nav>
         <div className="ledger-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          {/* Functional Header Search Bar */}
+          <div className="header-search-wrap">
+            <div className={`header-search-box ${headerSearchFocused ? "is-focused" : ""}`}>
+              <Search size={14} className="header-search-icon" />
+              <input
+                ref={headerSearchInputRef}
+                type="text"
+                className="header-search-input"
+                value={headerQuery}
+                onChange={(e) => setHeaderQuery(e.target.value)}
+                onFocus={() => setHeaderSearchFocused(true)}
+                onBlur={() => setTimeout(() => setHeaderSearchFocused(false), 240)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && headerQuery.trim()) {
+                    if (setBrokerSearch) setBrokerSearch(headerQuery.trim());
+                    setView("brokers");
+                    setHeaderSearchFocused(false);
+                  } else if (e.key === "Escape") {
+                    setHeaderSearchFocused(false);
+                    headerSearchInputRef.current?.blur();
+                  }
+                }}
+                placeholder="Search brokers..."
+                aria-label="Search brokers in header"
+              />
+              {headerQuery ? (
+                <button
+                  type="button"
+                  className="header-search-clear"
+                  onClick={() => {
+                    setHeaderQuery("");
+                    headerSearchInputRef.current?.focus();
+                  }}
+                  aria-label="Clear header search"
+                >
+                  <X size={12} />
+                </button>
+              ) : (
+                <kbd className="header-kbd">⌘K</kbd>
+              )}
+            </div>
+
+            {/* Live Autocomplete Dropdown under Header */}
+            {headerSearchFocused && headerSuggestions.length > 0 && (
+              <div className="header-search-dropdown" role="listbox">
+                <div className="header-search-dropdown-title">
+                  MATCHING BROKERS ({headerSuggestions.length})
+                </div>
+                {headerSuggestions.map(b => (
+                  <div
+                    key={b.id}
+                    className="header-search-result-item"
+                    onMouseDown={() => {
+                      if (openDetail) openDetail(b);
+                      setHeaderQuery("");
+                      setHeaderSearchFocused(false);
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <Stamp score={b.score} alert={b.flags?.length > 0} size={28} />
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: 13, color: "var(--c-paper)" }}>{b.name}</div>
+                        <div style={{ fontSize: 11, color: "var(--c-muted)" }}>{b.country} · {b.regulator}</div>
+                      </div>
+                    </div>
+                    <Badge tone={b.flags?.length > 0 ? "warn" : "reg"}>{b.type || "ECN"}</Badge>
+                  </div>
+                ))}
+                <div
+                  className="header-search-view-all"
+                  onMouseDown={() => {
+                    if (setBrokerSearch) setBrokerSearch(headerQuery.trim());
+                    setView("brokers");
+                    setHeaderSearchFocused(false);
+                  }}
+                >
+                  <span>View all results for "{headerQuery}"</span>
+                  <ChevronRight size={13} />
+                </div>
+              </div>
+            )}
+          </div>
           <div className="ledger-actions" style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {compareList.length > 0 && (
               <Button variant="primary" onClick={openCompare} style={{ padding: "6px 12px", fontSize: 12 }}>
@@ -928,6 +1040,20 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
   // Real-time spread calculator state
   const [calcPair, setCalcPair] = useState("EUR/USD");
   const [calcLots, setCalcLots] = useState(2.0);
+
+  const searchInputRef = React.useRef(null);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const topThree = useMemo(() => [...brokers].sort((a, b) => b.score - a.score).slice(0, 3), [brokers]);
   const recentExposures = useMemo(() => [...exposures].filter(e => e.status === "published").slice(0, 3), [exposures]);
@@ -1038,8 +1164,9 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
 
           {/* Search bar with Live Autocomplete */}
           <div style={{ position: "relative", maxWidth: 720 }}>
-            <div className="hero-search-bar" style={{
+            <div className={`hero-search-bar ${searchFocused ? "is-focused" : ""}`} style={{
               display: "flex",
+              alignItems: "center",
               background: "var(--card-bg)",
               border: `1px solid ${searchFocused ? "var(--c-verified)" : "var(--c-line-strong)"}`,
               borderRadius: 18, overflow: "hidden",
@@ -1051,6 +1178,8 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
                 <Search size={18} color={searchFocused ? "var(--c-verified)" : "var(--c-muted)"} />
               </div>
               <input
+                ref={searchInputRef}
+                id="hero-search-input"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
@@ -1070,6 +1199,11 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
                   minWidth: 0,
                 }}
               />
+              {!q && (
+                <div className="hero-search-shortcut" title="Press Ctrl+K or ⌘K to search">
+                  <kbd>⌘</kbd><kbd>K</kbd>
+                </div>
+              )}
               {q && (
                 <button
                   type="button"
@@ -4845,6 +4979,9 @@ export default function App() {
         adminAuthed={adminAuthed}
         onLoginClick={() => setView("admin")}
         onLogout={handleLogout}
+        brokers={brokers}
+        setBrokerSearch={setBrokerSearch}
+        openDetail={setSelected}
       />
 
       {view !== "admin" && <TickerTape pairs={marketPairs} />}

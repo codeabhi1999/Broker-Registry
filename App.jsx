@@ -34,7 +34,7 @@ const C = {
   blueDim: "var(--c-blue-dim)",
 };
 
-const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');`;
+const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');`;
 
 // Initial seed data if PostgreSQL is booting or offline
 const initialBrokers = [
@@ -377,7 +377,7 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
     <header style={{ position: "sticky", top: 0, zIndex: 60, background: "var(--header-bg)", backdropFilter: "blur(12px)", borderBottom: `1px solid var(--c-line)`, transition: "background 0.3s ease" }}>
 
       <div className="ledger-header-inner" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 22, cursor: "pointer" }} onClick={() => { setView("home"); closeDropdowns(); }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 22, cursor: "pointer" }} onClick={() => { setView("home"); closeDropdowns(); }}>
           <div style={{ width: 28, height: 28, borderRadius: "50%", border: `1.5px dashed ${C.verified}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.verified, fontSize: 13 }}>✓</div>
           LEDGER
         </div>
@@ -710,7 +710,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           </div>
 
           <h1 style={{
-            fontFamily: "'Fraunces', serif", fontWeight: 600,
+            fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600,
             fontSize: "clamp(32px, 5.8vw, 64px)", lineHeight: 1.05,
             maxWidth: 820, letterSpacing: "-0.025em",
             margin: "0 0 20px",
@@ -1597,7 +1597,7 @@ function BrokerCard({ b, onClick, onCompare, isCompared, rank }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
           <div style={{ flex: 1, minWidth: 0, paddingRight: 12 }}>
             <h3 style={{
-              fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 600,
+              fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, fontWeight: 600,
               lineHeight: 1.2, margin: "0 0 5px", color: "var(--c-paper)",
               whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             }}>{b.name}</h3>
@@ -1690,7 +1690,7 @@ function ComparisonModal({ items, onClose, onRemove }) {
       <div className="compare-modal-card" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, maxWidth: 960, width: "100%", padding: "24px 20px", maxHeight: "90vh", overflowY: "auto", boxSizing: "border-box" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, borderBottom: `1px solid ${C.line}`, paddingBottom: 14 }}>
           <div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(18px, 4vw, 24px)" }}>Broker Side-by-Side Audit</h2>
+            <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(18px, 4vw, 24px)" }}>Broker Side-by-Side Audit</h2>
             <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>Evaluating safety metrics, regulation tiers, and execution parameters.</div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", color: C.paperDim, cursor: "pointer", padding: 4 }} aria-label="Close comparison"><X size={20} /></button>
@@ -1752,7 +1752,7 @@ function BrokersPage({ brokers, openDetail, toggleCompare, compareList, initialQ
     <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 20px" }}>
       <div className="section-header-flex" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 28 }}>
         <div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600 }}>Broker Case Directory</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600 }}>Broker Case Directory</h1>
           <p style={{ color: C.paperDim, fontSize: 14, marginTop: 4 }}>Full regulatory dossier and inspection database.</p>
         </div>
         <div className="broker-filter-bar" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", width: "100%", maxWidth: 480 }}>
@@ -1785,7 +1785,7 @@ function MarketPage() {
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 32 }}>
         <div>
           <div style={{ fontSize: 12, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Live market intelligence</div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, fontWeight: 600, marginTop: 6 }}>Trading pair pulse and spread comparison</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 32, fontWeight: 600, marginTop: 6 }}>Trading pair pulse and spread comparison</h1>
         </div>
         <Badge tone="reg"><TrendingUp size={12} /> Updated 2 min ago</Badge>
       </div>
@@ -1817,7 +1817,7 @@ function MarketPage() {
       <div className="market-layout" style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 24 }}>
         <div style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 10, padding: 22 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Spread comparison</h3>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22 }}>Spread comparison</h3>
             <Badge tone="reg">EURUSD</Badge>
           </div>
           <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
@@ -1851,7 +1851,7 @@ function MarketPage() {
 
         <div style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 10, padding: 22 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22 }}>Top movers</h3>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22 }}>Top movers</h3>
             <BarChart3 size={18} color={C.verified} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -1888,7 +1888,7 @@ function LeaderboardPage({ brokers }) {
       <div className="section-header-flex" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 28, flexWrap: "wrap", gap: 16 }}>
         <div>
           <div className="section-kicker">Ranking Dashboard</div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(24px, 5vw, 32px)", marginTop: 4, marginBottom: 0, letterSpacing: "-0.01em" }}>Broker leaderboard</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(24px, 5vw, 32px)", marginTop: 4, marginBottom: 0, letterSpacing: "-0.01em" }}>Broker leaderboard</h1>
         </div>
         <Badge tone="reg">Live scoring snapshot</Badge>
       </div>
@@ -1962,7 +1962,7 @@ function ExposurePage({ exposures, brokers, onSubmitReport }) {
     <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 20px" }}>
       <div className="exposure-layout" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 32 }}>
         <div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(22px, 4vw, 28px)", marginBottom: 8 }}>Active Public Complaints</h2>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(22px, 4vw, 28px)", marginBottom: 8 }}>Active Public Complaints</h2>
           <p style={{ color: C.paperDim, fontSize: 14, marginBottom: 24 }}>Verified investor withdrawal and trade disruption records.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {published.map((e) => (
@@ -1984,7 +1984,7 @@ function ExposurePage({ exposures, brokers, onSubmitReport }) {
 
         <div>
           <div className="exposure-form-card" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, padding: 24 }}>
-            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 6 }}>Submit an Exposure Dossier</h3>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, marginBottom: 6 }}>Submit an Exposure Dossier</h3>
             <p style={{ fontSize: 13, color: C.paperDim, marginBottom: 20 }}>Evidence submitted is held in the PostgreSQL triage database prior to publication.</p>
             {submitted && (
               <div style={{ background: C.verifiedDim, color: C.verified, padding: 12, borderRadius: 6, fontSize: 13, marginBottom: 16 }}>
@@ -2028,7 +2028,7 @@ function DetailModal({ broker, exposures, onClose }) {
         <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 20, flexWrap: "wrap", paddingRight: 32 }}>
           <Stamp score={broker.score} alert={broker.flags.length > 0} size={54} />
           <div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(20px, 4vw, 24px)" }}>{broker.name}</h2>
+            <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(20px, 4vw, 24px)" }}>{broker.name}</h2>
             <div style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, marginTop: 2 }}>Operating {broker.years} Years · Jurisdiction: {broker.country}</div>
           </div>
         </div>
@@ -2280,7 +2280,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
       <div className="admin-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, borderBottom: `1px solid ${C.line}`, paddingBottom: 20, gap: 16, flexWrap: "wrap" }}>
         <div>
           <div style={{ fontSize: 11, color: C.verified, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>🛡 Ledger Intelligence</div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(22px, 5vw, 28px)", marginBottom: 4 }}>Admin Control Centre</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(22px, 5vw, 28px)", marginBottom: 4 }}>Admin Control Centre</h1>
           <div style={{ fontSize: 13, color: C.muted }}>Full platform management · Logged in as Administrator</div>
         </div>
         <div className="admin-header-actions">
@@ -2355,7 +2355,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
               <div className="admin-overview-grid" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 20 }}>
                 <GlassCard style={{ padding: 22 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20 }}>Recent Exposures</h3>
+                    <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20 }}>Recent Exposures</h3>
                     <Badge tone="reg">Live Feed</Badge>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -2376,7 +2376,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 
                 <GlassCard style={{ padding: 22 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                    <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20 }}>Risk Watch</h3>
+                    <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20 }}>Risk Watch</h3>
                     <AlertTriangle size={17} color={C.alert} />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -2396,7 +2396,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 
               {/* Score distribution bar */}
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 16 }}>Registry Score Distribution</h3>
+                <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, marginBottom: 16 }}>Registry Score Distribution</h3>
                 <div className="admin-distrib-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))", gap: 14 }}>
                   {[
                     { label: "High Trust (8–10)", count: brokers.filter(b => Number(b.score) >= 8).length, color: C.verified, bg: C.verifiedDim },
@@ -2428,7 +2428,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
           {tab === "brokers" && (
             <div className="admin-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 24 }}>
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 16, marginBottom: 16, fontFamily: "'Fraunces', serif" }}>Add New Broker</h3>
+                <h3 style={{ fontSize: 16, marginBottom: 16, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Add New Broker</h3>
                 <form onSubmit={handleAddBroker}>
                   <Field label="Broker Name"><input required style={inputStyle} value={newBroker.name} onChange={e => setNewBroker({ ...newBroker, name: e.target.value })} placeholder="e.g. Global FX Ltd" /></Field>
                   <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -2459,7 +2459,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
 
               <GlassCard style={{ padding: 22 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
-                  <h3 style={{ fontSize: 16, fontFamily: "'Fraunces', serif" }}>Registry Roster <span style={{ color: C.muted, fontSize: 14 }}>({filteredBrokers.length})</span></h3>
+                  <h3 style={{ fontSize: 16, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Registry Roster <span style={{ color: C.muted, fontSize: 14 }}>({filteredBrokers.length})</span></h3>
                   <div className="admin-roster-search" style={{ display: "flex", alignItems: "center", gap: 8, background: C.ink, border: `1px solid ${C.lineStrong}`, borderRadius: 10, minWidth: 220, padding: "8px 12px" }}>
                     <Search size={14} color={C.muted} />
                     <input value={brokerSearch} onChange={(e) => setBrokerSearch(e.target.value)} placeholder="Search broker..." style={{ background: "transparent", border: "none", outline: "none", color: C.paper, flex: 1, fontSize: 13 }} />
@@ -2491,7 +2491,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
             <GlassCard style={{ padding: 22 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
                 <div>
-                  <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif" }}>Exposure Triage Queue</h3>
+                  <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Exposure Triage Queue</h3>
                   <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{exposures.filter(e => e.status === "pending").length} items awaiting review</div>
                 </div>
                 <div className="admin-actions-wrap" style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
@@ -2538,7 +2538,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
           {tab === "news" && (
             <div className="admin-news-layout">
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Publish Intelligence Dispatch</h3>
+                <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}>Publish Intelligence Dispatch</h3>
                 <form onSubmit={handleAddNews}>
                   <Field label="Headline"><input required style={inputStyle} value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} placeholder="Enter article headline..." /></Field>
                   <Field label="Category">
@@ -2551,7 +2551,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                 </form>
               </GlassCard>
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Published Dispatches ({news.length})</h3>
+                <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}>Published Dispatches ({news.length})</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 600, overflowY: "auto" }}>
                   {news.map((a) => (
                     <div key={a.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
@@ -2575,7 +2575,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
           {tab === "scam-alerts-admin" && (
             <div className="admin-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 24 }}>
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Issue Scam Alert</h3>
+                <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}>Issue Scam Alert</h3>
                 <form onSubmit={handleAddAlert}>
                   <Field label="Broker Name"><input required style={inputStyle} value={newAlert.broker} onChange={e => setNewAlert({ ...newAlert, broker: e.target.value })} placeholder="e.g. FraudBroker Ltd" /></Field>
                   <Field label="Country"><input style={inputStyle} value={newAlert.country} onChange={e => setNewAlert({ ...newAlert, country: e.target.value })} placeholder="e.g. Comoros" /></Field>
@@ -2595,7 +2595,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
               </GlassCard>
 
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Active Alerts ({alerts.length})</h3>
+                <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}>Active Alerts ({alerts.length})</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 640, overflowY: "auto" }}>
                   {alerts.map((a) => (
                     <div key={a.id} style={{ ...cardStyle, borderLeft: `4px solid ${a.severity === "Critical" ? C.alert : a.severity === "High" ? "#FF6B00" : C.amber}`, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
@@ -2620,7 +2620,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
           {tab === "field-surveys-admin" && (
             <div className="admin-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 24 }}>
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Submit Field Survey</h3>
+                <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}>Submit Field Survey</h3>
                 <form onSubmit={handleAddSurvey}>
                   <Field label="Broker Name"><input required style={inputStyle} value={newSurvey.broker} onChange={e => setNewSurvey({ ...newSurvey, broker: e.target.value })} /></Field>
                   <Field label="Country"><input required style={inputStyle} value={newSurvey.country} onChange={e => setNewSurvey({ ...newSurvey, country: e.target.value })} /></Field>
@@ -2637,7 +2637,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
               </GlassCard>
 
               <GlassCard style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif", marginBottom: 16 }}>Survey Reports ({surveys.length})</h3>
+                <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}>Survey Reports ({surveys.length})</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 640, overflowY: "auto" }}>
                   {surveys.map((s) => {
                     const statusColor = { Verified: C.verified, Suspicious: C.amber, Fraudulent: C.alert };
@@ -2666,7 +2666,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
             <GlassCard style={{ padding: 22 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <div>
-                  <h3 style={{ fontSize: 18, fontFamily: "'Fraunces', serif" }}>Forum Moderation</h3>
+                  <h3 style={{ fontSize: 18, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Forum Moderation</h3>
                   <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>Review and moderate community forum posts</div>
                 </div>
                 <Badge tone="pending">{forumMod.filter(p => !p.hidden).length} visible · {forumMod.filter(p => p.hidden).length} hidden</Badge>
@@ -2756,7 +2756,7 @@ function TickerTape({ pairs }) {
 function EducationPage() {
   return (
     <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
-      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>Trader Education Hub</h1>
+      <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>Trader Education Hub</h1>
       <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Learn how to identify legitimate brokers and protect your capital from sophisticated scams.</p>
       
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 24 }}>
@@ -2768,7 +2768,7 @@ function EducationPage() {
         ].map((course, i) => (
           <GlassCard key={i} style={{ padding: 24, borderRadius: 12, border: `1px solid ${C.lineStrong}`, display: "flex", flexDirection: "column", gap: 12 }}>
             <Badge tone="reg">Course</Badge>
-            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20 }}>{course.title}</h3>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20 }}>{course.title}</h3>
             <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.5, flex: 1 }}>{course.desc}</p>
             <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{course.time}</div>
           </GlassCard>
@@ -2781,12 +2781,12 @@ function EducationPage() {
 function ToolsPage() {
   return (
     <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
-      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>EA & VPS Trading Tools</h1>
+      <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>EA & VPS Trading Tools</h1>
       <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Enhance your trading environment with verified low-latency servers and trusted Expert Advisors.</p>
       
       <div className="tools-layout" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
         <div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, marginBottom: 16 }}>Low Latency VPS</h2>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 24, marginBottom: 16 }}>Low Latency VPS</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
               { name: "London Equinix LD4", latency: "< 1ms", price: "$25/mo" },
@@ -2808,7 +2808,7 @@ function ToolsPage() {
         </div>
         
         <div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, marginBottom: 16 }}>Verified EAs</h2>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 24, marginBottom: 16 }}>Verified EAs</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
               { name: "Grid Master Pro", type: "Mean Reversion", rating: "4.8" },
@@ -2837,7 +2837,7 @@ function ToolsPage() {
 function MediaPage() {
   return (
     <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
-      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>Live Streams & Media</h1>
+      <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>Live Streams & Media</h1>
       <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Watch live market analysis and webinar recordings from industry experts.</p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 24 }}>
         {[
@@ -2852,7 +2852,7 @@ function MediaPage() {
             </div>
             <div style={{ padding: 16 }}>
               <Badge tone={vid.duration === "LIVE" ? "warn" : "reg"}>{vid.viewer}</Badge>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 18, marginTop: 12 }}>{vid.title}</h3>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, marginTop: 12 }}>{vid.title}</h3>
             </div>
           </GlassCard>
         ))}
@@ -2869,7 +2869,7 @@ function RegulatoryPage({ brokers, openDetail }) {
 
   return (
     <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
-      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>Regulatory Centers</h1>
+      <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(26px, 4vw, 36px)", marginBottom: 12 }}>Regulatory Centers</h1>
       <p style={{ color: C.paperDim, fontSize: 15, marginBottom: 32 }}>Filter and verify brokers by their official regulatory jurisdiction.</p>
       
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 160px), 1fr))", gap: 16, marginBottom: 40 }}>
@@ -2883,7 +2883,7 @@ function RegulatoryPage({ brokers, openDetail }) {
 
       {selectedReg && (
         <div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, marginBottom: 16 }}>Brokers Regulated by {selectedReg}</h2>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 24, marginBottom: 16 }}>Brokers Regulated by {selectedReg}</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: 24 }}>
             {filtered.map(b => <BrokerCard key={b.id} b={b} onClick={() => openDetail(b)} onCompare={() => {}} isCompared={false} />)}
             {filtered.length === 0 && <div style={{ color: C.muted }}>No brokers found in this jurisdiction.</div>}
@@ -2902,7 +2902,7 @@ function Footer() {
         <div className="footer-promo-layout" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, marginBottom: 60, padding: "40px", background: "var(--gradient-hero)", border: `1px solid var(--c-line-strong)`, borderRadius: 16, alignItems: "center" }}>
           <div>
             <Badge tone="reg">📱 Mobile App</Badge>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(24px, 4vw, 32px)", marginTop: 12, marginBottom: 12 }}>Check Any Broker in Seconds</h2>
+            <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(24px, 4vw, 32px)", marginTop: 12, marginBottom: 12 }}>Check Any Broker in Seconds</h2>
             <p style={{ color: "var(--c-paper-dim)", fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>Scan brokers, receive live scam alerts, and file exposures from anywhere. Download the Ledger Intelligence mobile app.</p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <Button variant="primary">⬇ App Store</Button>
@@ -2931,7 +2931,7 @@ function Footer() {
         </div>
 
         <div style={{ borderTop: `1px solid var(--c-line)`, paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 18 }}>
             <div style={{ width: 22, height: 22, borderRadius: "50%", border: `1.5px dashed var(--c-verified)`, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--c-verified)", fontSize: 10 }}>✓</div>
             LEDGER
           </div>
@@ -2957,7 +2957,7 @@ function ScamAlertsPage({ alerts: propAlerts }) {
     <div className="page-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
       <div style={{ marginBottom: 36 }}>
         <Badge tone="warn">⚠ Live Alert Feed</Badge>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Scam Alert Board</h1>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Scam Alert Board</h1>
         <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Real-time warnings about fraudulent brokers, clone operations, and withdrawal theft cases verified by our intelligence network.</p>
       </div>
 
@@ -3020,7 +3020,7 @@ function FieldSurveyPage({ surveys: propSurveys }) {
     <div className="page-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
       <div style={{ marginBottom: 36 }}>
         <Badge tone="reg">🔍 On-Site Inspection Reports</Badge>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Field Survey Reports</h1>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Field Survey Reports</h1>
         <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Our teams physically visit broker offices worldwide to verify registration addresses, staff presence, and operational legitimacy.</p>
       </div>
 
@@ -3035,7 +3035,7 @@ function FieldSurveyPage({ surveys: propSurveys }) {
                 {fs.status === "Verified" ? "✅" : fs.status === "Suspicious" ? "⚠️" : "🚨"}
               </div>
               <div style={{ minWidth: 0 }}>
-                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, marginBottom: 4, wordBreak: "break-word" }}>{fs.broker}</h3>
+                <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, marginBottom: 4, wordBreak: "break-word" }}>{fs.broker}</h3>
                 <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", wordBreak: "break-word" }}>📍 {fs.address}</div>
               </div>
             </div>
@@ -3080,7 +3080,7 @@ function ForumPage() {
     <div className="page-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
       <div style={{ marginBottom: 36 }}>
         <Badge tone="reg">💬 Trader Community</Badge>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Community Forum</h1>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Community Forum</h1>
         <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Discuss brokers, share experiences, report suspicious activity, and learn from the community.</p>
       </div>
 
@@ -3118,7 +3118,7 @@ function ForumPage() {
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 12, padding: "3px 10px", borderRadius: 4, background: `${categoryColor[post.category] || C.verified}18`, color: categoryColor[post.category] || C.verified, fontWeight: 600 }}>{post.category}</span>
               </div>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 18, marginBottom: 8, lineHeight: 1.3, wordBreak: "break-word" }}>{post.title}</h3>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, marginBottom: 8, lineHeight: 1.3, wordBreak: "break-word" }}>{post.title}</h3>
               <p style={{ color: C.paperDim, fontSize: 13, lineHeight: 1.5, marginBottom: 12 }}>{post.body.slice(0, 120)}...</p>
               <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 12, color: C.muted, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -3150,14 +3150,14 @@ function SpreadCalculatorPage() {
     <div className="page-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
       <div style={{ marginBottom: 36 }}>
         <Badge tone="reg">🧮 Trading Tools</Badge>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Spread Cost Calculator</h1>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Spread Cost Calculator</h1>
         <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Calculate the true cost of trading spreads before you open a position. Compare costs across different brokers and instruments.</p>
       </div>
 
       <div className="calc-layout" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32 }}>
         {/* Controls */}
         <div style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 16, padding: 28, position: "sticky", top: 90, height: "fit-content" }}>
-          <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 20 }}>Configure Trade</h3>
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, marginBottom: 20 }}>Configure Trade</h3>
           
           <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 12, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", display: "block", marginBottom: 8 }}>Lot Size</label>
@@ -3357,10 +3357,11 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ minHeight: "100vh", fontFamily: "var(--font-sans, 'Inter', -apple-system, sans-serif)", WebkitFontSmoothing: "antialiased" }}>
       <style>{`
         ${FONT_IMPORT}
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif); letter-spacing: -0.025em; }
       `}</style>
 
       <Header
@@ -3384,14 +3385,14 @@ export default function App() {
       {view === "exposure" && <div className="view-transition-wrap"><ExposurePage exposures={exposures} brokers={brokers} onSubmitReport={handleAddExposure} /></div>}
       {view === "news" && (
         <div className="view-transition-wrap" style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px" }}>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, marginBottom: 24 }}>Dispatches & Intelligence</h1>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 32, marginBottom: 24 }}>Dispatches & Intelligence</h1>
           {news.map(n => (
             <div key={n.id} style={{ borderBottom: `1px solid ${C.line}`, paddingBottom: 24, marginBottom: 24 }}>
               <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8 }}>
                 <Badge tone="reg">{n.category}</Badge>
                 <span style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{n.date}</span>
               </div>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 6 }}>{n.title}</h3>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, marginBottom: 6 }}>{n.title}</h3>
               <p style={{ color: C.paperDim, fontSize: 14 }}>{n.summary}</p>
             </div>
           ))}

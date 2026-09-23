@@ -5,7 +5,8 @@ import {
   XCircle, Lock, ArrowRight, Radar, FileText, ChevronRight, ChevronDown, Menu,
   LogIn, Bell, UserCircle2, Activity, Mail, Eye, EyeOff, AlertOctagon,
   ArrowUpDown, Scale, ExternalLink, SlidersHorizontal, DollarSign, Globe, Sparkles, BarChart3, Sun, Moon, MessageCircle, Send,
-  Zap, Award, Calculator, Check, Layers
+  Zap, Award, Calculator, Check, Layers,
+  Share2, ShieldAlert, Coins, Building2, Users, CheckSquare, History, FileWarning, ArrowUpRight, Camera
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -82,10 +83,319 @@ const scamAlerts = [
 ];
 
 const fieldSurveys = [
-  { id: "fs1", broker: "Solaris Prime", country: "United Kingdom", address: "1 Canada Square, Canary Wharf, London", score: 9.4, date: "2026-07-15", findings: "Physical office verified. Staff present. Regulatory certificates displayed. Trading servers operational.", status: "Verified" },
-  { id: "fs2", broker: "Vantage Global", country: "Australia", address: "Level 29, 31 Market Street, Sydney NSW", score: 9.1, date: "2026-07-10", findings: "Office confirmed. ASIC registration plaque visible. Support staff available. Fully operational.", status: "Verified" },
-  { id: "fs3", broker: "Northbridge FX", country: "St. Vincent", address: "Suite 305, Griffith Corporate Centre, SVG", score: 5.2, date: "2026-08-01", findings: "Address leads to a virtual office mailbox service. No staff found. Phone lines disconnected.", status: "Suspicious" },
-  { id: "fs4", broker: "Reef Markets", country: "Unknown", address: "Registration address unverifiable", score: 2.8, date: "2026-08-10", findings: "No physical presence found. Website domain registered 3 months ago. Regulatory numbers are forged.", status: "Fraudulent" },
+  {
+    id: "fs1",
+    broker: "Solaris Prime",
+    country: "United Kingdom",
+    address: "1 Canada Square, Level 38, Canary Wharf, London E14 5AA",
+    score: 9.4,
+    date: "2026-07-15",
+    inspector: "Senior Examiner C. Davies (UK-ID #772)",
+    coords: "51.5050° N, 0.0195° W",
+    status: "Verified",
+    findings: "Physical executive office confirmed at 1 Canada Square. Permanent staff of 45+ observed on trading operations and compliance floors. FCA regulatory license plaque prominently displayed at reception.",
+    checkpoints: { staffOnSite: true, directoryListed: true, physicalLease: true, phoneActive: true },
+    photos: [
+      { tab: "Exterior", label: "Canary Wharf Tower", desc: "1 Canada Square commercial skyscraper entrance and security turnstiles" },
+      { tab: "Reception", label: "Branded Reception", desc: "Permanent corporate reception desk with direct elevator access" },
+      { tab: "Operations", label: "Institutional Floor", desc: "Trading technology, market surveillance and support teams on-site" },
+      { tab: "License Wall", label: "FCA Registration", desc: "UK Companies House & FCA certificate registration verified" }
+    ]
+  },
+  {
+    id: "fs2",
+    broker: "Vantage Global",
+    country: "Australia",
+    address: "Level 29, 31 Market Street, Sydney NSW 2000",
+    score: 9.1,
+    date: "2026-07-10",
+    inspector: "Field Auditor R. Jenkins (AU-ID #409)",
+    coords: "33.8715° S, 151.2065° E",
+    status: "Verified",
+    findings: "Verified full floor lease in central Sydney business district. Client support, institutional liquidity, and executive management rooms verified in active operation.",
+    checkpoints: { staffOnSite: true, directoryListed: true, physicalLease: true, phoneActive: true },
+    photos: [
+      { tab: "Exterior", label: "Sydney Financial Center", desc: "Grade-A office complex located at 31 Market Street" },
+      { tab: "Reception", label: "Client Greeting Hall", desc: "Digital directory confirmation and staffed front desk" },
+      { tab: "Operations", label: "Dealing Room", desc: "Operations staff managing Asia-Pacific market execution" },
+      { tab: "License Wall", label: "ASIC Plaque", desc: "Australian Financial Services License display plaque" }
+    ]
+  },
+  {
+    id: "fs3",
+    broker: "Northbridge FX",
+    country: "St. Vincent",
+    address: "Suite 305, Griffith Corporate Centre, Kingstown, SVG",
+    score: 5.2,
+    date: "2026-08-01",
+    inspector: "Offshore Inspector M. Santos (SVG-ID #114)",
+    coords: "13.1557° N, 61.2248° W",
+    status: "Suspicious",
+    findings: "Address is a multi-tenant virtual mailbox facility housing over 2,000 registered shell entities. No operational staff or equipment present. Incoming phone calls forward to VoIP offshore.",
+    checkpoints: { staffOnSite: false, directoryListed: false, physicalLease: false, phoneActive: false },
+    photos: [
+      { tab: "Exterior", label: "Mailbox Building", desc: "Offshore registered mailbox hub with no company branding" },
+      { tab: "Reception", label: "Shared Mailroom", desc: "Single clerk handling correspondence for hundreds of shell firms" },
+      { tab: "Operations", label: "Empty Office", desc: "No desks, no computers, no trading personnel found" },
+      { tab: "License Wall", label: "No Plaque", desc: "Only IBC certificate on file without retail investor insurance" }
+    ]
+  },
+  {
+    id: "fs4",
+    broker: "Reef Markets",
+    country: "Unknown",
+    address: "Declared address does not exist in municipal records",
+    score: 2.8,
+    date: "2026-08-10",
+    inspector: "Fraud Unit Investigator K. Vance",
+    coords: "Unverifiable Coordinates",
+    status: "Fraudulent",
+    findings: "Investigation revealed fraudulent claim of physical office. Declared address corresponds to an empty parking structure. Domain registered anonymously 3 months prior to retail launch.",
+    checkpoints: { staffOnSite: false, directoryListed: false, physicalLease: false, phoneActive: false },
+    photos: [
+      { tab: "Exterior", label: "Fabricated Location", desc: "Investigators confirmed declared address is an empty lot" },
+      { tab: "Reception", label: "Non-Existent", desc: "No physical structure or commercial building present" },
+      { tab: "Operations", label: "Virtual Ghost", desc: "Entire operation exists solely as an offshore web portal" },
+      { tab: "License Wall", label: "Counterfeit PDF", desc: "Website regulatory document is an altered clone image" }
+    ]
+  }
+];
+
+const initialNetworks = [
+  {
+    id: "net-1",
+    brokerName: "Solaris Prime",
+    parentCompany: "Solaris Financial Holdings PLC",
+    jurisdiction: "United Kingdom (London)",
+    regNo: "UK-CH-09448120",
+    contagionScore: 9.6,
+    contagionRisk: "Low Risk (Grade AAA)",
+    custodianBank: "Barclays Bank UK (Segregated Tier-1)",
+    sharedLicenses: [
+      { name: "Solaris UK Ltd", reg: "FCA #771102", status: "Active" },
+      { name: "Solaris Capital Pty Ltd", reg: "ASIC #441092", status: "Active" },
+      { name: "Solaris Global Markets Ltd", reg: "FSCA #48810", status: "Active" }
+    ],
+    whiteLabels: [
+      { name: "Solaris Prime Asia", platform: "MT5", jurisdiction: "Singapore", status: "Verified" },
+      { name: "PrimeX Execution Hub", platform: "cTrader", jurisdiction: "UK", status: "Verified" }
+    ],
+    cloneAlerts: [
+      { domain: "solaris-prime-traders.net", detected: "2026-08-14", status: "Banned / Impersonator", severity: "Critical" },
+      { domain: "solaris-fx-vip.com", detected: "2026-07-29", status: "Cease & Desist Issued", severity: "High" }
+    ]
+  },
+  {
+    id: "net-2",
+    brokerName: "Vantage Global",
+    parentCompany: "Vantage Group Holdings Ltd",
+    jurisdiction: "Australia (Sydney)",
+    regNo: "AU-ABN-39140",
+    contagionScore: 9.2,
+    contagionRisk: "Low Risk (Grade AA)",
+    custodianBank: "National Australia Bank (NAB)",
+    sharedLicenses: [
+      { name: "Vantage Global Prime Pty Ltd", reg: "ASIC #428289", status: "Active" },
+      { name: "Vantage Markets UK", reg: "FCA #590299", status: "Active" }
+    ],
+    whiteLabels: [
+      { name: "VT Markets International", platform: "MT4 / MT5", jurisdiction: "Australia", status: "Verified" },
+      { name: "Alpha Direct Brokerage", platform: "MT4", jurisdiction: "UAE", status: "Verified" }
+    ],
+    cloneAlerts: [
+      { domain: "vantage-invest-crypto.io", detected: "2026-09-02", status: "Phishing Clone", severity: "Critical" }
+    ]
+  },
+  {
+    id: "net-3",
+    brokerName: "Halcyon Capital",
+    parentCompany: "Halcyon Investments Europe Ltd",
+    jurisdiction: "Cyprus (Limassol)",
+    regNo: "CY-HE-24901",
+    contagionScore: 8.5,
+    contagionRisk: "Regulated (Grade A)",
+    custodianBank: "Bank of Cyprus (ICF Covered)",
+    sharedLicenses: [
+      { name: "Halcyon Capital Markets", reg: "CySEC #118820", status: "Active" }
+    ],
+    whiteLabels: [
+      { name: "Halcyon Direct EU", platform: "STP Pro", jurisdiction: "Cyprus", status: "Verified" }
+    ],
+    cloneAlerts: []
+  },
+  {
+    id: "net-4",
+    brokerName: "Copperline Trade",
+    parentCompany: "Copperline Ventures Pacific Ltd",
+    jurisdiction: "Vanuatu (Port Vila)",
+    regNo: "VU-IBC-44092",
+    contagionScore: 3.8,
+    contagionRisk: "High Contagion Risk (Grade D)",
+    custodianBank: "Unverified Offshore Bank",
+    sharedLicenses: [
+      { name: "Copperline Trade International", reg: "VFSC #44092", status: "Suspended" }
+    ],
+    whiteLabels: [
+      { name: "SwiftTrade Global", platform: "MT4 White Label", jurisdiction: "Seychelles", status: "Unverified" }
+    ],
+    cloneAlerts: [
+      { domain: "copperline-fx.org", detected: "2026-08-01", status: "Active Unregulated Shell", severity: "Critical" }
+    ]
+  },
+  {
+    id: "net-5",
+    brokerName: "Reef Markets",
+    parentCompany: "Suspected Ghost Shell Group",
+    jurisdiction: "Unknown Offshore Entity",
+    regNo: "None / Fabricated",
+    contagionScore: 1.4,
+    contagionRisk: "Scam Syndicate (Grade F)",
+    custodianBank: "No Segregation (Crypto Wallet Only)",
+    sharedLicenses: [],
+    whiteLabels: [
+      { name: "Reef Forex Pro", platform: "Cracked MT4", jurisdiction: "Unknown", status: "Pirated" }
+    ],
+    cloneAlerts: [
+      { domain: "reefmarkets.cc", detected: "2026-08-19", status: "Scam Clone Network", severity: "Critical" },
+      { domain: "reef-fx-online.com", detected: "2026-08-25", status: "Blacklisted by FCA & ASIC", severity: "Critical" }
+    ]
+  }
+];
+
+const initialProtectionCases = [
+  {
+    id: "LRP-8921",
+    brokerName: "Solaris Prime",
+    claimant: "David M. (UK)",
+    category: "Execution Slippage Dispute",
+    amountClaimed: 14500,
+    amountRecovered: 14500,
+    stage: 4,
+    status: "Resolved & Paid",
+    date: "2026-09-18",
+    auditNotes: "Independent order ticket logs analyzed against LSEG interbank feeds. Solaris compliance team reimbursed $14,500 within 72 hours."
+  },
+  {
+    id: "LRP-8884",
+    brokerName: "Vantage Global",
+    claimant: "Sandro B. (Italy)",
+    category: "Delayed SWIFT Withdrawal",
+    amountClaimed: 8200,
+    amountRecovered: 8200,
+    stage: 4,
+    status: "Resolved & Paid",
+    date: "2026-09-15",
+    auditNotes: "Intermediary banking routing failure investigated. Funds re-routed and credited to client account with official confirmation."
+  },
+  {
+    id: "LRP-8790",
+    brokerName: "Halcyon Capital",
+    claimant: "Elena V. (Greece)",
+    category: "Margin Stop-out Verification",
+    amountClaimed: 5400,
+    amountRecovered: 5400,
+    stage: 4,
+    status: "Resolved & Paid",
+    date: "2026-09-08",
+    auditNotes: "Broker agreed to restore account balance to pre-slippage baseline following Ledger mediation audit."
+  },
+  {
+    id: "LRP-9012",
+    brokerName: "Copperline Trade",
+    claimant: "Kwame A. (Ghana)",
+    category: "Withheld Profit Withdrawal",
+    amountClaimed: 3200,
+    amountRecovered: 0,
+    stage: 2,
+    status: "In Mediation",
+    date: "2026-09-20",
+    auditNotes: "Formal legal inquiry dispatched to VFSC commissioner and broker management. Awaiting response."
+  },
+  {
+    id: "LRP-8641",
+    brokerName: "Reef Markets",
+    claimant: "Thomas K. (Germany)",
+    category: "Total Capital Lockout / Deposit Fraud",
+    amountClaimed: 48000,
+    amountRecovered: 0,
+    stage: 3,
+    status: "Broker Evading (Flagged)",
+    date: "2026-08-28",
+    auditNotes: "Broker account representatives deleted Telegram. Case escalated to national cybercrime units and domain registrar takedown."
+  }
+];
+
+const initialRebates = [
+  {
+    id: "reb-1",
+    brokerName: "Solaris Prime",
+    rating: 9.4,
+    regulator: "FCA, ASIC",
+    accountType: "Raw ECN",
+    rawSpread: "0.0 pips",
+    rebatePerLot: 3.50,
+    payoutFreq: "Daily Automated",
+    depositBonus: "100% Margin Credit",
+    tier: "Tier-1 Institutional",
+    minDeposit: 100,
+    verified: true
+  },
+  {
+    id: "reb-2",
+    brokerName: "Vantage Global",
+    rating: 9.1,
+    regulator: "ASIC, FCA",
+    accountType: "Raw Spreads",
+    rawSpread: "0.1 pips",
+    rebatePerLot: 3.80,
+    payoutFreq: "Instant Auto-Rebate",
+    depositBonus: "$50 Welcome + 50%",
+    tier: "Tier-1 Multi-Regulated",
+    minDeposit: 50,
+    verified: true
+  },
+  {
+    id: "reb-3",
+    brokerName: "Halcyon Capital",
+    rating: 8.6,
+    regulator: "CySEC",
+    accountType: "Standard STP",
+    rawSpread: "0.6 pips",
+    rebatePerLot: 2.60,
+    payoutFreq: "Weekly Settlement",
+    depositBonus: "ICF Protection Fund",
+    tier: "European Licensed",
+    minDeposit: 200,
+    verified: true
+  },
+  {
+    id: "reb-4",
+    brokerName: "Exness Pro (Institutional)",
+    rating: 9.3,
+    regulator: "FCA, CySEC",
+    accountType: "Zero Account",
+    rawSpread: "0.0 pips",
+    rebatePerLot: 4.20,
+    payoutFreq: "Real-time Per Trade",
+    depositBonus: "Zero Swap Fees",
+    tier: "Tier-1 Ultra-Volume",
+    minDeposit: 500,
+    verified: true
+  },
+  {
+    id: "reb-5",
+    brokerName: "IC Trading Global",
+    rating: 9.0,
+    regulator: "ASIC, SCB",
+    accountType: "True ECN",
+    rawSpread: "0.0 pips",
+    rebatePerLot: 3.60,
+    payoutFreq: "Daily Settlement",
+    depositBonus: "cTrader / TradingView",
+    tier: "Tier-1 ECN",
+    minDeposit: 200,
+    verified: true
+  }
 ];
 
 const forumPosts = [
@@ -319,9 +629,11 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
       kicker: "Risk & Fraud Verification",
       badge: "LIVE",
       items: [
+        { id: "protection", label: "Rights Protection", meta: "1-on-1 dispute & fund recovery", icon: ShieldAlert, badge: "NEW" },
+        { id: "network", label: "Relationship Radar", meta: "Clone networks & corporate graph", icon: Share2, badge: "AI" },
         { id: "scam-alerts", label: "Scam Alerts", meta: "Real-time clone & fraud alerts", icon: AlertOctagon, tone: "warn", badge: "Live" },
         { id: "exposure", label: "Exposure Desk", meta: "Public disputes & complaint triage", icon: ShieldCheck },
-        { id: "field-survey", label: "Field Surveys", meta: "Physical office inspections", icon: Globe },
+        { id: "field-survey", label: "Field Surveys", meta: "Physical 360° office inspections", icon: Globe },
         { id: "regulators", label: "Regulatory Hub", meta: "Global regulatory verification", icon: Scale },
       ]
     },
@@ -340,6 +652,7 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
       label: "Tools & Learn",
       kicker: "Analytics & Academy",
       items: [
+        { id: "rebates", label: "Rebates & Cashback", meta: "Verified volume rebate optimizer", icon: Coins, badge: "HOT" },
         { id: "calculator", label: "Spread Calculator", meta: "Pip cost & fee audits", icon: DollarSign },
         { id: "tools", label: "EA / VPS Center", meta: "Low latency hosting & tools", icon: SlidersHorizontal },
         { id: "education", label: "Education Academy", meta: "Trading guides & risk education", icon: FileText },
@@ -942,6 +1255,94 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
               <div className="tc-note">
                 <span className="tc-dot" />
                 <span>{note}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── WikiFX-Inspired Advanced Intelligence Suite ── */}
+      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "40px 20px 24px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <div className="section-kicker"><ShieldCheck size={11} /> Advanced Protection & Utility Suite</div>
+            <h2 className="section-heading">Institutional Tools & Recovery Ecosystem</h2>
+            <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: 0 }}>
+              Specialized infrastructure designed to protect retail capital, expose fraudulent networks, and reduce trading friction.
+            </p>
+          </div>
+          <Badge tone="reg">WIKIFX-INSPIRED ARSENAL</Badge>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
+          {[
+            {
+              title: "Rights Protection & Recovery",
+              badge: "1-ON-1 MEDIATION",
+              kpi: "$1,482,900+ Restituted",
+              desc: "Dispute resolution desk for delayed withdrawals, arbitrary balance deduction, and trade execution manipulation.",
+              action: () => setView("protection"),
+              btnLabel: "Open Recovery Desk",
+              icon: ShieldAlert
+            },
+            {
+              title: "Relationship Radar & Clones",
+              badge: "CORPORATE GRAPH",
+              kpi: "Ownership & Synergies",
+              desc: "Trace holding entities, shared regulatory licenses, white-label liquidity pools, and detected copycat clone domains.",
+              action: () => setView("network"),
+              btnLabel: "Inspect Network Graph",
+              icon: Share2
+            },
+            {
+              title: "Rebate & Cashback Optimizer",
+              badge: "COST REDUCTION",
+              kpi: "Up to $4.20 / Lot",
+              desc: "Automated cash rebates directly into your MT4/MT5 trading account with guaranteed zero spread markup.",
+              action: () => setView("rebates"),
+              btnLabel: "Calculate Cashback",
+              icon: Coins
+            },
+            {
+              title: "360° Field Survey Dossiers",
+              badge: "PHYSICAL AUDITS",
+              kpi: "30+ Financial Capitals",
+              desc: "Independent on-site inspections verifying physical offices, active staff desks, commercial leases, and plaque matches.",
+              action: () => setView("field-survey"),
+              btnLabel: "View On-Site Audits",
+              icon: Globe
+            }
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="glass-card-hover"
+              style={{
+                borderRadius: 16,
+                padding: "24px 22px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: 16,
+                cursor: "pointer"
+              }}
+              onClick={item.action}
+            >
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid var(--c-line)", display: "grid", placeItems: "center", color: "var(--c-verified)" }}>
+                    <item.icon size={20} />
+                  </div>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)", fontFamily: "'IBM Plex Mono', monospace", color: "var(--c-paper-dim)" }}>
+                    {item.badge}
+                  </span>
+                </div>
+                <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, margin: "0 0 6px" }}>{item.title}</h3>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--c-verified)", marginBottom: 8, fontFamily: "'IBM Plex Mono', monospace" }}>{item.kpi}</div>
+                <p style={{ color: "var(--c-paper-dim)", fontSize: 13, lineHeight: 1.5, margin: 0 }}>{item.desc}</p>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--c-verified)", fontSize: 13, fontWeight: 700 }}>
+                <span>{item.btnLabel}</span>
+                <ArrowRight size={14} />
               </div>
             </div>
           ))}
@@ -3009,59 +3410,1138 @@ function ScamAlertsPage({ alerts: propAlerts }) {
 }
 
 /* ---------------------------------------------------------
-   FIELD SURVEY PAGE
+   FIELD SURVEY PAGE (ENHANCED 360° OFFICE INSPECTIONS)
 --------------------------------------------------------- */
 function FieldSurveyPage({ surveys: propSurveys }) {
   const surveys = propSurveys || fieldSurveys;
   const statusColor = { Verified: C.verified, Suspicious: C.amber, Fraudulent: C.alert };
   const statusBg = { Verified: "rgba(0,230,118,0.1)", Suspicious: "rgba(255,196,0,0.1)", Fraudulent: "rgba(255,61,0,0.1)" };
+  const [activePhotoTab, setActivePhotoTab] = useState({});
 
   return (
-    <div className="page-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
+    <div className="page-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 24px" }}>
       <div style={{ marginBottom: 36 }}>
-        <Badge tone="reg">🔍 On-Site Inspection Reports</Badge>
-        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Field Survey Reports</h1>
-        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 600 }}>Our teams physically visit broker offices worldwide to verify registration addresses, staff presence, and operational legitimacy.</p>
+        <Badge tone="reg">🔍 Multi-Angle Physical Inspections</Badge>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 10 }}>Field Survey Reports & 360° Verification</h1>
+        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 700 }}>
+          Independent Ledger investigative teams conduct on-site physical audits across 30+ financial capitals to verify registered offices, staff occupancy, regulatory plaque authenticity, and detect ghost shell companies.
+        </p>
       </div>
 
-      <div className="survey-cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 24 }}>
-        {surveys.map(fs => (
-          <div key={fs.id} style={{ background: C.surface, border: `1px solid ${statusColor[fs.status]}33`, borderRadius: 16, padding: "28px 32px", position: "relative", overflow: "hidden" }}>
-            {/* Status ribbon */}
-            <div style={{ position: "absolute", top: 20, right: -8, background: statusColor[fs.status], color: "#000", fontSize: 10, fontWeight: 800, padding: "4px 20px", transform: "rotate(0deg)", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
-            
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
-              <div style={{ width: 56, height: 56, borderRadius: 12, background: statusBg[fs.status], border: `1px solid ${statusColor[fs.status]}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>
-                {fs.status === "Verified" ? "✅" : fs.status === "Suspicious" ? "⚠️" : "🚨"}
+      <div className="survey-cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 540px), 1fr))", gap: 28 }}>
+        {surveys.map(fs => {
+          const currentTab = activePhotoTab[fs.id] || "Exterior";
+          const currentPhoto = fs.photos?.find(p => p.tab === currentTab) || fs.photos?.[0] || { label: "Office Overview", desc: fs.findings };
+
+          return (
+            <div key={fs.id} style={{ background: C.surface, border: `1px solid ${statusColor[fs.status]}33`, borderRadius: 18, padding: "26px 28px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", gap: 16 }}>
+              {/* Status ribbon */}
+              <div style={{ position: "absolute", top: 20, right: 20, background: statusColor[fs.status], color: "#000", fontSize: 10, fontWeight: 800, padding: "4px 14px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{ width: 52, height: 52, borderRadius: 12, background: statusBg[fs.status], border: `1px solid ${statusColor[fs.status]}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
+                  {fs.status === "Verified" ? "✅" : fs.status === "Suspicious" ? "⚠️" : "🚨"}
+                </div>
+                <div style={{ minWidth: 0, paddingRight: 90 }}>
+                  <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, marginBottom: 4, wordBreak: "break-word" }}>{fs.broker}</h3>
+                  <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", wordBreak: "break-word" }}>📍 {fs.address}</div>
+                </div>
               </div>
-              <div style={{ minWidth: 0 }}>
-                <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, marginBottom: 4, wordBreak: "break-word" }}>{fs.broker}</h3>
-                <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", wordBreak: "break-word" }}>📍 {fs.address}</div>
+
+              {/* Inspector & GPS coordinates */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", fontSize: 12, color: C.paperDim, padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 10, border: `1px solid var(--c-line)` }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 5, color: C.verified }}>
+                  <ShieldCheck size={14} /> {fs.inspector || "Verified Auditor"}
+                </span>
+                <span style={{ color: C.muted }}>•</span>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: C.paperDim }}>
+                  🌐 GPS: {fs.coords || "Verified"}
+                </span>
+                <span style={{ color: C.muted }}>•</span>
+                <span style={{ color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>📅 {fs.date}</span>
               </div>
+
+              {/* Photo Angle Tabs */}
+              {fs.photos && fs.photos.length > 0 && (
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", display: "flex", alignItems: "center", gap: 5 }}>
+                      <Camera size={13} /> On-Site Photographic Evidence
+                    </div>
+                    <span style={{ fontSize: 11, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>{currentPhoto.tab}</span>
+                  </div>
+
+                  <div className="survey-photo-nav">
+                    {fs.photos.map(p => (
+                      <button
+                        key={p.tab}
+                        type="button"
+                        className={`survey-photo-tab ${currentTab === p.tab ? "active" : ""}`}
+                        onClick={() => setActivePhotoTab({ ...activePhotoTab, [fs.id]: p.tab })}
+                      >
+                        {p.tab}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="survey-photo-stage" style={{ background: "linear-gradient(135deg, #090e17 0%, #151d2a 100%)", minHeight: 140, padding: 18, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "1px solid var(--c-line-strong)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{currentPhoto.label}</span>
+                      <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(0,0,0,0.6)", color: C.verified, border: "1px solid rgba(0,230,118,0.3)", fontFamily: "'IBM Plex Mono', monospace" }}>TIMESTAMP VERIFIED</span>
+                    </div>
+                    <p style={{ color: "#d1d5db", fontSize: 13, margin: "10px 0 0", lineHeight: 1.5 }}>{currentPhoto.desc}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Physical Checkpoints Matrix */}
+              {fs.checkpoints && (
+                <div>
+                  <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 6 }}>Investigation Checkpoints</div>
+                  <div className="survey-checklist">
+                    <div className="survey-check-item">
+                      {fs.checkpoints.staffOnSite ? <CheckCircle2 size={14} color={C.verified} /> : <XCircle size={14} color={C.alert} />}
+                      <span>Physical Staff Present</span>
+                    </div>
+                    <div className="survey-check-item">
+                      {fs.checkpoints.directoryListed ? <CheckCircle2 size={14} color={C.verified} /> : <XCircle size={14} color={C.alert} />}
+                      <span>Building Directory Listed</span>
+                    </div>
+                    <div className="survey-check-item">
+                      {fs.checkpoints.physicalLease ? <CheckCircle2 size={14} color={C.verified} /> : <XCircle size={14} color={C.alert} />}
+                      <span>Commercial Lease Verified</span>
+                    </div>
+                    <div className="survey-check-item">
+                      {fs.checkpoints.phoneActive ? <CheckCircle2 size={14} color={C.verified} /> : <XCircle size={14} color={C.alert} />}
+                      <span>Phone / Desk Active</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ borderTop: `1px solid var(--c-line)`, paddingTop: 14 }}>
+                <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 6 }}>Field Verdict</div>
+                <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.6 }}>{fs.findings}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   RELATIONSHIP NETWORK & CLONE RADAR (WIKIFX-INSPIRED)
+--------------------------------------------------------- */
+function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }) {
+  const networks = propNetworks || initialNetworks;
+  const [selectedNetId, setSelectedNetId] = useState(networks[0]?.id || "net-1");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [reportCloneModal, setReportCloneModal] = useState(false);
+  const [reportedDomain, setReportedDomain] = useState("");
+  const [reportSuccess, setReportSuccess] = useState(false);
+
+  const filteredNetworks = useMemo(() => {
+    return networks.filter(net => {
+      const matchesSearch = net.brokerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        net.parentCompany.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        net.jurisdiction.toLowerCase().includes(searchQuery.toLowerCase());
+      if (!matchesSearch) return false;
+      if (categoryFilter === "tier1") return net.contagionScore >= 8.5;
+      if (categoryFilter === "clones") return net.cloneAlerts.length > 0;
+      if (categoryFilter === "offshore") return net.contagionScore < 7;
+      return true;
+    });
+  }, [networks, searchQuery, categoryFilter]);
+
+  const activeNetwork = networks.find(n => n.id === selectedNetId) || filteredNetworks[0] || networks[0];
+  const matchingBroker = brokers?.find(b => b.name.toLowerCase() === activeNetwork?.brokerName.toLowerCase());
+
+  const handleReportClone = (e) => {
+    e.preventDefault();
+    if (!reportedDomain.trim()) return;
+    setReportSuccess(true);
+    setTimeout(() => {
+      setReportCloneModal(false);
+      setReportedDomain("");
+      setReportSuccess(false);
+    }, 2200);
+  };
+
+  return (
+    <div className="page-container network-container" style={{ maxWidth: 1320, margin: "0 auto", padding: "50px 24px" }}>
+      {/* Header */}
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <Badge tone="reg">🧬 Corporate Transparency & Clone Radar</Badge>
+            <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 40px)", marginTop: 10, marginBottom: 8 }}>
+              Broker Relationship Network
+            </h1>
+            <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 740, lineHeight: 1.6 }}>
+              Map out corporate holding structures, white-label operations, shared regulatory umbrellas, segregated custodian banks, and detected fraudulent copycat clones in real-time.
+            </p>
+          </div>
+          <Button onClick={() => setReportCloneModal(true)} style={{ background: "var(--c-alert-dim)", color: "var(--c-alert)", borderColor: "rgba(255,65,54,0.3)" }}>
+            <AlertTriangle size={15} /> Report Clone Domain
+          </Button>
+        </div>
+
+        {/* Filter & Search Bar */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 24, alignItems: "center" }}>
+          <div style={{ position: "relative", minWidth: 260, flex: "1 1 auto", maxWidth: 440 }}>
+            <Search size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: C.muted }} />
+            <input
+              type="text"
+              placeholder="Search broker, parent holding, or jurisdiction..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "11px 16px 11px 40px",
+                borderRadius: 10,
+                border: "1px solid var(--c-line-strong)",
+                background: "var(--input-bg)",
+                color: "var(--c-paper)",
+                fontSize: 14,
+                outline: "none"
+              }}
+            />
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {[
+              { id: "all", label: "All Networks" },
+              { id: "tier1", label: "Tier-1 Licensed" },
+              { id: "clones", label: "Active Clone Alerts" },
+              { id: "offshore", label: "Offshore Umbrellas" }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setCategoryFilter(tab.id)}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  border: "1px solid",
+                  borderColor: categoryFilter === tab.id ? "var(--c-verified)" : "var(--c-line)",
+                  background: categoryFilter === tab.id ? "var(--c-verified-dim)" : "var(--c-surface-hi)",
+                  color: categoryFilter === tab.id ? "var(--c-verified)" : "var(--c-paper-dim)",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Network Selector Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 14 }}>
+        {filteredNetworks.map(net => {
+          const isSelected = net.id === activeNetwork?.id;
+          const isHighRisk = net.contagionScore < 5;
+          return (
+            <div
+              key={net.id}
+              onClick={() => setSelectedNetId(net.id)}
+              style={{
+                background: isSelected ? "var(--c-surface-hov)" : "var(--c-surface)",
+                border: `1.5px solid ${isSelected ? "var(--c-verified)" : isHighRisk ? "rgba(255,65,54,0.3)" : "var(--c-line)"}`,
+                borderRadius: 12,
+                padding: "14px 16px",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: isSelected ? "var(--shadow-glow)" : "none"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontWeight: 700, fontSize: 15, color: isSelected ? "var(--c-verified)" : "var(--c-paper)" }}>{net.brokerName}</span>
+                <span style={{ fontSize: 11, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, color: isHighRisk ? C.alert : C.verified }}>{net.contagionScore}/10</span>
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{net.parentCompany}</div>
+              {net.cloneAlerts.length > 0 && (
+                <div style={{ marginTop: 8 }}>
+                  <span className="clone-radar-pill">⚠️ {net.cloneAlerts.length} Clone Warning</span>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Main Interactive Diagram & Dossier */}
+      {activeNetwork && (
+        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 0.9fr", gap: 28, alignItems: "start" }}>
+          {/* Visual Graph Layout */}
+          <div className="network-graph-wrap">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, borderBottom: "1px solid var(--c-line)", paddingBottom: 14 }}>
+              <div>
+                <span style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase" }}>Visual Hierarchy Graph</span>
+                <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, margin: "2px 0 0" }}>{activeNetwork.brokerName} Group Architecture</h3>
+              </div>
+              <span style={{ fontSize: 12, color: C.paperDim, padding: "4px 10px", borderRadius: 6, background: "rgba(255,255,255,0.05)", fontFamily: "'IBM Plex Mono', monospace" }}>
+                {activeNetwork.regNo}
+              </span>
             </div>
 
-            <div className="survey-meta-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
-              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 12px" }}>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Country</div>
-                <div style={{ fontWeight: 600, marginTop: 2, fontSize: 13 }}>{fs.country}</div>
+            <div className="network-tree-layout">
+              {/* Level 1: Parent Group */}
+              <div className="network-node-card is-parent">
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: "rgba(41,121,255,0.12)", color: C.blue, display: "grid", placeItems: "center" }}>
+                  <Building2 size={22} />
+                </div>
+                <div>
+                  <span style={{ fontSize: 11, color: C.blue, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700 }}>ULTIMATE PARENT HOLDING</span>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "var(--c-paper)" }}>{activeNetwork.parentCompany}</div>
+                  <div style={{ fontSize: 12, color: C.muted }}>Jurisdiction: {activeNetwork.jurisdiction}</div>
+                </div>
               </div>
-              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 12px" }}>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Score</div>
-                <div style={{ fontWeight: 700, color: statusColor[fs.status], marginTop: 2, fontSize: 13 }}>{fs.score}/10</div>
+
+              {/* Connecting line */}
+              <div style={{ width: 2, height: 24, background: "var(--c-line-strong)" }} />
+
+              {/* Level 2: Regulated Operating Entities */}
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", marginBottom: 10, textAlign: "center" }}>
+                  Licensed Group Entities ({activeNetwork.sharedLicenses.length})
+                </div>
+                <div className="network-branch-row">
+                  {activeNetwork.sharedLicenses.map((lic, i) => (
+                    <div key={i} className="network-node-card">
+                      <ShieldCheck size={18} color={C.verified} />
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--c-paper)", wordBreak: "break-word" }}>{lic.name}</div>
+                        <div style={{ fontSize: 11, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>{lic.reg} • {lic.status}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {activeNetwork.sharedLicenses.length === 0 && (
+                    <div style={{ padding: 14, textAlign: "center", color: C.alert, fontSize: 13, background: "rgba(255,65,54,0.08)", borderRadius: 10, border: "1px dashed rgba(255,65,54,0.3)" }}>
+                      ❌ No verifiable licensed operating entities discovered under this group.
+                    </div>
+                  )}
+                </div>
               </div>
-              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 12px" }}>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Survey Date</div>
-                <div style={{ fontWeight: 600, marginTop: 2, fontSize: 13 }}>{fs.date}</div>
+
+              {/* Connecting line */}
+              <div style={{ width: 2, height: 24, background: "var(--c-line-strong)" }} />
+
+              {/* Level 3: White Label & Affiliates */}
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", marginBottom: 10, textAlign: "center" }}>
+                  White-Label Subsidiaries & Operating Brands ({activeNetwork.whiteLabels.length})
+                </div>
+                <div className="network-branch-row">
+                  {activeNetwork.whiteLabels.map((wl, i) => (
+                    <div key={i} className="network-node-card">
+                      <Layers size={18} color={wl.status === "Pirated" ? C.alert : C.amber} />
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--c-paper)" }}>{wl.name}</div>
+                        <div style={{ fontSize: 11, color: C.paperDim }}>{wl.platform} • {wl.jurisdiction}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              {/* Custodian Segregation Bank */}
+              <div style={{ width: "100%", marginTop: 8 }}>
+                <div style={{ padding: "14px 18px", borderRadius: 12, background: "rgba(0, 230, 118, 0.05)", border: "1px solid rgba(0, 230, 118, 0.2)", display: "flex", alignItems: "center", gap: 12 }}>
+                  <ShieldCheck size={20} color={C.verified} />
+                  <div>
+                    <span style={{ fontSize: 10, color: C.verified, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700 }}>Segregated Custodian Tier-1 Bank</span>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--c-paper)" }}>{activeNetwork.custodianBank}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Level 4: Clone & Impersonator Detection Zone */}
+              {activeNetwork.cloneAlerts.length > 0 && (
+                <div style={{ width: "100%", marginTop: 14 }}>
+                  <div style={{ padding: "16px 20px", borderRadius: 14, background: "linear-gradient(135deg, rgba(255,65,54,0.12) 0%, rgba(10,10,24,0.9) 100%)", border: "1px solid rgba(255,65,54,0.4)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.alert, marginBottom: 12 }}>
+                      <AlertOctagon size={18} />
+                      <strong style={{ fontSize: 14 }}>Detected Clone Syndicate Domains ({activeNetwork.cloneAlerts.length})</strong>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {activeNetwork.cloneAlerts.map((cl, i) => (
+                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,65,54,0.2)" }}>
+                          <div>
+                            <div style={{ fontSize: 13, color: "#ff8a80", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600 }}>🚫 {cl.domain}</div>
+                            <div style={{ fontSize: 11, color: C.muted }}>Detected: {cl.detected}</div>
+                          </div>
+                          <span style={{ fontSize: 11, color: C.alert, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "rgba(255,65,54,0.15)" }}>
+                            {cl.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Contagion Assessment & Audit Actions */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {/* Contagion Score Card */}
+            <div style={{ background: "var(--gradient-card)", border: "1px solid var(--c-line)", borderRadius: 18, padding: 26, boxShadow: "var(--shadow-md)" }}>
+              <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Systemic Risk Assessment</span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10, margin: "10px 0 6px" }}>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 44, fontWeight: 800, color: activeNetwork.contagionScore >= 8 ? C.verified : activeNetwork.contagionScore >= 5 ? C.amber : C.alert }}>
+                  {activeNetwork.contagionScore}
+                </div>
+                <span style={{ fontSize: 16, color: C.muted }}>/ 10</span>
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: activeNetwork.contagionScore >= 8 ? C.verified : activeNetwork.contagionScore >= 5 ? C.amber : C.alert, marginBottom: 12 }}>
+                {activeNetwork.contagionRisk}
+              </div>
+              <p style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.6 }}>
+                {activeNetwork.contagionScore >= 8
+                  ? "Corporate structure shows clear segregation of client funds across tier-1 credit institutions. Independent regulatory checks confirm active licenses in all operational regions."
+                  : activeNetwork.contagionScore >= 5
+                  ? "Elevated contagion risk due to offshore license routing and shared white-label liquidity pools. Trader dispute arbitration could face cross-border delays."
+                  : "Critical systemic alert: Corporate entity exhibits hallmarks of an unregulated shell network. Evidence suggests cloned domains and lack of fund segregation."}
+              </p>
+
+              {matchingBroker && (
+                <Button onClick={() => openDetail(matchingBroker)} style={{ width: "100%", justifyContent: "center", marginTop: 18 }}>
+                  <ShieldCheck size={15} /> Inspect Full Broker Dossier
+                </Button>
+              )}
             </div>
 
-            <div style={{ borderTop: `1px solid var(--c-line)`, paddingTop: 16 }}>
-              <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", marginBottom: 8 }}>Field Findings</div>
-              <p style={{ color: C.paperDim, fontSize: 14, lineHeight: 1.6 }}>{fs.findings}</p>
+            {/* Quick Audit Snapshot */}
+            <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)", borderRadius: 16, padding: 22 }}>
+              <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 16, marginBottom: 14 }}>Ownership Verification Ledger</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--c-line)", paddingBottom: 8 }}>
+                  <span style={{ color: C.muted }}>Parent Entity:</span>
+                  <strong style={{ color: "var(--c-paper)" }}>{activeNetwork.parentCompany}</strong>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--c-line)", paddingBottom: 8 }}>
+                  <span style={{ color: C.muted }}>Primary Jurisdiction:</span>
+                  <span>{activeNetwork.jurisdiction}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--c-line)", paddingBottom: 8 }}>
+                  <span style={{ color: C.muted }}>Corporate Registration:</span>
+                  <span style={{ fontFamily: "'IBM Plex Mono', monospace" }}>{activeNetwork.regNo}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: C.muted }}>Clone Threat Level:</span>
+                  <span style={{ color: activeNetwork.cloneAlerts.length > 0 ? C.alert : C.verified, fontWeight: 700 }}>
+                    {activeNetwork.cloneAlerts.length > 0 ? "High Exposure" : "Zero Detected"}
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Clone Modal */}
+      {reportCloneModal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
+          <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 18, padding: 32, maxWidth: 480, width: "100%", boxShadow: "var(--shadow-lg)", position: "relative" }}>
+            <button
+              type="button"
+              onClick={() => setReportCloneModal(false)}
+              style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 20 }}
+            >
+              ×
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: C.alert, marginBottom: 12 }}>
+              <AlertTriangle size={24} />
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, margin: 0 }}>Report Impersonator / Clone URL</h3>
+            </div>
+            <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.6, marginBottom: 20 }}>
+              Submit suspected clone domains mimicking licensed brokers. Ledger cyber-investigators verify DNS records, registrar WHOIS, and dispatch automated warnings to global regulators.
+            </p>
+
+            {reportSuccess ? (
+              <div style={{ padding: 18, background: "rgba(0,230,118,0.1)", border: "1px solid rgba(0,230,118,0.3)", borderRadius: 10, color: C.verified, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
+                ✅ Clone report received. Case assigned to Ledger Threat Radar.
+              </div>
+            ) : (
+              <form onSubmit={handleReportClone}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: "block", fontSize: 12, color: C.muted, marginBottom: 6, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>
+                    Suspected Clone URL / Domain
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="e.g. fake-broker-trade.net"
+                    value={reportedDomain}
+                    onChange={(e) => setReportedDomain(e.target.value)}
+                    style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
+                  />
+                </div>
+                <Button type="submit" style={{ width: "100%", justifyContent: "center", padding: 12 }}>
+                  Submit Domain for Investigation
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   TRADER RIGHTS PROTECTION & FUND RECOVERY CENTER
+--------------------------------------------------------- */
+function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
+  const [cases, setCases] = useState(propCases || initialProtectionCases);
+  const [filter, setFilter] = useState("all");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [claimSuccessMsg, setClaimSuccessMsg] = useState("");
+
+  // Form State
+  const [formBroker, setFormBroker] = useState(brokers?.[0]?.name || "Solaris Prime");
+  const [formClaimant, setFormClaimant] = useState("");
+  const [formCategory, setFormCategory] = useState("Delayed Principal Withdrawal");
+  const [formAmount, setFormAmount] = useState("");
+  const [formAccountNo, setFormAccountNo] = useState("");
+  const [formNotes, setFormNotes] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+
+  const filteredCases = useMemo(() => {
+    if (filter === "resolved") return cases.filter(c => c.stage === 4);
+    if (filter === "mediation") return cases.filter(c => c.stage < 4 && c.status.toLowerCase().includes("mediation"));
+    if (filter === "evading") return cases.filter(c => c.status.toLowerCase().includes("evading") || c.status.toLowerCase().includes("flagged"));
+    return cases;
+  }, [cases, filter]);
+
+  const totalClaimed = useMemo(() => cases.reduce((sum, c) => sum + (c.amountClaimed || 0), 0), [cases]);
+  const totalRecovered = useMemo(() => cases.reduce((sum, c) => sum + (c.amountRecovered || 0), 0), [cases]);
+
+  const handleSubmitClaim = (e) => {
+    e.preventDefault();
+    if (!formAmount) return;
+
+    const newClaim = {
+      brokerName: formBroker,
+      claimant: formClaimant ? `${formClaimant.split(" ")[0]} ${formClaimant.split(" ")[1]?.[0] || ""}.` : "Anonymous Trader",
+      category: formCategory,
+      amountClaimed: Number(formAmount),
+      auditNotes: `Account #${formAccountNo || "Unspecified"}: ${formNotes || "Claim submitted with supporting trading logs."}`
+    };
+
+    if (onFileClaim) {
+      onFileClaim(newClaim);
+    }
+
+    const assignedId = `LRP-${Math.floor(2000 + Math.random() * 8000)}`;
+    const createdCase = {
+      id: assignedId,
+      brokerName: formBroker,
+      claimant: newClaim.claimant,
+      category: formCategory,
+      amountClaimed: Number(formAmount),
+      amountRecovered: 0,
+      stage: 1,
+      status: "In Evidentiary Review",
+      date: new Date().toISOString().slice(0, 10),
+      auditNotes: newClaim.auditNotes
+    };
+
+    setCases([createdCase, ...cases]);
+    setClaimSuccessMsg(`Claim successfully filed under Case Reference #${assignedId}.`);
+
+    setTimeout(() => {
+      setModalOpen(false);
+      setClaimSuccessMsg("");
+      setFormAmount("");
+      setFormNotes("");
+      setFormAccountNo("");
+    }, 2500);
+  };
+
+  return (
+    <div className="page-container" style={{ maxWidth: 1260, margin: "0 auto", padding: "50px 24px" }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 20, marginBottom: 36 }}>
+        <div>
+          <Badge tone="reg">🛡️ 1-on-1 Dispute Mediation Desk</Badge>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 42px)", marginTop: 10, marginBottom: 10 }}>
+            Trader Rights Protection & Recovery
+          </h1>
+          <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 740, lineHeight: 1.6 }}>
+            Ledger provides professional mediation for retail and institutional traders experiencing blocked withdrawals, artificial slippage, or arbitrary balance cancellation.
+          </p>
+        </div>
+        <Button onClick={() => setModalOpen(true)} style={{ padding: "14px 24px", fontSize: 15, fontWeight: 700 }}>
+          <ShieldAlert size={18} /> File Rights Protection Claim
+        </Button>
+      </div>
+
+      {/* KPI Stats Banner */}
+      <div className="protection-kpi-banner">
+        <div className="protection-kpi-card">
+          <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Total Capital Recovered</span>
+          <div className="protection-kpi-val" style={{ color: C.verified }}>$1,482,900+</div>
+          <span style={{ fontSize: 12, color: C.verified, display: "flex", alignItems: "center", gap: 4 }}>
+            <TrendingUp size={14} /> 100% Direct to Trader
+          </span>
+        </div>
+        <div className="protection-kpi-card">
+          <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Successfully Settled</span>
+          <div className="protection-kpi-val" style={{ color: "var(--c-paper)" }}>184 Cases</div>
+          <span style={{ fontSize: 12, color: C.muted }}>91.4% Resolution Success</span>
+        </div>
+        <div className="protection-kpi-card">
+          <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Active in Mediation</span>
+          <div className="protection-kpi-val" style={{ color: C.amber }}>32 Claims</div>
+          <span style={{ fontSize: 12, color: C.amber }}>In Formal Legal Dialogue</span>
+        </div>
+        <div className="protection-kpi-card">
+          <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Avg Resolution Window</span>
+          <div className="protection-kpi-val" style={{ color: C.blue }}>14 Days</div>
+          <span style={{ fontSize: 12, color: C.muted }}>From Evidentiary Intake</span>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14, marginBottom: 24, borderBottom: "1px solid var(--c-line)", paddingBottom: 16 }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {[
+            { id: "all", label: `All Claims (${cases.length})` },
+            { id: "resolved", label: "Resolved & Restituted" },
+            { id: "mediation", label: "In Active Mediation" },
+            { id: "evading", label: "Evading / Flagged" }
+          ].map(t => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setFilter(t.id)}
+              style={{
+                padding: "8px 16px",
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                border: "1px solid",
+                borderColor: filter === t.id ? "var(--c-verified)" : "var(--c-line)",
+                background: filter === t.id ? "var(--c-verified-dim)" : "var(--c-surface-hi)",
+                color: filter === t.id ? "var(--c-verified)" : "var(--c-paper-dim)",
+                transition: "all 0.2s ease"
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <span style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>
+          AUDIT ID: LEDGER-RESTITUTION-DESK-2026
+        </span>
+      </div>
+
+      {/* Case Pipeline Grid */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        {filteredCases.map(c => {
+          const isResolved = c.stage === 4;
+          const isAlert = c.status.toLowerCase().includes("evading");
+
+          return (
+            <div key={c.id} className="case-card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "rgba(255,255,255,0.06)", color: "var(--c-paper)", fontFamily: "'IBM Plex Mono', monospace" }}>
+                      {c.id}
+                    </span>
+                    <Badge tone={isResolved ? "reg" : isAlert ? "warn" : "pending"}>{c.status}</Badge>
+                    <span style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{c.date}</span>
+                  </div>
+                  <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, margin: "4px 0" }}>
+                    {c.brokerName} — <span style={{ color: "var(--c-paper-dim)", fontWeight: 500 }}>{c.category}</span>
+                  </h3>
+                  <div style={{ fontSize: 13, color: C.muted }}>Claimant: <strong style={{ color: "var(--c-paper)" }}>{c.claimant}</strong></div>
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>Disputed Amount</div>
+                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, fontWeight: 800, color: "var(--c-paper)" }}>
+                    ${c.amountClaimed.toLocaleString()} USD
+                  </div>
+                  {c.amountRecovered > 0 && (
+                    <div style={{ fontSize: 12, color: C.verified, fontWeight: 700 }}>
+                      ✓ Recovered: ${c.amountRecovered.toLocaleString()} USD
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 4-Stage Progress Stepper */}
+              <div className="stage-step-bar">
+                {[
+                  { step: 1, label: "Evidence Audit" },
+                  { step: 2, label: "Tick-Data Verification" },
+                  { step: 3, label: "Broker Formal Notice" },
+                  { step: 4, label: "Restitution Settlement" }
+                ].map(st => {
+                  const isDone = c.stage >= st.step;
+                  const isCurrent = c.stage === st.step;
+                  return (
+                    <div key={st.step} style={{ display: "flex", alignItems: "center", gap: 6, flex: 1 }}>
+                      <div className={`stage-step-dot ${isAlert ? "alert" : isDone ? "active" : ""}`} />
+                      <span style={{ fontSize: 11, color: isCurrent ? "var(--c-paper)" : isDone ? C.verified : C.muted, fontWeight: isCurrent ? 700 : 500 }}>
+                        {st.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ fontSize: 13, color: C.paperDim, lineHeight: 1.5, background: "rgba(255,255,255,0.02)", padding: "10px 14px", borderRadius: 8, borderLeft: `3px solid ${isResolved ? C.verified : isAlert ? C.alert : C.amber}` }}>
+                <strong style={{ color: "var(--c-paper)" }}>Mediation Log: </strong>{c.auditNotes}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Claim Submission Wizard Modal */}
+      {modalOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(0,0,0,0.78)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
+          <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 20, padding: 32, maxWidth: 560, width: "100%", boxShadow: "var(--shadow-lg)", position: "relative" }}>
+            <button
+              type="button"
+              onClick={() => setModalOpen(false)}
+              style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 22 }}
+            >
+              ×
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: C.verified, marginBottom: 8 }}>
+              <ShieldCheck size={26} />
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, margin: 0 }}>Initiate 1-on-1 Rights Protection</h3>
+            </div>
+            <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.5, marginBottom: 20 }}>
+              Submit your dispute details and trade logs. The Ledger mediation team formally reviews broker liquidity providers and regulatory terms to secure restitution.
+            </p>
+
+            {claimSuccessMsg ? (
+              <div style={{ padding: 24, background: "rgba(0,230,118,0.12)", border: "1px solid rgba(0,230,118,0.4)", borderRadius: 12, textAlign: "center" }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>🎉</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: C.verified, marginBottom: 6 }}>Claim Intake Confirmed</div>
+                <p style={{ fontSize: 13, color: C.paperDim }}>{claimSuccessMsg}</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmitClaim} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Target Broker</label>
+                    <select
+                      value={formBroker}
+                      onChange={(e) => setFormBroker(e.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
+                    >
+                      {brokers?.map(b => (
+                        <option key={b.id || b.name} value={b.name} style={{ background: "#0a0a18" }}>{b.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Claimant Full Name</label>
+                    <input
+                      required
+                      type="text"
+                      placeholder="e.g. David Miller"
+                      value={formClaimant}
+                      onChange={(e) => setFormClaimant(e.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Incident Type</label>
+                    <select
+                      value={formCategory}
+                      onChange={(e) => setFormCategory(e.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
+                    >
+                      <option value="Delayed Principal Withdrawal" style={{ background: "#0a0a18" }}>Delayed Principal Withdrawal</option>
+                      <option value="Execution Slippage Manipulation" style={{ background: "#0a0a18" }}>Execution Slippage Manipulation</option>
+                      <option value="Arbitrary Balance Deduction" style={{ background: "#0a0a18" }}>Arbitrary Balance Deduction</option>
+                      <option value="Account Lockout / Unresponsive" style={{ background: "#0a0a18" }}>Account Lockout / Unresponsive</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Disputed USD ($)</label>
+                    <input
+                      required
+                      type="number"
+                      placeholder="e.g. 5000"
+                      value={formAmount}
+                      onChange={(e) => setFormAmount(e.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>MT4/MT5 Account ID</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 8810294"
+                      value={formAccountNo}
+                      onChange={(e) => setFormAccountNo(e.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Confidential Email</label>
+                    <input
+                      required
+                      type="email"
+                      placeholder="trader@domain.com"
+                      value={formEmail}
+                      onChange={(e) => setFormEmail(e.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5 }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Evidentiary Summary</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Describe dates, order tickets, withdrawal requests, and broker communication logs..."
+                    value={formNotes}
+                    onChange={(e) => setFormNotes(e.target.value)}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 13.5, resize: "vertical" }}
+                  />
+                </div>
+
+                <Button type="submit" style={{ width: "100%", justifyContent: "center", padding: "13px 16px", marginTop: 6 }}>
+                  Submit Claim to Mediation Desk
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   FOREX REBATE & VOLUME CASHBACK OPTIMIZER (WIKIFX-INSPIRED)
+--------------------------------------------------------- */
+function RebatePage({ rebates: propRebates }) {
+  const rebates = propRebates || initialRebates;
+  const [selectedRebateId, setSelectedRebateId] = useState(rebates[0]?.id || "reb-1");
+  const [lotsPerMonth, setLotsPerMonth] = useState(50);
+  const [selectedPair, setSelectedPair] = useState("EUR/USD");
+  const [claimModal, setClaimModal] = useState(null);
+  const [claimedSuccess, setClaimedSuccess] = useState(false);
+
+  const activeRebate = rebates.find(r => r.id === selectedRebateId) || rebates[0];
+
+  // Pair pip values & estimated baseline spread
+  const pairMeta = {
+    "EUR/USD": { spreadPips: 0.8, pipValue: 10 },
+    "GBP/USD": { spreadPips: 1.1, pipValue: 10 },
+    "USD/JPY": { spreadPips: 1.0, pipValue: 9.2 },
+    "XAU/USD (Gold)": { spreadPips: 2.2, pipValue: 100 },
+    "BTC/USD": { spreadPips: 15.0, pipValue: 1 }
+  };
+
+  const currentPairMeta = pairMeta[selectedPair] || pairMeta["EUR/USD"];
+
+  // Calculations
+  const monthlyRebateCash = lotsPerMonth * activeRebate.rebatePerLot;
+  const annualRebateCash = monthlyRebateCash * 12;
+  const standardSpreadCost = lotsPerMonth * currentPairMeta.pipValue * currentPairMeta.spreadPips;
+  const netEffectiveSpreadPips = Math.max(0.1, currentPairMeta.spreadPips - (activeRebate.rebatePerLot / currentPairMeta.pipValue)).toFixed(2);
+  const costReductionPercent = ((monthlyRebateCash / standardSpreadCost) * 100).toFixed(0);
+
+  const handleActivateRebate = (e) => {
+    e.preventDefault();
+    setClaimedSuccess(true);
+    setTimeout(() => {
+      setClaimModal(null);
+      setClaimedSuccess(false);
+    }, 2400);
+  };
+
+  return (
+    <div className="page-container" style={{ maxWidth: 1260, margin: "0 auto", padding: "50px 24px" }}>
+      {/* Header */}
+      <div style={{ marginBottom: 36 }}>
+        <Badge tone="reg">💰 Volume Trading Cost Optimizer</Badge>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 5vw, 42px)", marginTop: 10, marginBottom: 10 }}>
+          Forex Rebate & Volume Cashback
+        </h1>
+        <p style={{ color: C.paperDim, fontSize: 15, maxWidth: 740, lineHeight: 1.6 }}>
+          Automatically receive cash rebates on every lot traded, directly into your MT4/MT5 account or bank balance. Zero spread markups, institutional volume deals verified by Ledger.
+        </p>
+      </div>
+
+      {/* Interactive Rebate Calculator Hero */}
+      <div className="rebate-calc-hero">
+        <div>
+          <span style={{ fontSize: 11, color: C.verified, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700 }}>
+            Interactive Cashback Simulator
+          </span>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 24, margin: "6px 0 20px" }}>
+            Calculate Your Trading Rebates
+          </h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 6, fontFamily: "'IBM Plex Mono', monospace" }}>
+                Select Broker
+              </label>
+              <select
+                value={selectedRebateId}
+                onChange={(e) => setSelectedRebateId(e.target.value)}
+                style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
+              >
+                {rebates.map(r => (
+                  <option key={r.id} value={r.id} style={{ background: "#0a0a18" }}>
+                    {r.brokerName} (${r.rebatePerLot.toFixed(2)}/lot)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 6, fontFamily: "'IBM Plex Mono', monospace" }}>
+                Trading Instrument
+              </label>
+              <select
+                value={selectedPair}
+                onChange={(e) => setSelectedPair(e.target.value)}
+                style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
+              >
+                {Object.keys(pairMeta).map(pair => (
+                  <option key={pair} value={pair} style={{ background: "#0a0a18" }}>{pair}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Slider */}
+          <div style={{ background: "rgba(255,255,255,0.03)", padding: "18px 20px", borderRadius: 12, border: "1px solid var(--c-line)", marginBottom: 20 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <span style={{ fontSize: 13, color: "var(--c-paper)", fontWeight: 600 }}>Monthly Volume Traded:</span>
+              <span style={{ fontSize: 18, fontWeight: 800, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>
+                {lotsPerMonth} Round Lots
+              </span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="500"
+              value={lotsPerMonth}
+              onChange={(e) => setLotsPerMonth(Number(e.target.value))}
+              style={{ width: "100%", accentColor: "var(--c-verified)", cursor: "pointer" }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted, marginTop: 6, fontFamily: "'IBM Plex Mono', monospace" }}>
+              <span>1 Lot (Retail)</span>
+              <span>100 Lots (Active)</span>
+              <span>500 Lots (Pro / VIP)</span>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div style={{ padding: "12px 16px", borderRadius: 10, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)" }}>
+              <span style={{ fontSize: 11, color: C.muted }}>Net Effective Spread</span>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "var(--c-paper)", marginTop: 2 }}>
+                {netEffectiveSpreadPips} pips
+              </div>
+              <span style={{ fontSize: 11, color: C.verified }}>reduced from {currentPairMeta.spreadPips} pips</span>
+            </div>
+            <div style={{ padding: "12px 16px", borderRadius: 10, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)" }}>
+              <span style={{ fontSize: 11, color: C.muted }}>Trading Cost Saved</span>
+              <div style={{ fontSize: 18, fontWeight: 700, color: C.verified, marginTop: 2 }}>
+                {costReductionPercent}% Rebated
+              </div>
+              <span style={{ fontSize: 11, color: C.muted }}>credited automatically</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Output Hero Counter Box */}
+        <div className="rebate-summary-box">
+          <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>
+            Estimated Monthly Cashback
+          </span>
+          <div className="rebate-summary-amount">
+            ${monthlyRebateCash.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <span style={{ fontSize: 13, color: C.paperDim }}>
+            Annual Projected Return: <strong style={{ color: C.verified }}>${annualRebateCash.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          </span>
+
+          <div style={{ marginTop: 24 }}>
+            <Button
+              onClick={() => setClaimModal(activeRebate)}
+              style={{ width: "100%", justifyContent: "center", padding: "14px 20px", fontSize: 15, fontWeight: 700 }}
+            >
+              <Coins size={16} /> Activate {activeRebate.brokerName} Rebate
+            </Button>
+          </div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 10 }}>
+            Payout: {activeRebate.payoutFreq} • {activeRebate.depositBonus}
+          </div>
+        </div>
+      </div>
+
+      {/* Verified Broker Rebate Directory */}
+      <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 18, padding: "26px 28px", boxShadow: "var(--shadow-md)", marginBottom: 40 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, margin: 0 }}>
+              Verified Institutional Broker Rebate Rates
+            </h3>
+            <p style={{ color: C.paperDim, fontSize: 13.5, margin: "4px 0 0" }}>
+              All programs verified with direct broker liquidity agreements. Payouts processed automatically.
+            </p>
+          </div>
+          <Badge tone="reg">100% Zero Markup Guaranteed</Badge>
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          {/* Table Header */}
+          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.2fr", padding: "12px 18px", borderBottom: "1px solid var(--c-line-strong)", color: C.muted, fontSize: 11, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>
+            <span>Broker & Tier</span>
+            <span>Raw Spread</span>
+            <span>Rebate / Lot</span>
+            <span>Payout Frequency</span>
+            <span style={{ textAlign: "right" }}>Action</span>
+          </div>
+
+          {/* Rows */}
+          {rebates.map(r => (
+            <div key={r.id} className="rebate-table-row">
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--c-paper)" }}>{r.brokerName}</div>
+                <div style={{ fontSize: 11, color: C.muted }}>{r.regulator} • {r.accountType}</div>
+              </div>
+              <div>
+                <span style={{ fontSize: 13, fontFamily: "'IBM Plex Mono', monospace", color: "var(--c-paper)" }}>{r.rawSpread}</span>
+              </div>
+              <div>
+                <span style={{ fontSize: 15, fontWeight: 800, color: C.verified, fontFamily: "'IBM Plex Mono', monospace" }}>
+                  ${r.rebatePerLot.toFixed(2)}
+                </span>
+                <span style={{ fontSize: 11, color: C.muted }}> / lot</span>
+              </div>
+              <div>
+                <span style={{ fontSize: 12, color: C.paperDim }}>{r.payoutFreq}</span>
+                <div style={{ fontSize: 10, color: C.verified }}>{r.depositBonus}</div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <Button onClick={() => setClaimModal(r)} style={{ padding: "8px 14px", fontSize: 12 }}>
+                  Activate Rebate
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* How Forex Rebates Work */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+        {[
+          {
+            icon: "🤝",
+            title: "Institutional Volume Sharing",
+            desc: "Brokers pay high-volume partner commissions. Ledger returns up to 90% directly to you as a trader rebate, lowering your effective trading costs."
+          },
+          {
+            icon: "🔒",
+            title: "Zero Spread Markup Guarantee",
+            desc: "Your trading accounts, raw spreads, commissions, and execution speeds remain 100% identical to registering directly with the broker."
+          },
+          {
+            icon: "⚡",
+            title: "Automated Daily Cash Payouts",
+            desc: "Rebates automatically deposit back into your MT4/MT5 trading account, USDT crypto wallet, or bank account on daily/weekly schedules."
+          }
+        ].map((feat, i) => (
+          <div key={i} style={{ background: "var(--c-surface)", border: "1px solid var(--c-line)", borderRadius: 14, padding: 24 }}>
+            <div style={{ fontSize: 28, marginBottom: 12 }}>{feat.icon}</div>
+            <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 17, marginBottom: 8 }}>{feat.title}</h4>
+            <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>{feat.desc}</p>
           </div>
         ))}
       </div>
+
+      {/* Activate Rebate Modal */}
+      {claimModal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(0,0,0,0.78)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
+          <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 20, padding: 32, maxWidth: 480, width: "100%", boxShadow: "var(--shadow-lg)", position: "relative" }}>
+            <button
+              type="button"
+              onClick={() => setClaimModal(null)}
+              style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 22 }}
+            >
+              ×
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: C.verified, marginBottom: 8 }}>
+              <Coins size={24} />
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, margin: 0 }}>Activate {claimModal.brokerName} Rebate</h3>
+            </div>
+            <p style={{ color: C.paperDim, fontSize: 13.5, lineHeight: 1.5, marginBottom: 20 }}>
+              Receive <strong style={{ color: C.verified }}>${claimModal.rebatePerLot.toFixed(2)}/lot</strong> cash rebate automatically on every round turn trade.
+            </p>
+
+            {claimedSuccess ? (
+              <div style={{ padding: 22, background: "rgba(0,230,118,0.12)", border: "1px solid rgba(0,230,118,0.4)", borderRadius: 12, textAlign: "center" }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>🎉</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: C.verified, marginBottom: 6 }}>Rebate Link Configured</div>
+                <p style={{ fontSize: 13, color: C.paperDim }}>Your trading account is now enrolled in the ${claimModal.rebatePerLot.toFixed(2)}/lot cashback program.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleActivateRebate} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Existing or New MT4/MT5 Account Number</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="e.g. 9920148 (or 'New Account')"
+                    style={{ width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Notification Email</label>
+                  <input
+                    required
+                    type="email"
+                    placeholder="trader@domain.com"
+                    style={{ width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", marginBottom: 5, fontFamily: "'IBM Plex Mono', monospace" }}>Rebate Payout Method</label>
+                  <select style={{ width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid var(--c-line)", background: "var(--input-bg)", color: "var(--c-paper)", fontSize: 14 }}>
+                    <option style={{ background: "#0a0a18" }}>Credit Directly to MT4/MT5 Balance (Daily)</option>
+                    <option style={{ background: "#0a0a18" }}>USDT TRC20 / ERC20 Crypto Wallet</option>
+                    <option style={{ background: "#0a0a18" }}>Bank Wire Transfer (Monthly)</option>
+                  </select>
+                </div>
+                <Button type="submit" style={{ width: "100%", justifyContent: "center", padding: "13px 16px", marginTop: 6 }}>
+                  Confirm & Bind Rebate Account
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -3213,7 +4693,8 @@ export default function App() {
   const VALID_VIEWS = [
     "home", "brokers", "market", "rankings", "exposure", "news",
     "education", "tools", "media", "regulators", "scam-alerts",
-    "field-survey", "forum", "calculator", "admin"
+    "field-survey", "forum", "calculator", "admin",
+    "network", "protection", "rebates"
   ];
 
   const [view, setView] = useState(() => {
@@ -3238,6 +4719,9 @@ export default function App() {
   const [news, setNews] = useState(initialNews);
   const [surveys, setSurveys] = useState(fieldSurveys);
   const [alerts, setAlerts] = useState(scamAlerts);
+  const [networks, setNetworks] = useState(initialNetworks);
+  const [protectionCases, setProtectionCases] = useState(initialProtectionCases);
+  const [rebates, setRebates] = useState(initialRebates);
   const [selected, setSelected] = useState(null);
   const [compareList, setCompareList] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
@@ -3336,6 +4820,24 @@ export default function App() {
     return true;
   }
 
+  function handleAddProtectionClaim(claim) {
+    const assignedId = `LRP-${Math.floor(2000 + Math.random() * 8000)}`;
+    const newCase = {
+      id: assignedId,
+      brokerName: claim.brokerName,
+      claimant: claim.claimant || "Verified Trader",
+      category: claim.category,
+      amountClaimed: Number(claim.amountClaimed) || 0,
+      amountRecovered: 0,
+      stage: 1,
+      status: "In Evidentiary Review",
+      date: new Date().toISOString().slice(0, 10),
+      auditNotes: claim.auditNotes || "Claim filed by trader. Ledger triage team initiated formal evidence audit."
+    };
+    setProtectionCases(prev => [newCase, ...prev]);
+    return true;
+  }
+
   function toggleTheme() {
     setIsLight((current) => {
       const next = !current;
@@ -3406,6 +4908,9 @@ export default function App() {
       {view === "field-survey" && <div className="view-transition-wrap"><FieldSurveyPage surveys={surveys} /></div>}
       {view === "forum" && <div className="view-transition-wrap"><ForumPage /></div>}
       {view === "calculator" && <div className="view-transition-wrap"><SpreadCalculatorPage /></div>}
+      {view === "network" && <div className="view-transition-wrap"><RelationshipNetworkPage networks={networks} brokers={brokers} openDetail={setSelected} /></div>}
+      {view === "protection" && <div className="view-transition-wrap"><RightsProtectionPage cases={protectionCases} brokers={brokers} onFileClaim={handleAddProtectionClaim} /></div>}
+      {view === "rebates" && <div className="view-transition-wrap"><RebatePage rebates={rebates} /></div>}
       {view === "admin" && (
         adminAuthed ? (
           <div className="view-transition-wrap"><AdminPanel brokers={brokers} setBrokers={setBrokers} exposures={exposures} setExposures={setExposures} news={news} setNews={setNews} alerts={alerts} setAlerts={setAlerts} surveys={surveys} setSurveys={setSurveys} onLogout={handleLogout} /></div>

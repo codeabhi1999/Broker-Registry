@@ -740,7 +740,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           <div style={{ position: "relative", maxWidth: 720 }}>
             <div className="hero-search-bar" style={{
               display: "flex",
-              background: "rgba(10,10,22,0.85)",
+              background: "var(--card-bg)",
               border: `1px solid ${searchFocused ? "var(--c-verified)" : "var(--c-line-strong)"}`,
               borderRadius: 18, overflow: "hidden",
               boxShadow: searchFocused ? "0 20px 48px rgba(0,0,0,0.5), 0 0 0 2px rgba(0,230,118,0.25)" : "0 20px 48px rgba(0,0,0,0.35)",
@@ -1022,7 +1022,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 20, marginBottom: 28 }}>
             <div>
               <div className="section-kicker"><Calculator size={11} /> Trading Cost Radar</div>
-              <h3 style={{ fontSize: 24, fontWeight: 700, margin: "6px 0 8px", fontFamily: "'Inter', sans-serif" }}>
+              <h3 style={{ fontSize: 24, fontWeight: 700, margin: "6px 0 8px", fontFamily: "'Inter', sans-serif", color: "var(--c-paper)" }}>
                 Calculate Spread Slippage & Broker Savings
               </h3>
               <p style={{ color: "var(--c-paper-dim)", fontSize: 14, margin: 0, maxWidth: 540 }}>
@@ -1037,18 +1037,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
                   key={pair}
                   type="button"
                   onClick={() => setCalcPair(pair)}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: 8,
-                    fontSize: 12,
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontWeight: 600,
-                    border: calcPair === pair ? "1px solid var(--c-verified)" : "1px solid var(--c-line)",
-                    background: calcPair === pair ? "var(--c-verified-dim)" : "rgba(255,255,255,0.03)",
-                    color: calcPair === pair ? "var(--c-verified)" : "var(--c-paper)",
-                    cursor: "pointer",
-                    transition: "all 0.15s"
-                  }}
+                  className={`calc-pair-btn ${calcPair === pair ? "active" : ""}`}
                 >
                   {pair}
                 </button>
@@ -1057,9 +1046,9 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           </div>
 
           {/* Interactive Slider */}
-          <div style={{ background: "rgba(3, 3, 10, 0.4)", padding: "20px 24px", borderRadius: 14, border: "1px solid var(--c-line)", marginBottom: 24 }}>
+          <div className="calc-slider-box">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <span style={{ fontSize: 13, color: "var(--c-paper)", fontWeight: 500 }}>Trade Volume (Standard Lots per position):</span>
+              <span style={{ fontSize: 13, color: "var(--c-paper)", fontWeight: 600 }}>Trade Volume (Standard Lots per position):</span>
               <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 18, fontWeight: 700, color: "var(--c-verified)" }}>
                 {calcLots.toFixed(1)} Lots
               </span>
@@ -1083,7 +1072,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           {/* Real-time Comparison Metrics */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
             <div className="calc-metric-pill">
-              <div style={{ fontSize: 11, color: "var(--c-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+              <div style={{ fontSize: 11, color: "var(--c-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6, fontWeight: 600 }}>
                 Top Tier ECN Broker (0.1 pip)
               </div>
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, fontWeight: 700, color: "var(--c-verified)" }}>
@@ -1093,7 +1082,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             </div>
 
             <div className="calc-metric-pill">
-              <div style={{ fontSize: 11, color: "var(--c-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+              <div style={{ fontSize: 11, color: "var(--c-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6, fontWeight: 600 }}>
                 Average Market Maker (1.4+ pips)
               </div>
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, fontWeight: 700, color: "var(--c-alert)" }}>
@@ -1102,7 +1091,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
               <div style={{ fontSize: 11, color: "var(--c-paper-dim)", marginTop: 4 }}>Cost across 10 trades</div>
             </div>
 
-            <div className="calc-metric-pill" style={{ background: "var(--c-verified-dim)", borderColor: "rgba(0,230,118,0.3)" }}>
+            <div className="calc-metric-pill highlight">
               <div style={{ fontSize: 11, color: "var(--c-verified)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700, marginBottom: 6 }}>
                 Estimated Trader Capital Saved
               </div>

@@ -1214,18 +1214,13 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
                 </button>
               )}
               <button
+                type="button"
+                className="hero-inspect-btn"
                 onClick={() => { setBrokerSearch(q); setView("brokers"); setSearchFocused(false); }}
-                style={{
-                  background: "var(--gradient-brand)", color: "#03030A",
-                  border: "none", padding: "0 26px", fontWeight: 700,
-                  cursor: "pointer", transition: "all 0.2s",
-                  fontSize: 14, letterSpacing: "0.02em", fontFamily: "'Inter', sans-serif",
-                  margin: "6px", borderRadius: 12, flexShrink: 0,
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                title="Inspect broker registry"
               >
-                Inspect
+                <span>Inspect</span>
+                <ArrowRight size={15} strokeWidth={2.4} className="hero-inspect-icon" />
               </button>
             </div>
 

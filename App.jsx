@@ -975,19 +975,6 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
   const stdCost = (calcLots * pairInfo.stdSpread * pairInfo.pipVal * tradesCount);
   const savings = Math.max(0, stdCost - ecnCost);
 
-  // Live Ticker Data
-  const tickerItems = [
-    { symbol: "EUR/USD", price: "1.0842", change: "+0.18%", up: true, spread: "0.1" },
-    { symbol: "GBP/USD", price: "1.2985", change: "-0.12%", up: false, spread: "0.2" },
-    { symbol: "USD/JPY", price: "154.20", change: "+0.45%", up: true, spread: "0.3" },
-    { symbol: "XAU/USD", price: "$2,684.50", change: "+1.24%", up: true, spread: "1.8" },
-    { symbol: "BTC/USD", price: "$64,280", change: "+3.65%", up: true, spread: "14.2" },
-    { symbol: "ETH/USD", price: "$2,640", change: "+2.10%", up: true, spread: "2.1" },
-    { symbol: "AUD/USD", price: "0.6654", change: "-0.28%", up: false, spread: "0.3" },
-    { symbol: "USD/CHF", price: "0.8640", change: "+0.05%", up: true, spread: "0.1" },
-    { symbol: "S&P 500", price: "5,820", change: "+0.42%", up: true, spread: "0.5" },
-    { symbol: "WTI Crude", price: "$71.15", change: "-0.85%", up: false, spread: "2.5" }
-  ];
 
   return (
     <div className="fade-in-up">
@@ -1187,24 +1174,6 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      {/* ── Continuous Live Market Marquee Ticker Tape ── */}
-      <div className="ticker-ribbon-container">
-        <div className="ticker-ribbon-track">
-          {[...tickerItems, ...tickerItems].map((item, index) => (
-            <div
-              key={`${item.symbol}-${index}`}
-              className="ticker-item"
-              onClick={() => setView("market")}
-              title="Click to view live market pulse"
-            >
-              <span className="ticker-symbol">{item.symbol}</span>
-              <span className="ticker-price">{item.price}</span>
-              <span className={`ticker-change ${item.up ? "up" : "down"}`}>{item.change}</span>
-              <span style={{ color: "var(--c-muted)", fontSize: 10.5 }}>Spr {item.spread}</span>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── Real-time Registry Telemetry Strip ── */}
       <section className="telemetry-strip" style={{ borderBottom: "1px solid var(--c-line)" }}>

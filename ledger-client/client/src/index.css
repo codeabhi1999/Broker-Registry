@@ -211,20 +211,28 @@ code, kbd, samp, pre, .font-mono {
 }
 
 .glass-card-hover {
-  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   background: var(--gradient-card);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--c-line);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
 }
 .glass-card-hover:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 24px 48px rgba(0,0,0,0.45), var(--shadow-glow);
-  border-color: var(--c-line-accent);
+  transform: translateY(-5px);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 28px rgba(0, 230, 118, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 230, 118, 0.38);
+}
+[data-theme="light"] .glass-card-hover {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
 }
 [data-theme="light"] .glass-card-hover:hover {
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
-  border-color: var(--c-line-accent);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1), 0 0 24px rgba(5, 150, 105, 0.12);
+  border-color: rgba(5, 150, 105, 0.35);
 }
 
 .fade-in-up {
@@ -259,20 +267,63 @@ code, kbd, samp, pre, .font-mono {
 
 
 /* ============================================================
-   BASE RESET
+   BASE RESET & ATMOSPHERIC CYBER GRID
    ============================================================ */
 * { box-sizing: border-box; }
 html, body, #root { width: 100%; min-height: 100%; margin: 0; }
 body {
   min-width: 320px;
   overflow-x: hidden;
-  background: var(--c-ink);
+  background-color: var(--c-ink);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 230, 118, 0.12), transparent 70%),
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.038) 1px, transparent 0);
+  background-size: 100% 100%, 32px 32px;
+  background-repeat: no-repeat, repeat;
   color: var(--c-paper);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-feature-settings: 'cv11', 'ss01';
   transition: background 0.3s ease, color 0.3s ease;
   line-height: 1.5;
 }
+[data-theme="light"] body {
+  background-color: var(--c-ink);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(5, 150, 105, 0.08), transparent 70%),
+    radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.04) 1px, transparent 0);
+  background-size: 100% 100%, 32px 32px;
+  background-repeat: no-repeat, repeat;
+}
+
+/* Custom Sleek Scrollbars */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--c-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 230, 118, 0.55);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.2);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(5, 150, 105, 0.6);
+}
+::selection {
+  background: rgba(0, 230, 118, 0.28);
+  color: #FFFFFF;
+}
+
 button, input, select, textarea { font: inherit; }
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 2px solid var(--c-verified);
@@ -2186,20 +2237,53 @@ header {
   animation: viewFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ── Glow buttons on hover ── */
+/* ── Glow buttons on hover with light sweep sheen ── */
 .ui-button {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-              filter 0.25s !important;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              filter 0.22s !important;
+}
+.ui-button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 35%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  transform: rotate(25deg);
+  transition: transform 0.65s ease;
+  pointer-events: none;
+}
+.ui-button:hover::after {
+  transform: translateX(450%) rotate(25deg);
 }
 .ui-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35), var(--shadow-glow) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), var(--shadow-glow) !important;
 }
 [data-theme="light"] .ui-button:hover {
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12), var(--shadow-glow) !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12), var(--shadow-glow) !important;
 }
-.ui-button:active { transform: translateY(0); }
+.ui-button:active { transform: translateY(0) scale(0.975); }
+
+.button-primary {
+  background: linear-gradient(135deg, #00E676 0%, #00C853 45%, #2979FF 100%) !important;
+  box-shadow: 0 4px 18px rgba(0, 230, 118, 0.32), 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  color: #071c1a !important;
+  font-weight: 700 !important;
+}
+.button-primary:hover {
+  box-shadow: 0 8px 28px rgba(0, 230, 118, 0.45), 0 3px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  filter: brightness(1.04);
+}
 
 /* ── Premium Broker Card (Institutional Style) ── */
 .broker-card {
@@ -2211,11 +2295,12 @@ header {
   gap: 16px;
   transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s, border-color 0.35s;
   position: relative; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 [data-theme="light"] .broker-card {
   background: #FFFFFF;
-  border-color: rgba(10, 10, 24, 0.1);
-  box-shadow: 0 4px 20px rgba(18, 34, 53, 0.05);
+  border-color: rgba(15, 23, 42, 0.09);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
 }
 .broker-card-glow-bar {
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -2223,12 +2308,14 @@ header {
   opacity: 0; transition: opacity 0.35s ease;
 }
 .broker-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), var(--shadow-glow);
-  border-color: var(--c-line-accent);
+  transform: translateY(-5px);
+  box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.65), 0 0 30px rgba(0, 230, 118, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 230, 118, 0.35);
 }
 [data-theme="light"] .broker-card:hover {
-  box-shadow: 0 20px 40px rgba(18, 34, 53, 0.12), var(--shadow-glow);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 42px -10px rgba(15, 23, 42, 0.12), 0 0 24px rgba(5, 150, 105, 0.14);
+  border-color: rgba(5, 150, 105, 0.32);
 }
 .broker-card:hover .broker-card-glow-bar { opacity: 1; }
 
@@ -3356,8 +3443,17 @@ header {
   width: 100%;
   accent-color: var(--c-verified);
   cursor: pointer;
-  height: 6px;
-  border-radius: 3px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+  transition: all 0.2s ease;
+}
+.calc-range-slider:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+[data-theme="light"] .calc-range-slider {
+  background: rgba(15, 23, 42, 0.1);
 }
 
 .calc-pair-btn {
@@ -3401,13 +3497,15 @@ header {
 }
 
 .calc-metric-pill.highlight {
-  background: var(--c-verified-dim);
-  border-color: rgba(0, 230, 118, 0.3);
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.16) 0%, rgba(41, 121, 255, 0.08) 100%);
+  border-color: rgba(0, 230, 118, 0.45);
+  box-shadow: 0 0 24px rgba(0, 230, 118, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="light"] .calc-metric-pill.highlight {
-  background: rgba(0, 169, 79, 0.1);
-  border-color: rgba(0, 169, 79, 0.35);
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.12) 0%, rgba(37, 99, 235, 0.08) 100%);
+  border-color: rgba(5, 150, 105, 0.45);
+  box-shadow: 0 0 20px rgba(5, 150, 105, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 /* ── Methodology Showcase Cards ── */
@@ -3418,7 +3516,23 @@ header {
   padding: 26px 22px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
+}
+.methodology-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 230, 118, 0.4);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 24px rgba(0, 230, 118, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+[data-theme="light"] .methodology-card {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+[data-theme="light"] .methodology-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(5, 150, 105, 0.35);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08), 0 0 20px rgba(5, 150, 105, 0.1);
 }
 
 .methodology-card:hover {

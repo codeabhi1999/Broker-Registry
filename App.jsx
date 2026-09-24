@@ -493,22 +493,31 @@ function normalizeAlert(alert) {
 --------------------------------------------------------- */
 function Stamp({ score, alert, size = 52 }) {
   const s = alert ? "var(--c-alert)" : "var(--c-verified)";
-  const bg = alert ? "var(--c-alert-dim)" : "var(--c-verified-dim)";
+  const bg = alert 
+    ? "radial-gradient(circle at 35% 35%, rgba(255, 65, 54, 0.22), rgba(255, 65, 54, 0.08))" 
+    : "radial-gradient(circle at 35% 35%, rgba(0, 230, 118, 0.22), rgba(0, 230, 118, 0.08))";
   const borderColor = alert ? "var(--c-alert)" : "var(--c-verified)";
   return (
     <div
+      className="institutional-stamp"
       style={{
         width: size, height: size, borderRadius: "50%", flexShrink: 0,
         border: `2px solid ${borderColor}`,
+        outline: `1px dashed ${alert ? "rgba(255,65,54,0.35)" : "rgba(0,230,118,0.35)"}`,
+        outlineOffset: "2px",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center", color: s,
-        background: bg, transform: "rotate(-6deg)",
-        fontFamily: "'IBM Plex Mono', monospace",
-        boxShadow: alert ? "var(--c-alert-glow)" : "var(--c-verified-glow)",
+        background: bg, transform: "rotate(-4deg)",
+        fontFamily: "'JetBrains Mono', 'IBM Plex Mono', monospace",
+        boxShadow: alert ? "0 0 16px rgba(255,65,54,0.28)" : "0 0 16px rgba(0,230,118,0.28)",
+        transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        cursor: "default"
       }}
+      onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(0deg) scale(1.06)")}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = "rotate(-4deg) scale(1)")}
     >
-      <div style={{ fontSize: size * 0.28, fontWeight: 700, lineHeight: 1 }}>{Number(score).toFixed(1)}</div>
-      <div style={{ fontSize: size * 0.14, color: "var(--c-muted)", marginTop: 2 }}>/ 10</div>
+      <div style={{ fontSize: size * 0.29, fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }}>{Number(score).toFixed(1)}</div>
+      <div style={{ fontSize: size * 0.13, color: "var(--c-muted)", marginTop: 2, fontWeight: 600 }}>/ 10</div>
     </div>
   );
 }
@@ -519,14 +528,17 @@ function Badge({ children, tone = "default" }) {
     <span
       className={`badge badge-${tone}`}
       style={{
-        fontSize: 11, padding: "3px 8px", borderRadius: 4,
-        fontFamily: "'IBM Plex Mono', monospace", whiteSpace: "nowrap",
-        display: "inline-flex", alignItems: "center", gap: 4,
+        fontSize: 11, padding: "3px 10px", borderRadius: 20,
+        fontFamily: "'JetBrains Mono', 'IBM Plex Mono', monospace", whiteSpace: "nowrap",
+        display: "inline-flex", alignItems: "center", gap: 5,
+        fontWeight: 600,
+        letterSpacing: "0.02em",
+        transition: "all 0.2s ease",
         // Default (no tone) style — others handled by .badge-reg/warn/pending CSS classes
         ...(tone === "default" && {
           color: "var(--c-paper-dim)",
           border: "1px solid var(--c-line-strong)",
-          background: "transparent",
+          background: "rgba(255, 255, 255, 0.03)",
         }),
       }}
     >
@@ -540,7 +552,7 @@ function Badge({ children, tone = "default" }) {
 function GlassCard({ children, style = {}, className = "" }) {
   return (
     <div className={`glass-card-hover ${className}`} style={{
-      borderRadius: 14,
+      borderRadius: 16,
       ...style
     }}>
       {children}
@@ -548,31 +560,46 @@ function GlassCard({ children, style = {}, className = "" }) {
   );
 }
 
-function Button({ children, onClick, variant = "primary", type = "button", style = {}, disabled }) {
+function Button({ children, onClick, variant = "primary", type = "button", style = {}, disabled, title }) {
   const base = {
     fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 13,
-    padding: "9px 18px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
-    border: "none", display: "inline-flex", alignItems: "center", gap: 7,
-    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)", opacity: disabled ? 0.4 : 1,
+    padding: "10px 18px", borderRadius: 12, cursor: disabled ? "not-allowed" : "pointer",
+    border: "none", display: "inline-flex", alignItems: "center", gap: 8,
+    transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)", opacity: disabled ? 0.45 : 1,
     letterSpacing: "0.01em",
+    position: "relative",
+    overflow: "hidden",
   };
   const variants = {
     primary: {
-      background: "var(--gradient-brand)", color: "#FFFFFF",
-      textShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
-      boxShadow: "0 4px 16px rgba(0, 230, 118, 0.25), 0 2px 4px rgba(0,0,0,0.15)"
+      background: "linear-gradient(135deg, #00E676 0%, #00C853 45%, #2979FF 100%)",
+      color: "#071c1a",
+      fontWeight: 700,
+      boxShadow: "0 4px 18px rgba(0, 230, 118, 0.3), 0 1px 3px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.35)",
+    },
+    secondary: {
+      background: "var(--c-surface-hi)",
+      color: "var(--c-paper)",
+      border: `1px solid var(--c-line-strong)`,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
     },
     ghost: {
-      background: "transparent", color: "var(--c-paper)",
-      border: `1px solid var(--c-line-strong)`
+      background: "rgba(255, 255, 255, 0.03)",
+      color: "var(--c-paper)",
+      border: `1px solid var(--c-line-strong)`,
+      backdropFilter: "blur(8px)",
     },
     danger: {
-      background: "var(--c-alert-dim)", color: "var(--c-alert)",
-      border: `1px solid rgba(255,65,54,0.25)`
+      background: "rgba(255, 65, 54, 0.12)",
+      color: "var(--c-alert)",
+      border: `1px solid rgba(255, 65, 54, 0.3)`,
+      boxShadow: "0 2px 10px rgba(255, 65, 54, 0.15)",
     },
     subtle: {
-      background: "var(--c-surface-hi)", color: "var(--c-paper)",
-      border: `1px solid var(--c-line-strong)`
+      background: "var(--c-surface-hi)",
+      color: "var(--c-paper)",
+      border: `1px solid var(--c-line-strong)`,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     },
   };
   return (
@@ -580,6 +607,7 @@ function Button({ children, onClick, variant = "primary", type = "button", style
       type={type}
       disabled={disabled}
       onClick={onClick}
+      title={title}
       className={`ui-button button-${variant}`}
       style={{ ...base, ...variants[variant], ...style }}
       onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = "translateY(-2px)")}
@@ -602,9 +630,10 @@ function Field({ label, children }) {
 }
 
 const inputStyle = {
-  width: "100%", background: "var(--input-bg)", border: "1px solid var(--input-border)", borderRadius: 6,
-  color: "var(--input-color)", padding: "10px 12px", fontSize: 14, fontFamily: "'Inter', sans-serif", outline: "none",
-  boxSizing: "border-box"
+  width: "100%", background: "var(--input-bg)", border: "1px solid var(--input-border)", borderRadius: 10,
+  color: "var(--input-color)", padding: "11px 14px", fontSize: 14, fontFamily: "'Inter', sans-serif", outline: "none",
+  boxSizing: "border-box", transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+  backdropFilter: "blur(8px)",
 };
 
 /* ---------------------------------------------------------
@@ -723,7 +752,10 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
           <div className="brand-logo-badge">
             <ShieldCheck size={18} />
           </div>
-          <span className="brand-title">LEDGER<span className="brand-title-accent">.</span></span>
+          <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+            <span className="brand-title">LEDGER<span className="brand-title-accent">.</span></span>
+            <span className="brand-status-pill"><span className="live-ping-dot" /> LIVE</span>
+          </div>
         </div>
 
         {/* Desktop Navigation */}

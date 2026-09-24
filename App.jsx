@@ -819,7 +819,7 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
                             <div className="nav-item-text">
                               <div className="nav-item-label-row">
                                 <strong className="nav-item-label">{it.label}</strong>
-                                {it.badge && <span className="nav-item-badge">{it.badge}</span>}
+                                {it.badge && <span className={`nav-item-badge badge-${it.badge.toLowerCase()}`}>{it.badge}</span>}
                               </div>
                               <span className="nav-item-meta">{it.meta}</span>
                             </div>

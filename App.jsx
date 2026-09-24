@@ -1551,6 +1551,16 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
+      {/* ── Unified Regulatory Intelligence Console (Simple & Professional) ── */}
+      <RegistryIntelligenceConsole
+        brokers={brokers}
+        exposures={exposures}
+        openDetail={openDetail}
+        toggleCompare={toggleCompare}
+        compareList={compareList}
+        setView={setView}
+      />
+
       {/* ── Interactive Spread Fee & Savings Calculator ── */}
       <section style={{ maxWidth: 1240, margin: "0 auto", padding: "12px 20px 64px" }}>
         <div className="spread-calc-hero-card">
@@ -1695,16 +1705,6 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      {/* ── Unified AI Intelligence Command Deck ── */}
-      <AIIntelligenceDeck
-        brokers={brokers}
-        exposures={exposures}
-        setView={setView}
-        openDetail={openDetail}
-        toggleCompare={toggleCompare}
-        compareList={compareList}
-      />
-
       {/* ── Latest Exposure Reports ── */}
       <section className="exposure-band" style={{
         padding: "64px 20px",
@@ -1834,276 +1834,452 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
 }
 
 /* ---------------------------------------------------------
-   UNIFIED AI INTELLIGENCE COMMAND DECK
+   UNIFIED REGISTRY INTELLIGENCE CONSOLE (Clean, Modern, Simple & Professional)
 --------------------------------------------------------- */
-function AIIntelligenceDeck({ brokers, exposures, setView, openDetail, toggleCompare, compareList = [] }) {
-  const [selectedId, setSelectedId] = useState(brokers[0]?.id || "");
-  const [filterMode, setFilterMode] = useState("all");
+function RegistryIntelligenceConsole({ brokers, exposures, openDetail, toggleCompare, compareList, setView }) {
+  const [activeTab, setActiveTab] = useState("scanner");
+  const [selectedId, setSelectedId] = useState(brokers[0]?.id || "b1");
 
-  const selectedBroker = brokers.find((b) => b.id === selectedId) || brokers[0];
-  const flagged = useMemo(() => brokers.filter(b => (b.flags || []).length > 0 || Number(b.score) < 5), [brokers]);
-  const highestRated = useMemo(() => [...brokers].sort((a, b) => Number(b.score) - Number(a.score))[0], [brokers]);
+  // Selected broker for Safety Diagnostic
+  const selectedBroker = useMemo(() => {
+    return brokers.find(b => b.id === selectedId) || brokers[0];
+  }, [brokers, selectedId]);
 
   const score = Number(selectedBroker?.score || 0);
-  const flagCount = selectedBroker?.flags?.length || 0;
-  const relatedCases = useMemo(() => {
-    if (!selectedBroker) return [];
-    return exposures.filter((e) => e.brokerName?.toLowerCase() === selectedBroker.name?.toLowerCase());
-  }, [exposures, selectedBroker]);
+  const isHighTrust = score >= 8.0;
+  const isModerate = score >= 5.0 && score < 8.0;
+  const isCompared = compareList?.some(x => x.id === selectedBroker?.id);
+  const flagsCount = selectedBroker?.flags?.length || 0;
 
-  const disputedSum = relatedCases.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+  // Matcher state (Clean, no tacky emojis)
+  const [matchStyle, setMatchStyle] = useState("scalper");
+  const [matchDeposit, setMatchDeposit] = useState("micro");
+  const [matchRegion, setMatchRegion] = useState("tier1");
 
-  const isCritical = score < 5 || flagCount >= 2;
-  const isElevated = !isCritical && (score < 7.5 || flagCount === 1 || /offshore|unregistered/i.test(selectedBroker?.regulator || ""));
-
-  const signalTone = isCritical ? "critical" : isElevated ? "elevated" : "clear";
-  const levelText = isCritical ? "Critical Risk Alert" : isElevated ? "Elevated Caution" : "Verified Institution";
-  const dialColor = isCritical ? "var(--c-alert)" : isElevated ? "var(--c-amber)" : "var(--c-verified)";
-  const scorePercent = Math.min(100, Math.max(10, Math.round(score * 10)));
-  const confidence = brokers.length ? Math.min(99, Math.round(74 + (brokers.length * 3) + (selectedBroker ? 12 : 0))) : 0;
-
-  function selectRisk() {
-    setFilterMode("risk");
-    if (flagged.length > 0) {
-      setSelectedId(flagged[0].id);
+  const matchedBroker = useMemo(() => {
+    let pool = [...brokers];
+    if (matchStyle === "scalper") {
+      pool = pool.filter(b => (b.type || "").toUpperCase().includes("ECN") || Number(b.score) >= 8.5);
+    } else if (matchStyle === "ea") {
+      pool = pool.filter(b => (b.type || "").toUpperCase().includes("ECN") || (b.software || "").includes("MT5"));
     }
-  }
-
-  function selectTop() {
-    setFilterMode("top");
-    if (highestRated) {
-      setSelectedId(highestRated.id);
+    if (matchDeposit === "micro") {
+      pool = pool.filter(b => Number(b.min_deposit || 100) <= 100);
+    } else if (matchDeposit === "inst") {
+      pool = pool.filter(b => Number(b.score) >= 8.5);
     }
-  }
+    if (matchRegion === "tier1") {
+      pool = pool.filter(b => (b.regulator || "").includes("FCA") || (b.regulator || "").includes("ASIC") || (b.regulator || "").includes("CySEC"));
+    }
+    if (pool.length === 0) pool = [...brokers].sort((a, b) => b.score - a.score);
+    return pool.sort((a, b) => b.score - a.score)[0] || brokers[0];
+  }, [brokers, matchStyle, matchDeposit, matchRegion]);
 
-  function handleSelect(id) {
-    setFilterMode("custom");
-    setSelectedId(id);
-  }
+  const isMatchedCompared = compareList?.some(x => x.id === matchedBroker?.id);
 
-  const isCompared = selectedBroker && compareList.some(x => x.id === selectedBroker.id);
-
-  // Synthesized AI assessment
-  let analysisText = "";
-  let actionText = "";
-
-  if (isCritical) {
-    analysisText = `${selectedBroker?.name} holds severe risk indicators (${flagCount ? `${flagCount} risk flags on file` : "sub-standard trust index"})${relatedCases.length ? ` and ${relatedCases.length} public complaint cases totaling $${disputedSum.toLocaleString()}` : ""}. Unregulated or high-dispute operating profile.`;
-    actionText = "Strong caution: Avoid depositing capital. Inspect open dispute cases and regulatory warnings prior to any engagement.";
-  } else if (isElevated) {
-    analysisText = `${selectedBroker?.name} maintains an operational history (${selectedBroker?.years}yr), but exhibits caution signals: ${selectedBroker?.regulator?.includes("Offshore") ? "Offshore jurisdiction with relaxed statutory oversight" : "moderate trust scoring requiring independent scrutiny"}.`;
-    actionText = "Verify license registration directly with the official statutory body and audit withdrawal processing speeds.";
-  } else {
-    analysisText = `${selectedBroker?.name} demonstrates benchmark compliance with tier-1 regulatory oversight (${selectedBroker?.regulator}), ${selectedBroker?.years} years of active operations, and clean public exposure records.`;
-    actionText = "Institutional-grade dossier verified. Proceed to account terms evaluation and segregated custody verification.";
-  }
+  // Wire state (Clean, no emojis)
+  const [wireFilter, setWireFilter] = useState("all");
+  const wireEvents = [
+    { id: "e1", type: "audit", tag: "STATUTORY VERIFIED", time: "Just now", text: "UK FCA register confirmed active status for Solaris Prime license #771102 with client fund segregation.", tone: "verified", brokerId: "b1" },
+    { id: "e2", type: "alert", tag: "CLONE ALERT", time: "4m ago", text: "Phishing clone domain 'solaris-prime-traders.net' flagged and added to global scam ledger.", tone: "alert" },
+    { id: "e3", type: "recovery", tag: "RESTITUTION", time: "11m ago", text: "Dispute resolution completed: Trader received $5,400 restitution following execution mediation.", tone: "verified", brokerId: "b3" },
+    { id: "e4", type: "survey", tag: "FIELD SURVEY", time: "18m ago", text: "On-site physical inspection verified active trading desks at Vantage Global HQ in Sydney.", tone: "verified", brokerId: "b2" },
+    { id: "e5", type: "alert", tag: "SPREAD ALERT", time: "25m ago", text: "Copperline Trade flagged for abnormal spread spike (8.4 pips) during CPI volatility window.", tone: "warn", brokerId: "b4" },
+  ];
+  const filteredWire = wireFilter === "all" ? wireEvents : wireEvents.filter(e => e.type === wireFilter);
 
   return (
-    <section className="ai-unified-deck">
-      <div className="ai-deck-glow-orb" />
-
-      {/* Header bar */}
-      <div className="ai-deck-head">
-        <div className="ai-deck-head-left">
-          <div className="ai-deck-badge">
-            <Sparkles size={13} />
-            <span>LEDGER NEURAL RISK RADAR</span>
-            <span className="ai-deck-live-dot" />
+    <section className="registry-console-section" style={{ maxWidth: 1240, margin: "0 auto", padding: "40px 20px 64px" }}>
+      <div className="registry-console-card">
+        {/* Header with Clean Segmented Tabs */}
+        <div className="registry-console-header">
+          <div>
+            <div className="console-clean-kicker">INSTITUTIONAL AUDIT & VERIFICATION</div>
+            <h2 className="console-heading">Broker Safety & Execution Audit</h2>
+            <p className="console-sub">Inspect statutory regulatory filings, execution models, and dispute histories before capital moves.</p>
           </div>
-          <h2 className="ai-deck-title">Autonomous Risk Briefing & Decision Terminal</h2>
-          <p className="ai-deck-subtitle">
-            Algorithmic synthesis cross-referencing Tier-1 regulatory registers, physical survey records, and verified dispute exposure files.
-          </p>
-        </div>
 
-        <div className="ai-deck-head-right">
-          <div className="ai-confidence-box">
-            <div className="ai-confidence-label">
-              <span>EVIDENCE CONFIDENCE</span>
-              <strong>{confidence}%</strong>
-            </div>
-            <div className="ai-confidence-track">
-              <div className="ai-confidence-fill" style={{ width: `${confidence}%` }} />
-            </div>
-            <div className="ai-confidence-meta">
-              <span className="ai-confidence-ping" />
-              <span>Active Multi-Vector Registry Heuristics</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Control bar */}
-      <div className="ai-deck-toolbar">
-        <div className="ai-selector-wrap">
-          <span className="ai-selector-label">TARGET DOSSIER:</span>
-          <div className="ai-custom-select-box">
-            <select
-              value={selectedBroker?.id || ""}
-              onChange={(e) => handleSelect(e.target.value)}
-              aria-label="Select target broker for risk analysis"
+          <div className="console-segmented-nav">
+            <button
+              type="button"
+              className={`console-tab-pill ${activeTab === "scanner" ? "active" : ""}`}
+              onClick={() => setActiveTab("scanner")}
             >
-              {brokers.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name} — Trust {b.score}/10 · {b.country}
-                </option>
-              ))}
-            </select>
-            <ChevronDown size={14} className="ai-select-arrow" />
-          </div>
-        </div>
-
-        <div className="ai-filter-actions">
-          <button
-            type="button"
-            className={`ai-filter-btn ${filterMode === "risk" ? "is-active" : ""}`}
-            onClick={selectRisk}
-            title="Inspect highest risk profile"
-          >
-            <AlertTriangle size={13} />
-            <span>Risk Queue ({flagged.length})</span>
-          </button>
-          <button
-            type="button"
-            className={`ai-filter-btn ${filterMode === "top" ? "is-active" : ""}`}
-            onClick={selectTop}
-            title="Inspect top rated institution"
-          >
-            <ShieldCheck size={13} />
-            <span>Top Rated</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Terminal Grid */}
-      <div className="ai-deck-grid">
-        {/* Left Column: Biometric Radar & Score Dial */}
-        <div className="ai-radar-panel-card">
-          <div className="ai-radar-dish">
-            <div className="radar-sweep-effect" />
-            <div className="ai-radar-orbit orbit-outer" />
-            <div className="ai-radar-orbit orbit-mid" />
-            <div className="ai-radar-crosshair-h" />
-            <div className="ai-radar-crosshair-v" />
-
-            {/* Core Score Ring */}
-            <div
-              className="ai-radar-gauge-ring"
-              style={{
-                background: `conic-gradient(${dialColor} ${scorePercent}%, var(--c-line-strong) 0)`
-              }}
+              <ShieldCheck size={14} />
+              <span>Safety Diagnostic</span>
+            </button>
+            <button
+              type="button"
+              className={`console-tab-pill ${activeTab === "matcher" ? "active" : ""}`}
+              onClick={() => setActiveTab("matcher")}
             >
-              <div className="ai-radar-gauge-core">
-                <span className="ai-core-score">{score.toFixed(1)}</span>
-                <span className="ai-core-denom">TRUST INDEX</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="ai-radar-verdict-block">
-            <div className={`ai-signal-badge tone-${signalTone}`}>
-              <span className="ai-signal-dot" />
-              <span>{levelText}</span>
-            </div>
-            <h3 className="ai-verdict-name">{selectedBroker?.name}</h3>
-            <div className="ai-verdict-meta">
-              <span>{selectedBroker?.years}yr Track Record</span>
-              <span>·</span>
-              <span>{selectedBroker?.country}</span>
-            </div>
+              <Sparkles size={14} />
+              <span>Broker Matcher</span>
+            </button>
+            <button
+              type="button"
+              className={`console-tab-pill ${activeTab === "wire" ? "active" : ""}`}
+              onClick={() => setActiveTab("wire")}
+            >
+              <Activity size={14} />
+              <span>Live Audit Feed</span>
+            </button>
           </div>
         </div>
 
-        {/* Right Column: 3 Deep Audit Tiles & Heuristic Synthesis */}
-        <div className="ai-intel-content-card">
-          <div className="ai-telemetry-triad">
-            {/* Tile 1: Regulatory Posture */}
-            <div className="ai-triad-card">
-              <div className="ai-triad-top">
-                <div className="ai-triad-icon-box tone-reg">
-                  <Scale size={15} />
+        {/* ── TAB 1: SAFETY DIAGNOSTIC ── */}
+        {activeTab === "scanner" && (
+          <div className="console-tab-content">
+            <div className="console-scanner-layout">
+              {/* Left Column: Broker Profile & Score */}
+              <div className="console-profile-box">
+                <div className="console-selector-wrap">
+                  <label className="console-field-label">TARGET BROKER</label>
+                  <select
+                    className="console-select-input"
+                    value={selectedId}
+                    onChange={(e) => setSelectedId(e.target.value)}
+                  >
+                    {brokers.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name} ({Number(b.score).toFixed(1)}/10 — {b.regulator})
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <span className="ai-triad-tag">REGULATORY POSTURE</span>
-              </div>
-              <div className="ai-triad-primary">{selectedBroker?.regulator || "Unregistered"}</div>
-              <div className="ai-triad-secondary">
-                {selectedBroker?.licenseStatus || "Standard Regulation"} · {selectedBroker?.license || "No ID"}
-              </div>
-            </div>
 
-            {/* Tile 2: Exposure History */}
-            <div className="ai-triad-card">
-              <div className="ai-triad-top">
-                <div className={`ai-triad-icon-box ${relatedCases.length > 0 ? "tone-alert" : "tone-verified"}`}>
-                  <ShieldCheck size={15} />
-                </div>
-                <span className="ai-triad-tag">EXPOSURE DESK</span>
-              </div>
-              <div className={`ai-triad-primary ${relatedCases.length > 0 ? "color-alert" : ""}`}>
-                {relatedCases.length} {relatedCases.length === 1 ? "Dispute Case" : "Dispute Cases"}
-              </div>
-              <div className="ai-triad-secondary">
-                {disputedSum > 0 ? `$${disputedSum.toLocaleString()} disputed capital` : "Zero unresolved public claims"}
-              </div>
-            </div>
+                <div className="console-score-card">
+                  <div className="console-score-top">
+                    <div>
+                      <div className="console-score-number">
+                        {score.toFixed(1)}
+                        <span className="console-score-total">/10</span>
+                      </div>
+                      <div className="console-score-label">TRUST RATING</div>
+                    </div>
+                    <span className={`console-trust-badge ${isHighTrust ? "status-high" : isModerate ? "status-med" : "status-low"}`}>
+                      {isHighTrust ? "Tier-1 Supervised" : isModerate ? "Secondary License" : "High Risk / Clone"}
+                    </span>
+                  </div>
 
-            {/* Tile 3: Environment & Terms */}
-            <div className="ai-triad-card">
-              <div className="ai-triad-top">
-                <div className="ai-triad-icon-box tone-amber">
-                  <Activity size={15} />
+                  <div className="console-specs-grid">
+                    <div className="console-spec-row">
+                      <span className="console-spec-key">Jurisdiction</span>
+                      <span className="console-spec-val">{selectedBroker?.country || "Global"}</span>
+                    </div>
+                    <div className="console-spec-row">
+                      <span className="console-spec-key">Supervision</span>
+                      <span className="console-spec-val">{selectedBroker?.regulator || "Unregistered"}</span>
+                    </div>
+                    <div className="console-spec-row">
+                      <span className="console-spec-key">Execution</span>
+                      <span className="console-spec-val">{selectedBroker?.type || "Standard"}</span>
+                    </div>
+                    <div className="console-spec-row">
+                      <span className="console-spec-key">Track Record</span>
+                      <span className="console-spec-val">{selectedBroker?.years || 5} Years Active</span>
+                    </div>
+                  </div>
+
+                  <div className="console-btn-row">
+                    <button
+                      type="button"
+                      className="console-btn-solid"
+                      onClick={() => openDetail(selectedBroker)}
+                    >
+                      <Eye size={14} />
+                      <span>Full Dossier</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`console-btn-outline ${isCompared ? "is-active" : ""}`}
+                      onClick={() => toggleCompare(selectedBroker)}
+                    >
+                      <Scale size={14} />
+                      <span>{isCompared ? "In Compare" : "Compare"}</span>
+                    </button>
+                  </div>
                 </div>
-                <span className="ai-triad-tag">EXECUTION AUDIT</span>
               </div>
-              <div className="ai-triad-primary">{selectedBroker?.type || "Standard ECN"} Model</div>
-              <div className="ai-triad-secondary">
-                Min: ${selectedBroker?.min_deposit || 50} · Max Lev: {selectedBroker?.max_leverage || "1:500"}
+
+              {/* Right Column: Clean 4-Item Verification Matrix */}
+              <div className="console-checklist-box">
+                <div className="console-checklist-header">
+                  <div className="console-checklist-title">STATUTORY COMPLIANCE CHECKLIST</div>
+                  <div className="console-checklist-status">
+                    <span className="console-status-dot" />
+                    <span>Live Primary Register Audit</span>
+                  </div>
+                </div>
+
+                <div className="console-checklist-items">
+                  {/* Item 1 */}
+                  <div className="console-check-row">
+                    <div className="console-check-icon success">
+                      <Check size={14} />
+                    </div>
+                    <div className="console-check-content">
+                      <div className="console-check-name">Statutory Regulation & Fund Segregation</div>
+                      <div className="console-check-desc">
+                        {isHighTrust
+                          ? `Confirmed active authorization with ${selectedBroker?.regulator || "primary authorities"}. Client deposits maintained in segregated Tier-1 custodial accounts.`
+                          : "Offshore regulatory framework. Limited or zero statutory compensation scheme coverage."}
+                      </div>
+                    </div>
+                    <div className="console-check-tag">
+                      <span className={`console-badge-pill ${isHighTrust ? "tone-green" : "tone-amber"}`}>
+                        {selectedBroker?.licenseStatus || "Audited"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Item 2 */}
+                  <div className="console-check-row">
+                    <div className="console-check-icon success">
+                      <Check size={14} />
+                    </div>
+                    <div className="console-check-content">
+                      <div className="console-check-name">Corporate Ownership & Entity Transparency</div>
+                      <div className="console-check-desc">
+                        {isHighTrust
+                          ? "Direct operating parent entity with audited balance-sheet reporting. Zero ghost shell intermediaries detected."
+                          : "Multi-jurisdictional affiliate network routing retail accounts across offshore sister companies."}
+                      </div>
+                    </div>
+                    <div className="console-check-tag">
+                      <span className="console-badge-pill tone-neutral">
+                        {isHighTrust ? "Direct Parent" : "Shared Group"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Item 3 */}
+                  <div className="console-check-row">
+                    <div className="console-check-icon success">
+                      <Check size={14} />
+                    </div>
+                    <div className="console-check-content">
+                      <div className="console-check-name">Execution Model & Spread Stability</div>
+                      <div className="console-check-desc">
+                        {isHighTrust
+                          ? `Direct liquidity pass-through (${selectedBroker?.type || "ECN"}). Monitored average spread of 0.1–0.3 pips on EUR/USD.`
+                          : `${selectedBroker?.type || "Market Maker"} execution model. Wider spreads during volatility releases.`}
+                      </div>
+                    </div>
+                    <div className="console-check-tag">
+                      <span className="console-badge-pill tone-neutral">
+                        {selectedBroker?.type || "ECN"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Item 4 */}
+                  <div className="console-check-row">
+                    <div className={`console-check-icon ${flagsCount > 0 ? "warn" : "success"}`}>
+                      {flagsCount > 0 ? <AlertTriangle size={14} /> : <Check size={14} />}
+                    </div>
+                    <div className="console-check-content">
+                      <div className="console-check-name">Dispute Ledger & Withdrawal History</div>
+                      <div className="console-check-desc">
+                        {flagsCount > 0
+                          ? `Active alerts recorded: ${selectedBroker.flags.join(", ")}. Exercise caution before depositing.`
+                          : "Clean public record. Zero unresolved balance freezes or arbitrary trade cancellations documented."}
+                      </div>
+                    </div>
+                    <div className="console-check-tag">
+                      <span className={`console-badge-pill ${flagsCount > 0 ? "tone-red" : "tone-green"}`}>
+                        {flagsCount > 0 ? `${flagsCount} Red Flag(s)` : "Clean Record"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+        )}
 
-          {/* Heuristic Synthesis & Action Footer */}
-          <div className="ai-synthesis-card">
-            <div className="ai-synthesis-body">
-              <div className="ai-synthesis-kicker">
-                <Sparkles size={12} />
-                <span>ALGORITHMIC SYNTHESIS & NEXT ACTION</span>
-              </div>
-              <p className="ai-synthesis-reason">
-                {analysisText}
-              </p>
-              <div className="ai-synthesis-recom">
-                <ArrowRight size={13} className="ai-recom-arrow" />
-                <span>{actionText}</span>
-              </div>
-            </div>
+        {/* ── TAB 2: BROKER MATCHER (Simple, Modern, Clean) ── */}
+        {activeTab === "matcher" && (
+          <div className="console-tab-content">
+            <div className="console-matcher-layout">
+              {/* Left Column: 3 Clean Selector Groups (No Emojis) */}
+              <div className="console-matcher-filters">
+                <div className="console-filter-group">
+                  <label className="console-filter-label">1. TRADING STRATEGY</label>
+                  <div className="console-pill-choices">
+                    {[
+                      { id: "scalper", label: "Raw ECN / Scalping" },
+                      { id: "swing", label: "Swing / Position" },
+                      { id: "ea", label: "Algorithmic / EA" },
+                      { id: "safe", label: "Capital Safety" }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`console-filter-pill ${matchStyle === opt.id ? "active" : ""}`}
+                        onClick={() => setMatchStyle(opt.id)}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-            <div className="ai-action-bar">
-              {selectedBroker && (
-                <Button variant="subtle" onClick={() => openDetail(selectedBroker)} style={{ padding: "9px 15px" }}>
-                  <Eye size={14} /> Inspect Dossier
-                </Button>
-              )}
-              {selectedBroker && (
-                <Button
-                  variant={isCompared ? "primary" : "ghost"}
-                  onClick={() => toggleCompare(selectedBroker)}
-                  style={{ padding: "9px 14px" }}
-                  title={isCompared ? "Remove from comparison" : "Add to comparison"}
-                >
-                  <Scale size={14} /> {isCompared ? "In Comparison" : "Compare"}
-                </Button>
-              )}
-              <Button onClick={() => setView("brokers")} style={{ padding: "9px 16px" }}>
-                Browse Registry <ArrowRight size={14} />
-              </Button>
+                <div className="console-filter-group">
+                  <label className="console-filter-label">2. DEPOSIT & LEVERAGE</label>
+                  <div className="console-pill-choices">
+                    {[
+                      { id: "micro", label: "Micro (≤$100)" },
+                      { id: "std", label: "Standard ($100–$500)" },
+                      { id: "inst", label: "Institutional ($1,000+)" }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`console-filter-pill ${matchDeposit === opt.id ? "active" : ""}`}
+                        onClick={() => setMatchDeposit(opt.id)}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="console-filter-group">
+                  <label className="console-filter-label">3. REGULATORY JURISDICTION</label>
+                  <div className="console-pill-choices">
+                    {[
+                      { id: "tier1", label: "Tier-1 (FCA / ASIC)" },
+                      { id: "cysec", label: "European (CySEC)" },
+                      { id: "all", label: "Global Audited" }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`console-filter-pill ${matchRegion === opt.id ? "active" : ""}`}
+                        onClick={() => setMatchRegion(opt.id)}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Clean, Modern Match Result Card */}
+              <div className="console-matcher-card">
+                <div className="console-matcher-header">
+                  <div className="console-match-kicker">
+                    <Sparkles size={13} />
+                    <span>RECOMMENDED MATCH</span>
+                  </div>
+                  <span className="console-trust-badge status-high">
+                    {Number(matchedBroker.score).toFixed(1)} / 10
+                  </span>
+                </div>
+
+                <h3 className="console-matcher-name">{matchedBroker.name}</h3>
+
+                <div className="console-specs-grid" style={{ margin: "14px 0" }}>
+                  <div className="console-spec-row">
+                    <span className="console-spec-key">Regulation</span>
+                    <span className="console-spec-val">{matchedBroker.regulator}</span>
+                  </div>
+                  <div className="console-spec-row">
+                    <span className="console-spec-key">Execution</span>
+                    <span className="console-spec-val">{matchedBroker.type || "Raw ECN"}</span>
+                  </div>
+                  <div className="console-spec-row">
+                    <span className="console-spec-key">Min Deposit</span>
+                    <span className="console-spec-val">${matchedBroker.min_deposit || 50}</span>
+                  </div>
+                </div>
+
+                <p className="console-matcher-desc">
+                  Matches your selected profile with verified statutory fund segregation and monitored execution latency.
+                </p>
+
+                <div className="console-btn-row">
+                  <button
+                    type="button"
+                    className="console-btn-solid"
+                    onClick={() => openDetail(matchedBroker)}
+                  >
+                    <span>Inspect Dossier</span>
+                    <ArrowRight size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    className={`console-btn-outline ${isMatchedCompared ? "is-active" : ""}`}
+                    onClick={() => toggleCompare(matchedBroker)}
+                  >
+                    <Scale size={14} />
+                    <span>{isMatchedCompared ? "In Compare" : "Compare"}</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* ── TAB 3: LIVE AUDIT FEED (Clean, Simple, Professional) ── */}
+        {activeTab === "wire" && (
+          <div className="console-tab-content">
+            <div className="console-wire-layout">
+              {/* Filter Pills */}
+              <div className="console-wire-filters">
+                {[
+                  { id: "all", label: "All Records (5)" },
+                  { id: "audit", label: "Statutory Licenses" },
+                  { id: "alert", label: "Phishing & Clone Alerts" },
+                  { id: "recovery", label: "Restitutions Completed" }
+                ].map(b => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    className={`console-wire-pill ${wireFilter === b.id ? "active" : ""}`}
+                    onClick={() => setWireFilter(b.id)}
+                  >
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Clean Audit Ledger Stream */}
+              <div className="console-wire-list">
+                {filteredWire.map(item => (
+                  <div key={item.id} className="console-wire-row">
+                    <div className="console-wire-left">
+                      <span className={`console-wire-badge tone-${item.tone}`}>{item.tag}</span>
+                      <span className="console-wire-time">{item.time}</span>
+                    </div>
+                    <p className="console-wire-text">{item.text}</p>
+                    {item.brokerId && (
+                      <button
+                        type="button"
+                        className="console-wire-link"
+                        onClick={() => {
+                          const b = brokers?.find(x => x.id === item.brokerId);
+                          if (b && openDetail) openDetail(b);
+                        }}
+                      >
+                        <span>Inspect</span>
+                        <ArrowRight size={12} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
+
+
+
 
 /* ---------------------------------------------------------
    BROKER CARD COMPONENT
@@ -2259,6 +2435,67 @@ function ComparisonModal({ items, onClose, onRemove }) {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+/* ---------------------------------------------------------
+   FLOATING GLASS COMPARE DOCK
+--------------------------------------------------------- */
+function FloatingCompareDock({ compareList, onOpenCompare, onRemove, onClear }) {
+  if (!compareList || compareList.length === 0) return null;
+
+  return (
+    <div className="floating-compare-dock" role="complementary" aria-label="Comparison Tray">
+      <div className="floating-compare-inner">
+        <div className="floating-compare-left">
+          <div className="floating-compare-header">
+            <span className="floating-compare-count">COMPARE TRAY ({compareList.length}/4)</span>
+            <span className="floating-compare-sub">Side-by-side audit matrix</span>
+          </div>
+
+          <div className="floating-compare-chips">
+            {compareList.map((broker) => (
+              <div key={broker.id} className="floating-compare-chip">
+                <span className="floating-chip-score" style={{ color: Number(broker.score) >= 8 ? "var(--c-verified)" : "var(--c-amber)" }}>
+                  {Number(broker.score).toFixed(1)}
+                </span>
+                <strong className="floating-chip-name">{broker.name}</strong>
+                <button
+                  type="button"
+                  className="floating-chip-remove"
+                  onClick={() => onRemove(broker.id)}
+                  title={`Remove ${broker.name}`}
+                  aria-label={`Remove ${broker.name}`}
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="floating-compare-actions">
+          <button
+            type="button"
+            className="floating-compare-btn"
+            onClick={onOpenCompare}
+          >
+            <Scale size={15} />
+            <span>Launch Matrix</span>
+            <ArrowRight size={14} />
+          </button>
+          <button
+            type="button"
+            className="floating-clear-btn"
+            onClick={onClear}
+            title="Clear all selected brokers"
+          >
+            Clear
+          </button>
         </div>
       </div>
     </div>
@@ -4942,6 +5179,53 @@ export default function App() {
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [adminLoginError, setAdminLoginError] = useState("");
 
+  // ── Scroll Progress Bar ──
+  useEffect(() => {
+    const bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.appendChild(bar);
+
+    function updateProgress() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = progress + '%';
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', updateProgress);
+      bar.remove();
+    };
+  }, []);
+
+  // ── Scroll Reveal via IntersectionObserver ──
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!("IntersectionObserver" in window)) {
+      document.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("is-revealed"));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+    );
+    document.querySelectorAll("[data-reveal]").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [view]);
+
+  // ── Smooth scroll-to-top on view change ──
+  useEffect(() => {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
+  }, [view]);
+
   useEffect(() => {
     localStorage.setItem("ledger_current_view", view);
     const hash = window.location.hash.replace(/^#\/?/, "").toLowerCase();
@@ -5147,6 +5431,15 @@ export default function App() {
       {view === "home" && <LedgerChatbot brokers={brokers} exposures={exposures} setView={setView} />}
       <DetailModal broker={selected} exposures={exposures} onClose={() => setSelected(null)} />
       {compareOpen && <ComparisonModal items={compareList} onClose={() => setCompareOpen(false)} onRemove={(id) => setCompareList(compareList.filter(x => x.id !== id))} />}
+      
+      {/* ── Persistent Floating Comparison Dock ── */}
+      <FloatingCompareDock
+        compareList={compareList}
+        onOpenCompare={() => setCompareOpen(true)}
+        onRemove={(id) => setCompareList(compareList.filter(x => x.id !== id))}
+        onClear={() => setCompareList([])}
+      />
+
       <Footer />
     </div>
   );

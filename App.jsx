@@ -494,8 +494,8 @@ function normalizeAlert(alert) {
 function Stamp({ score, alert, size = 52 }) {
   const s = alert ? "var(--c-alert)" : "var(--c-verified)";
   const bg = alert 
-    ? "radial-gradient(circle at 35% 35%, rgba(255, 65, 54, 0.22), rgba(255, 65, 54, 0.08))" 
-    : "radial-gradient(circle at 35% 35%, rgba(0, 230, 118, 0.22), rgba(0, 230, 118, 0.08))";
+    ? "radial-gradient(circle at 35% 35%, var(--c-alert-dim), transparent)" 
+    : "radial-gradient(circle at 35% 35%, var(--c-verified-dim), transparent)";
   const borderColor = alert ? "var(--c-alert)" : "var(--c-verified)";
   return (
     <div
@@ -503,13 +503,13 @@ function Stamp({ score, alert, size = 52 }) {
       style={{
         width: size, height: size, borderRadius: "50%", flexShrink: 0,
         border: `2px solid ${borderColor}`,
-        outline: `1px dashed ${alert ? "rgba(255,65,54,0.35)" : "rgba(0,230,118,0.35)"}`,
+        outline: `1px dashed ${alert ? "var(--c-alert-dim)" : "var(--c-verified-dim)"}`,
         outlineOffset: "2px",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center", color: s,
         background: bg, transform: "rotate(-4deg)",
         fontFamily: "'JetBrains Mono', 'IBM Plex Mono', monospace",
-        boxShadow: alert ? "0 0 16px rgba(255,65,54,0.28)" : "0 0 16px rgba(0,230,118,0.28)",
+        boxShadow: alert ? "var(--shadow-glow-alert)" : "var(--shadow-glow)",
         transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         cursor: "default"
       }}
@@ -538,7 +538,7 @@ function Badge({ children, tone = "default" }) {
         ...(tone === "default" && {
           color: "var(--c-paper-dim)",
           border: "1px solid var(--c-line-strong)",
-          background: "rgba(255, 255, 255, 0.03)",
+          background: "var(--c-surface-hi)",
         }),
       }}
     >
@@ -572,34 +572,34 @@ function Button({ children, onClick, variant = "primary", type = "button", style
   };
   const variants = {
     primary: {
-      background: "linear-gradient(135deg, #00E676 0%, #00C853 45%, #2979FF 100%)",
-      color: "#071c1a",
+      background: "var(--gradient-brand)",
+      color: "#FFFFFF",
       fontWeight: 700,
-      boxShadow: "0 4px 18px rgba(0, 230, 118, 0.3), 0 1px 3px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.35)",
+      boxShadow: "0 2px 8px rgba(8, 153, 129, 0.25), 0 1px 2px rgba(15, 23, 42, 0.08)",
     },
     secondary: {
       background: "var(--c-surface-hi)",
       color: "var(--c-paper)",
       border: `1px solid var(--c-line-strong)`,
-      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      boxShadow: "var(--shadow-sm)",
     },
     ghost: {
-      background: "rgba(255, 255, 255, 0.03)",
+      background: "var(--c-surface-hi)",
       color: "var(--c-paper)",
       border: `1px solid var(--c-line-strong)`,
       backdropFilter: "blur(8px)",
     },
     danger: {
-      background: "rgba(255, 65, 54, 0.12)",
+      background: "var(--c-alert-dim)",
       color: "var(--c-alert)",
-      border: `1px solid rgba(255, 65, 54, 0.3)`,
-      boxShadow: "0 2px 10px rgba(255, 65, 54, 0.15)",
+      border: `1px solid rgba(225, 29, 72, 0.3)`,
+      boxShadow: "0 2px 10px rgba(225, 29, 72, 0.15)",
     },
     subtle: {
       background: "var(--c-surface-hi)",
       color: "var(--c-paper)",
       border: `1px solid var(--c-line-strong)`,
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      boxShadow: "var(--shadow-sm)",
     },
   };
   return (
@@ -885,10 +885,10 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
               className="ledger-nav-compare-btn"
               onClick={() => { openCompare(); setMenuOpen(false); }}
               style={{
-                marginTop: 12, padding: "10px 14px", background: "var(--c-verified)",
-                color: "#03030A", border: "none", borderRadius: 8, fontWeight: 700,
+                marginTop: 12, padding: "10px 14px", background: "var(--gradient-brand)",
+                color: "#FFFFFF", border: "none", borderRadius: 8, fontWeight: 700,
                 fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                cursor: "pointer"
+                cursor: "pointer", boxShadow: "0 2px 8px rgba(5,150,105,0.25)"
               }}
             >
               <Scale size={15} /> Compare Selected ({compareList.length})
@@ -1206,7 +1206,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
               background: "var(--card-bg)",
               border: `1px solid ${searchFocused ? "var(--c-verified)" : "var(--c-line-strong)"}`,
               borderRadius: 18, overflow: "hidden",
-              boxShadow: searchFocused ? "0 20px 48px rgba(0,0,0,0.5), 0 0 0 2px rgba(0,230,118,0.25)" : "0 20px 48px rgba(0,0,0,0.35)",
+              boxShadow: searchFocused ? "var(--shadow-lg), 0 0 0 2px var(--c-verified-glow)" : "var(--shadow-md)",
               backdropFilter: "blur(16px)",
               transition: "border-color 0.2s, box-shadow 0.2s"
             }}>
@@ -2397,8 +2397,8 @@ function BrokerCard({ b, onClick, onCompare, isCompared, rank }) {
 function ComparisonModal({ items, onClose, onRemove }) {
   if (items.length === 0) return null;
   return (
-    <div className="compare-modal-overlay" style={{ position: "fixed", inset: 0, background: "rgba(5, 10, 18, 0.85)", backdropFilter: "blur(6px)", zIndex: 110, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
-      <div className="compare-modal-card" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, maxWidth: 960, width: "100%", padding: "24px 20px", maxHeight: "90vh", overflowY: "auto", boxSizing: "border-box" }}>
+    <div className="compare-modal-overlay" style={{ position: "fixed", inset: 0, background: "var(--modal-overlay-bg, rgba(15, 23, 42, 0.6))", backdropFilter: "blur(8px)", zIndex: 110, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+      <div className="compare-modal-card" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, maxWidth: 960, width: "100%", padding: "24px 20px", maxHeight: "90vh", overflowY: "auto", boxSizing: "border-box", boxShadow: "var(--shadow-lg)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, borderBottom: `1px solid ${C.line}`, paddingBottom: 14 }}>
           <div>
             <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(18px, 4vw, 24px)" }}>Broker Side-by-Side Audit</h2>
@@ -2418,7 +2418,7 @@ function ComparisonModal({ items, onClose, onRemove }) {
               <div>Risk Flags</div>
             </div>
             {items.map((b) => (
-              <div key={b.id} style={{ background: C.ink, border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: 16, display: "flex", flexDirection: "column", gap: 18, minWidth: 180 }}>
+              <div key={b.id} style={{ background: "var(--c-surface-hi)", border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: 16, display: "flex", flexDirection: "column", gap: 18, minWidth: 180 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ fontWeight: 700, fontSize: 15 }}>{b.name}</div>
                   <button onClick={() => onRemove(b.id)} style={{ background: "none", border: "none", color: C.alert, cursor: "pointer", padding: 2 }} title="Remove broker"><Trash2 size={14} /></button>
@@ -2572,7 +2572,7 @@ function MarketPage() {
                   <div style={{ fontSize: 12, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>Pair</div>
                   <strong style={{ display: "block", fontSize: 18, marginTop: 4 }}>{pair.symbol}</strong>
                 </div>
-                <span style={{ color: isUp ? C.verified : C.alert, fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: isUp ? C.verifiedDim + "40" : C.alertDim + "40" }}>
+                <span style={{ color: isUp ? C.verified : C.alert, fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: isUp ? "var(--c-verified-dim)" : "var(--c-alert-dim)" }}>
                   {isUp ? "+" : ""}{pair.change}%
                 </span>
               </div>
@@ -2628,7 +2628,7 @@ function MarketPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {winners.map((pair) => (
-              <div key={pair.symbol} style={{ background: C.ink, border: `1px solid ${C.line}`, borderRadius: 8, padding: 12 }}>
+              <div key={pair.symbol} style={{ background: "var(--c-surface-hi)", border: `1px solid ${C.line}`, borderRadius: 8, padding: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                   <strong>{pair.symbol}</strong>
                   <span style={{ color: Number(pair.change) >= 0 ? C.verified : C.alert }}>{pair.change > 0 ? "+" : ""}{pair.change}%</span>
@@ -2794,8 +2794,8 @@ function DetailModal({ broker, exposures, onClose }) {
   const related = exposures.filter((e) => e.status === "published" && e.brokerName.toLowerCase() === broker.name.toLowerCase());
 
   return (
-    <div className="detail-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()} style={{ position: "fixed", inset: 0, background: "rgba(6,11,19,0.8)", backdropFilter: "blur(8px)", zIndex: 120, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", overflowY: "auto" }}>
-      <div className="detail-modal-card" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 12, maxWidth: 640, width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "28px 24px", position: "relative", boxSizing: "border-box" }}>
+    <div className="detail-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()} style={{ position: "fixed", inset: 0, background: "var(--modal-overlay-bg, rgba(15, 23, 42, 0.6))", backdropFilter: "blur(8px)", zIndex: 120, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", overflowY: "auto" }}>
+      <div className="detail-modal-card" style={{ background: C.surface, border: `1px solid ${C.lineStrong}`, borderRadius: 16, maxWidth: 640, width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "28px 24px", position: "relative", boxSizing: "border-box", boxShadow: "var(--shadow-lg)" }}>
         <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: C.paperDim, cursor: "pointer", padding: 4 }} aria-label="Close modal"><X size={20} /></button>
         <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 20, flexWrap: "wrap", paddingRight: 32 }}>
           <Stamp score={broker.score} alert={broker.flags.length > 0} size={54} />
@@ -2818,7 +2818,7 @@ function DetailModal({ broker, exposures, onClose }) {
             ["Field Survey", broker.fieldSurvey || "Pending Inspection"],
             ["Infringement Flags", broker.flags.length ? broker.flags.join(", ") : "Clean Record"]
           ].map(([k, v]) => (
-            <div key={k} style={{ background: C.ink, border: `1px solid ${C.line}`, borderRadius: 6, padding: "8px 10px", gridColumn: (k === "Field Survey" || k === "Infringement Flags") ? "1 / -1" : undefined }}>
+            <div key={k} style={{ background: "var(--c-surface-hi)", border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px 10px", gridColumn: (k === "Field Survey" || k === "Infringement Flags") ? "1 / -1" : undefined }}>
               <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace" }}>{k}</div>
               <div style={{ fontSize: 13, fontWeight: 500, marginTop: 2, wordBreak: "break-word" }}>{v}</div>
             </div>
@@ -3226,7 +3226,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {riskWatch.map((b) => (
-                      <div key={b.id} style={{ background: "rgba(255,61,0,0.06)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: "12px 14px" }}>
+                      <div key={b.id} style={{ background: "var(--c-alert-dim)", border: `1px solid ${C.alertDim}`, borderRadius: 10, padding: "12px 14px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                           <strong style={{ fontSize: 14, wordBreak: "break-word" }}>{b.name}</strong>
                           <Badge tone="warn">{Number(b.score).toFixed(1)}/10</Badge>
@@ -3795,8 +3795,8 @@ function ScamAlertsPage({ alerts: propAlerts }) {
   const [filter, setFilter] = useState("All");
   const severities = ["All", "Critical", "High", "Medium"];
   const filtered = filter === "All" ? alerts : alerts.filter(a => a.severity === filter);
-  const severityColor = { Critical: C.alert, High: "#FF6B00", Medium: C.amber };
-  const severityBg = { Critical: "rgba(255,61,0,0.12)", High: "rgba(255,107,0,0.12)", Medium: "rgba(255,196,0,0.12)" };
+  const severityColor = { Critical: C.alert, High: "var(--c-amber)", Medium: C.amber };
+  const severityBg = { Critical: "var(--c-alert-dim)", High: "var(--c-amber-dim)", Medium: "var(--c-amber-dim)" };
   
   return (
     <div className="page-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 24px" }}>
@@ -3810,7 +3810,7 @@ function ScamAlertsPage({ alerts: propAlerts }) {
       <div className="stats-four-col" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
         {[
           { label: "Critical Alerts", value: alerts.filter(a => a.severity === "Critical").length, color: C.alert },
-          { label: "High Severity", value: alerts.filter(a => a.severity === "High").length, color: "#FF6B00" },
+          { label: "High Severity", value: alerts.filter(a => a.severity === "High").length, color: C.amber },
           { label: "Active Investigations", value: "12", color: C.amber },
           { label: "Resolved This Month", value: "8", color: C.verified },
         ].map(stat => (
@@ -3824,7 +3824,7 @@ function ScamAlertsPage({ alerts: propAlerts }) {
       {/* Filter tabs */}
       <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
         {severities.map(s => (
-          <button key={s} onClick={() => setFilter(s)} style={{ padding: "8px 18px", borderRadius: 20, border: `1px solid ${filter === s ? severityColor[s] || C.verified : C.lineStrong}`, background: filter === s ? (severityBg[s] || "rgba(0,230,118,0.1)") : "transparent", color: filter === s ? (severityColor[s] || C.verified) : C.paperDim, cursor: "pointer", fontWeight: filter === s ? 700 : 400, fontSize: 13, transition: "all 0.2s" }}>
+          <button key={s} onClick={() => setFilter(s)} style={{ padding: "8px 18px", borderRadius: 20, border: `1px solid ${filter === s ? severityColor[s] || C.verified : C.lineStrong}`, background: filter === s ? (severityBg[s] || "var(--c-verified-dim)") : "transparent", color: filter === s ? (severityColor[s] || C.verified) : C.paperDim, cursor: "pointer", fontWeight: filter === s ? 700 : 400, fontSize: 13, transition: "all 0.2s" }}>
             {s}
           </button>
         ))}
@@ -3859,7 +3859,7 @@ function ScamAlertsPage({ alerts: propAlerts }) {
 function FieldSurveyPage({ surveys: propSurveys }) {
   const surveys = propSurveys || fieldSurveys;
   const statusColor = { Verified: C.verified, Suspicious: C.amber, Fraudulent: C.alert };
-  const statusBg = { Verified: "rgba(0,230,118,0.1)", Suspicious: "rgba(255,196,0,0.1)", Fraudulent: "rgba(255,61,0,0.1)" };
+  const statusBg = { Verified: "var(--c-verified-dim)", Suspicious: "var(--c-amber-dim)", Fraudulent: "var(--c-alert-dim)" };
   const [activePhotoTab, setActivePhotoTab] = useState({});
 
   return (
@@ -3880,7 +3880,7 @@ function FieldSurveyPage({ surveys: propSurveys }) {
           return (
             <div key={fs.id} className="survey-card" style={{ background: C.surface, border: `1px solid ${statusColor[fs.status]}33`, borderRadius: 18, padding: "26px 28px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", gap: 16 }}>
               {/* Status ribbon */}
-              <div className="survey-status-ribbon" style={{ background: statusColor[fs.status], color: "#000", fontSize: 10, fontWeight: 800, padding: "4px 14px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
+              <div className="survey-status-ribbon" style={{ background: statusColor[fs.status], color: "#FFFFFF", fontSize: 10, fontWeight: 800, padding: "4px 14px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{fs.status}</div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{ width: 52, height: 52, borderRadius: 12, background: statusBg[fs.status], border: `1px solid ${statusColor[fs.status]}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
@@ -3928,12 +3928,12 @@ function FieldSurveyPage({ surveys: propSurveys }) {
                     ))}
                   </div>
 
-                  <div className="survey-photo-stage" style={{ background: "linear-gradient(135deg, #090e17 0%, #151d2a 100%)", minHeight: 140, padding: 18, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "1px solid var(--c-line-strong)" }}>
+                  <div className="survey-photo-stage" style={{ background: "var(--c-surface-hi)", minHeight: 140, padding: 18, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "1px solid var(--c-line-strong)", borderRadius: 10 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{currentPhoto.label}</span>
-                      <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(0,0,0,0.6)", color: C.verified, border: "1px solid rgba(0,230,118,0.3)", fontFamily: "'IBM Plex Mono', monospace" }}>TIMESTAMP VERIFIED</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "var(--c-paper)" }}>{currentPhoto.label}</span>
+                      <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "var(--c-verified-dim)", color: C.verified, border: "1px solid var(--c-line-accent)", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700 }}>TIMESTAMP VERIFIED</span>
                     </div>
-                    <p style={{ color: "#d1d5db", fontSize: 13, margin: "10px 0 0", lineHeight: 1.5 }}>{currentPhoto.desc}</p>
+                    <p style={{ color: "var(--c-paper-dim)", fontSize: 13, margin: "10px 0 0", lineHeight: 1.5 }}>{currentPhoto.desc}</p>
                   </div>
                 </div>
               )}
@@ -4137,7 +4137,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
             <div className="network-tree-layout">
               {/* Level 1: Parent Group */}
               <div className="network-node-card is-parent">
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: "rgba(41,121,255,0.12)", color: C.blue, display: "grid", placeItems: "center" }}>
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: "var(--c-blue-dim)", color: C.blue, display: "grid", placeItems: "center" }}>
                   <Building2 size={22} />
                 </div>
                 <div>
@@ -4166,7 +4166,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
                     </div>
                   ))}
                   {activeNetwork.sharedLicenses.length === 0 && (
-                    <div style={{ padding: 14, textAlign: "center", color: C.alert, fontSize: 13, background: "rgba(255,65,54,0.08)", borderRadius: 10, border: "1px dashed rgba(255,65,54,0.3)" }}>
+                    <div style={{ padding: 14, textAlign: "center", color: C.alert, fontSize: 13, background: "var(--c-alert-dim)", borderRadius: 10, border: "1px dashed rgba(225,29,72,0.3)" }}>
                       ❌ No verifiable licensed operating entities discovered under this group.
                     </div>
                   )}
@@ -4196,7 +4196,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
 
               {/* Custodian Segregation Bank */}
               <div style={{ width: "100%", marginTop: 8 }}>
-                <div style={{ padding: "14px 18px", borderRadius: 12, background: "rgba(0, 230, 118, 0.05)", border: "1px solid rgba(0, 230, 118, 0.2)", display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ padding: "14px 18px", borderRadius: 12, background: "var(--c-verified-dim)", border: "1px solid var(--c-line-accent)", display: "flex", alignItems: "center", gap: 12 }}>
                   <ShieldCheck size={20} color={C.verified} />
                   <div>
                     <span style={{ fontSize: 10, color: C.verified, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700 }}>Segregated Custodian Tier-1 Bank</span>
@@ -4208,19 +4208,19 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
               {/* Level 4: Clone & Impersonator Detection Zone */}
               {activeNetwork.cloneAlerts.length > 0 && (
                 <div style={{ width: "100%", marginTop: 14 }}>
-                  <div style={{ padding: "16px 20px", borderRadius: 14, background: "linear-gradient(135deg, rgba(255,65,54,0.12) 0%, rgba(10,10,24,0.9) 100%)", border: "1px solid rgba(255,65,54,0.4)" }}>
+                  <div style={{ padding: "16px 20px", borderRadius: 14, background: "var(--c-surface-hi)", border: "1px solid rgba(225,29,72,0.3)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.alert, marginBottom: 12 }}>
                       <AlertOctagon size={18} />
                       <strong style={{ fontSize: 14 }}>Detected Clone Syndicate Domains ({activeNetwork.cloneAlerts.length})</strong>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                       {activeNetwork.cloneAlerts.map((cl, i) => (
-                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,65,54,0.2)" }}>
+                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: "var(--c-surface)", border: "1px solid rgba(225,29,72,0.2)" }}>
                           <div>
-                            <div style={{ fontSize: 13, color: "#ff8a80", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600 }}>🚫 {cl.domain}</div>
+                            <div style={{ fontSize: 13, color: "var(--c-alert)", fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600 }}>🚫 {cl.domain}</div>
                             <div style={{ fontSize: 11, color: C.muted }}>Detected: {cl.detected}</div>
                           </div>
-                          <span style={{ fontSize: 11, color: C.alert, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "rgba(255,65,54,0.15)" }}>
+                          <span style={{ fontSize: 11, color: C.alert, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: "var(--c-alert-dim)" }}>
                             {cl.status}
                           </span>
                         </div>
@@ -4291,7 +4291,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
 
       {/* Report Clone Modal */}
       {reportCloneModal && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "var(--modal-overlay-bg, rgba(15, 23, 42, 0.6))", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
           <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 18, padding: 32, maxWidth: 480, width: "100%", boxShadow: "var(--shadow-lg)", position: "relative" }}>
             <button
               type="button"
@@ -4309,7 +4309,7 @@ function RelationshipNetworkPage({ networks: propNetworks, brokers, openDetail }
             </p>
 
             {reportSuccess ? (
-              <div style={{ padding: 18, background: "rgba(0,230,118,0.1)", border: "1px solid rgba(0,230,118,0.3)", borderRadius: 10, color: C.verified, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
+              <div style={{ padding: 18, background: "var(--c-verified-dim)", border: "1px solid var(--c-line-accent)", borderRadius: 10, color: C.verified, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
                 ✅ Clone report received. Case assigned to Ledger Threat Radar.
               </div>
             ) : (
@@ -4555,7 +4555,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
 
       {/* Claim Submission Wizard Modal */}
       {modalOpen && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(0,0,0,0.78)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "var(--modal-overlay-bg, rgba(15, 23, 42, 0.6))", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
           <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 20, padding: 32, maxWidth: 560, width: "100%", boxShadow: "var(--shadow-lg)", position: "relative" }}>
             <button
               type="button"
@@ -4573,7 +4573,7 @@ function RightsProtectionPage({ cases: propCases, brokers, onFileClaim }) {
             </p>
 
             {claimSuccessMsg ? (
-              <div style={{ padding: 24, background: "rgba(0,230,118,0.12)", border: "1px solid rgba(0,230,118,0.4)", borderRadius: 12, textAlign: "center" }}>
+              <div style={{ padding: 24, background: "var(--c-verified-dim)", border: "1px solid var(--c-line-accent)", borderRadius: 12, textAlign: "center" }}>
                 <div style={{ fontSize: 32, marginBottom: 10 }}>🎉</div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: C.verified, marginBottom: 6 }}>Claim Intake Confirmed</div>
                 <p style={{ fontSize: 13, color: C.paperDim }}>{claimSuccessMsg}</p>
@@ -4929,7 +4929,7 @@ function RebatePage({ rebates: propRebates }) {
 
       {/* Activate Rebate Modal */}
       {claimModal && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(0,0,0,0.78)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 120, background: "var(--modal-overlay-bg, rgba(15, 23, 42, 0.6))", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", padding: 20 }}>
           <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-line-strong)", borderRadius: 20, padding: 32, maxWidth: 480, width: "100%", boxShadow: "var(--shadow-lg)", position: "relative" }}>
             <button
               type="button"
@@ -4947,7 +4947,7 @@ function RebatePage({ rebates: propRebates }) {
             </p>
 
             {claimedSuccess ? (
-              <div style={{ padding: 22, background: "rgba(0,230,118,0.12)", border: "1px solid rgba(0,230,118,0.4)", borderRadius: 12, textAlign: "center" }}>
+              <div style={{ padding: 22, background: "var(--c-verified-dim)", border: "1px solid var(--c-line-accent)", borderRadius: 12, textAlign: "center" }}>
                 <div style={{ fontSize: 32, marginBottom: 10 }}>🎉</div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: C.verified, marginBottom: 6 }}>Rebate Link Configured</div>
                 <p style={{ fontSize: 13, color: C.paperDim }}>Your trading account is now enrolled in the ${claimModal.rebatePerLot.toFixed(2)}/lot cashback program.</p>
@@ -5035,20 +5035,20 @@ function ForumPage() {
 
             {/* Upvote */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-              <button onClick={() => setVotes(v => ({ ...v, [post.id]: v[post.id] + 1 }))} style={{ background: "rgba(0,230,118,0.1)", border: `1px solid ${C.verified}33`, borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: C.verified, fontSize: 16, transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "rgba(0,230,118,0.2)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(0,230,118,0.1)"}>▲</button>
+              <button onClick={() => setVotes(v => ({ ...v, [post.id]: v[post.id] + 1 }))} style={{ background: "var(--c-verified-dim)", border: `1px solid var(--c-line-accent)`, borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: C.verified, fontSize: 16, transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "var(--c-surface-hov)"} onMouseLeave={e => e.currentTarget.style.background = "var(--c-verified-dim)"}>▲</button>
               <span style={{ fontSize: 15, fontWeight: 700 }}>{votes[post.id]}</span>
             </div>
 
             {/* Content */}
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 12, padding: "3px 10px", borderRadius: 4, background: `${categoryColor[post.category] || C.verified}18`, color: categoryColor[post.category] || C.verified, fontWeight: 600 }}>{post.category}</span>
+                <span style={{ fontSize: 12, padding: "3px 10px", borderRadius: 4, background: "var(--c-surface-hi)", border: "1px solid var(--c-line)", color: categoryColor[post.category] || C.verified, fontWeight: 600 }}>{post.category}</span>
               </div>
               <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, marginBottom: 8, lineHeight: 1.3, wordBreak: "break-word" }}>{post.title}</h3>
               <p style={{ color: C.paperDim, fontSize: 13, lineHeight: 1.5, marginBottom: 12 }}>{post.body.slice(0, 120)}...</p>
               <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 12, color: C.muted, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--gradient-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#000" }}>{post.avatar}</div>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--gradient-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#FFFFFF" }}>{post.avatar}</div>
                   <span>{post.user}</span>
                 </div>
                 <span>💬 {post.replies} replies</span>
@@ -5087,19 +5087,19 @@ function SpreadCalculatorPage() {
           
           <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 12, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", display: "block", marginBottom: 8 }}>Lot Size</label>
-            <input type="number" value={lots} min={0.01} step={0.1} onChange={e => setLots(Number(e.target.value))} style={{ width: "100%", background: "var(--c-ink)", border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: "10px 14px", color: "var(--c-paper)", fontSize: 16, fontFamily: "'IBM Plex Mono', monospace" }} />
+            <input type="number" value={lots} min={0.01} step={0.1} onChange={e => setLots(Number(e.target.value))} style={{ width: "100%", background: "var(--input-bg)", border: "1px solid var(--input-border)", borderRadius: 8, padding: "10px 14px", color: "var(--input-color)", fontSize: 16, fontFamily: "'IBM Plex Mono', monospace" }} />
           </div>
 
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, color: C.muted, textTransform: "uppercase", fontFamily: "'IBM Plex Mono', monospace", display: "block", marginBottom: 8 }}>Category</label>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {categories.map(c => (
-                <button key={c} onClick={() => setCategory(c)} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${category === c ? C.verified : C.lineStrong}`, background: category === c ? "rgba(0,230,118,0.1)" : "transparent", color: category === c ? C.verified : C.paperDim, cursor: "pointer", fontWeight: category === c ? 700 : 400, textAlign: "left", transition: "all 0.2s" }}>{c}</button>
+                <button key={c} onClick={() => setCategory(c)} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${category === c ? C.verified : C.lineStrong}`, background: category === c ? "var(--c-verified-dim)" : "transparent", color: category === c ? C.verified : C.paperDim, cursor: "pointer", fontWeight: category === c ? 700 : 400, textAlign: "left", transition: "all 0.2s" }}>{c}</button>
               ))}
             </div>
           </div>
 
-          <div style={{ background: "rgba(0,230,118,0.08)", border: `1px solid rgba(0,230,118,0.2)`, borderRadius: 10, padding: "14px 16px" }}>
+          <div style={{ background: "var(--c-verified-dim)", border: `1px solid var(--c-line-accent)`, borderRadius: 10, padding: "14px 16px" }}>
             <div style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginBottom: 4 }}>FORMULA</div>
             <div style={{ fontSize: 13, color: C.paperDim }}>Cost = Spread × Lot Size × Pip Value</div>
           </div>

@@ -1067,8 +1067,9 @@ function Header({ view, setView, compareList, openCompare, isLight, toggleTheme,
 /* ---------------------------------------------------------
    HOME VIEW
 --------------------------------------------------------- */
-function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareList, isLight, setBrokerSearch }) {
+function Home({ brokers, exposures, surveys, setView, openDetail, toggleCompare, compareList, isLight, setBrokerSearch }) {
   const [q, setQ] = useState("");
+  const [heroTab, setHeroTab] = useState("all");
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
   
@@ -1077,6 +1078,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
   const [calcLots, setCalcLots] = useState(2.0);
 
   const searchInputRef = React.useRef(null);
+  const displaySurveys = surveys || fieldSurveys;
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -1150,9 +1152,9 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
       }}>
         {/* Ambient glow orbs with isolated overflow hidden */}
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
-          <div className="ambient-orb" style={{ width: 550, height: 550, background: "rgba(0,230,118,1)", top: -200, right: -100, animationDelay: "0s" }} />
-          <div className="ambient-orb" style={{ width: 440, height: 440, background: "rgba(41,121,255,1)", bottom: -180, left: -80, animationDelay: "4s" }} />
-          <div className="ambient-orb" style={{ width: 300, height: 300, background: "rgba(255,171,0,0.35)", top: "35%", right: "22%", animationDelay: "2s", opacity: 0.08 }} />
+          <div className="ambient-orb" style={{ width: 550, height: 550, background: "var(--c-verified)", top: -200, right: -100, animationDelay: "0s" }} />
+          <div className="ambient-orb" style={{ width: 440, height: 440, background: "var(--c-blue)", bottom: -180, left: -80, animationDelay: "4s" }} />
+          <div className="ambient-orb" style={{ width: 300, height: 300, background: "var(--c-amber)", top: "35%", right: "22%", animationDelay: "2s", opacity: 0.08 }} />
         </div>
 
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 10 }}>
@@ -1165,7 +1167,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             padding: "6px 14px", borderRadius: 24, marginBottom: 28,
             background: "var(--c-verified-dim)",
             letterSpacing: "0.04em",
-            boxShadow: "0 0 16px rgba(0, 230, 118, 0.15)"
+            boxShadow: "var(--shadow-glow-sm, 0 0 16px var(--c-verified-glow))"
           }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--c-verified)", boxShadow: "0 0 8px var(--c-verified)" }} />
             LIVE · Supabase Global Registry · {brokers.length} Entities Audited
@@ -1198,6 +1200,8 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             and validated victim exposure ledgers to safeguard retail capital.
           </p>
 
+
+
           {/* Search bar with Live Autocomplete */}
           <div style={{ position: "relative", maxWidth: 720, zIndex: 80 }}>
             <div className={`hero-search-bar ${searchFocused ? "is-focused" : ""}`} style={{
@@ -1227,7 +1231,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
                     setSearchFocused(false);
                   }
                 }}
-                placeholder="Search broker by name, license number, regulator, or country..."
+                placeholder="Search by broker name, license number (e.g. 771102), regulator (FCA/ASIC), or country..."
                 style={{
                   flex: 1, background: "transparent", border: "none",
                   outline: "none", color: "var(--c-paper)",
@@ -1243,7 +1247,7 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
               {q && (
                 <button
                   type="button"
-                  onClick={() => setQ("")}
+                  onClick={() => { setQ(""); setHeroTab("all"); }}
                   style={{ background: "transparent", border: "none", color: "var(--c-muted)", cursor: "pointer", padding: "0 12px", display: "flex", alignItems: "center" }}
                 >
                   <X size={16} />
@@ -1263,30 +1267,49 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
             {/* Instant Search Autocomplete Dropdown */}
             {searchFocused && searchSuggestions.length > 0 && (
               <div className="hero-autocomplete-dropdown">
-                <div style={{ padding: "8px 16px", fontSize: 11, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace", borderBottom: "1px solid var(--c-line)", letterSpacing: "0.06em" }}>
-                  MATCHING VERIFIED DOSSIERS ({searchSuggestions.length})
+                <div style={{ padding: "8px 16px", fontSize: 11, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace", borderBottom: "1px solid var(--c-line)", letterSpacing: "0.06em", display: "flex", justifyContent: "space-between" }}>
+                  <span>VERIFIED REGULATORY DOSSIERS ({searchSuggestions.length})</span>
+                  <span>WIKIFX-INDEX AUDIT</span>
                 </div>
-                {searchSuggestions.map(b => (
-                  <div
-                    key={b.id}
-                    className="dropdown-item"
-                    onMouseDown={() => { openDetail(b); setQ(""); }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <Stamp score={b.score} alert={b.flags?.length > 0} size={36} />
-                      <div>
-                        <div style={{ fontWeight: 600, color: "var(--c-paper)", fontSize: 14 }}>{b.name}</div>
-                        <div style={{ fontSize: 11.5, color: "var(--c-paper-dim)" }}>
-                          {b.country} · {b.regulator} · {b.license}
+                {searchSuggestions.map(b => {
+                  const bScore = Number(b.score || 0);
+                  const bScoreColor = bScore >= 8 ? "var(--c-verified)" : bScore >= 5 ? "var(--c-amber)" : "var(--c-alert)";
+                  return (
+                    <div
+                      key={b.id}
+                      className="dropdown-item"
+                      onMouseDown={() => { openDetail(b); setQ(""); }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{
+                          width: 38, height: 38, borderRadius: 8,
+                          background: `${bScoreColor}18`,
+                          border: `1px solid ${bScoreColor}40`,
+                          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                          flexShrink: 0
+                        }}>
+                          <span style={{ fontSize: 13, fontWeight: 800, color: bScoreColor, fontFamily: "'IBM Plex Mono', monospace", lineHeight: 1 }}>{bScore.toFixed(1)}</span>
+                          <span style={{ fontSize: 8, color: "var(--c-muted)", textTransform: "uppercase" }}>Index</span>
+                        </div>
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <span style={{ fontWeight: 600, color: "var(--c-paper)", fontSize: 14 }}>{b.name}</span>
+                            <span style={{ fontSize: 11, color: "var(--c-muted)" }}>{b.country}</span>
+                          </div>
+                          <div style={{ fontSize: 11.5, color: "var(--c-paper-dim)", marginTop: 2, display: "flex", gap: 6, alignItems: "center" }}>
+                            <span style={{ color: "var(--c-verified)", fontWeight: 600 }}>{b.regulator}</span>
+                            <span>·</span>
+                            <span>Lic: {b.license}</span>
+                          </div>
                         </div>
                       </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <Badge tone={b.flags?.length > 0 ? "warn" : "reg"}>{b.licenseStatus || b.type || "Regulated"}</Badge>
+                        <ChevronRight size={16} color="var(--c-muted)" />
+                      </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <Badge tone={b.flags?.length > 0 ? "warn" : "reg"}>{b.type || "ECN"}</Badge>
-                      <ChevronRight size={16} color="var(--c-muted)" />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -1295,11 +1318,11 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
           <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap", alignItems: "center" }}>
             <span style={{ fontSize: 12, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace" }}>POPULAR:</span>
             {[
-              { label: "⚡ Raw ECN Spreads", query: "ECN" },
-              { label: "🛡️ Tier-1 FCA Only", query: "FCA" },
-              { label: "💰 Low $50 Deposit", query: "50" },
-              { label: "💎 Top 9.0+ Trust", query: "Solaris" },
-              { label: "⚠️ Watchlist Alerts", query: "Offshore" }
+              { label: "Tier-1 Regulated (FCA/ASIC)", query: "FCA" },
+              { label: "Top Trust (8.0+)", query: "Solaris" },
+              { label: "Raw ECN Spreads", query: "ECN" },
+              { label: "Low Deposit (≤$50)", query: "50" },
+              { label: "Scam Warnings", query: "Offshore" }
             ].map((chip) => (
               <button
                 key={chip.label}
@@ -1551,15 +1574,167 @@ function Home({ brokers, exposures, setView, openDetail, toggleCompare, compareL
         </div>
       </section>
 
-      {/* ── Unified Regulatory Intelligence Console (Simple & Professional) ── */}
-      <RegistryIntelligenceConsole
-        brokers={brokers}
-        exposures={exposures}
-        openDetail={openDetail}
-        toggleCompare={toggleCompare}
-        compareList={compareList}
-        setView={setView}
-      />
+      {/* ── WikiFX Dual-Feed Intelligence Showcase: Live Exposures + 360° Field Surveys ── */}
+      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "16px 20px 56px" }}>
+        <div className="wikifx-dual-grid">
+          {/* Card 1: 🚨 Live Exposure Complaints & Dispute Triage */}
+          <div className="wikifx-spotlight-card">
+            <div>
+              <div className="wikifx-card-header">
+                <div>
+                  <div style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    fontSize: 11, fontWeight: 700, letterSpacing: "0.06em",
+                    color: "var(--c-alert)", textTransform: "uppercase",
+                    fontFamily: "'IBM Plex Mono', monospace"
+                  }}>
+                    <AlertOctagon size={13} />
+                    <span>Real-Time Dispute Desk</span>
+                  </div>
+                  <h3 className="wikifx-card-title">Live Trader Exposure Reports</h3>
+                  <p className="wikifx-card-desc">
+                    Unresolved retail withdrawal blocks, slippage anomalies, and broker dispute claims filed by global traders.
+                  </p>
+                </div>
+                <Badge tone="warn">
+                  ${disputedTotal.toLocaleString()} Disputed
+                </Badge>
+              </div>
+
+              <div className="wikifx-items-list">
+                {recentExposures.map((exp) => (
+                  <div key={exp.id} className="wikifx-feed-item">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                      <span style={{ fontWeight: 700, fontSize: 13, color: "var(--c-paper)" }}>
+                        {exp.brokerName}
+                      </span>
+                      <span style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: "var(--c-alert)",
+                        background: "var(--c-alert-dim)",
+                        padding: "2px 8px",
+                        borderRadius: 6
+                      }}>
+                        ${Number(exp.amount || 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 13, color: "var(--c-paper-dim)", lineHeight: 1.4, marginBottom: 8 }}>
+                      "{exp.title}"
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11, color: "var(--c-muted)" }}>
+                      <span>Reported: {exp.date}</span>
+                      <span style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                        color: exp.status === "resolved" ? "var(--c-verified)" : "var(--c-amber)",
+                        fontWeight: 600,
+                        textTransform: "capitalize"
+                      }}>
+                        ● {exp.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--c-line)" }}>
+              <button
+                type="button"
+                className="wikifx-card-cta"
+                onClick={() => setView("exposure")}
+              >
+                <span>Explore Full Exposure Ledger</span>
+                <ArrowRight size={14} />
+              </button>
+              <Button
+                variant="subtle"
+                onClick={() => setView("exposure")}
+                style={{ fontSize: 12, padding: "6px 12px" }}
+              >
+                <Plus size={12} /> File Exposure Claim
+              </Button>
+            </div>
+          </div>
+
+          {/* Card 2: 📍 360° Physical Office Field Surveys */}
+          <div className="wikifx-spotlight-card">
+            <div>
+              <div className="wikifx-card-header">
+                <div>
+                  <div style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    fontSize: 11, fontWeight: 700, letterSpacing: "0.06em",
+                    color: "var(--c-verified)", textTransform: "uppercase",
+                    fontFamily: "'IBM Plex Mono', monospace"
+                  }}>
+                    <Building2 size={13} />
+                    <span>On-Site Forensic Verification</span>
+                  </div>
+                  <h3 className="wikifx-card-title">360° Physical Office Field Audits</h3>
+                  <p className="wikifx-card-desc">
+                    Field examiners physically inspecting global corporate addresses to expose empty mailboxes and fake shell offices.
+                  </p>
+                </div>
+                <Badge tone="reg">
+                  {displaySurveys.length} Field Audits
+                </Badge>
+              </div>
+
+              <div className="wikifx-items-list">
+                {displaySurveys.slice(0, 3).map((survey) => (
+                  <div key={survey.id} className="wikifx-feed-item">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                      <span style={{ fontWeight: 700, fontSize: 13, color: "var(--c-paper)" }}>
+                        {survey.broker}
+                      </span>
+                      <span style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: survey.status === "Verified" ? "var(--c-verified)" : "var(--c-alert)",
+                        background: survey.status === "Verified" ? "var(--c-verified-dim)" : "var(--c-alert-dim)",
+                        padding: "2px 8px",
+                        borderRadius: 6
+                      }}>
+                        {survey.status === "Verified" ? <CheckCircle2 size={11} /> : <AlertTriangle size={11} />}
+                        {survey.status}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 12.5, color: "var(--c-muted)", marginBottom: 8, display: "flex", alignItems: "flex-start", gap: 5 }}>
+                      <span>📍</span>
+                      <span style={{ lineHeight: 1.35 }}>{survey.address}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--c-paper-dim)", lineHeight: 1.45, fontStyle: "italic", background: "rgba(15, 23, 42, 0.02)", padding: "6px 10px", borderRadius: 6 }}>
+                      "{survey.findings ? (survey.findings.length > 95 ? survey.findings.slice(0, 95) + "..." : survey.findings) : "Inspected physical premises and staff presence."}"
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--c-line)" }}>
+              <button
+                type="button"
+                className="wikifx-card-cta"
+                onClick={() => setView("brokers")}
+              >
+                <span>View All Verified Physical Locations</span>
+                <ArrowRight size={14} />
+              </button>
+              <span style={{ fontSize: 11.5, color: "var(--c-muted)", fontFamily: "'IBM Plex Mono', monospace" }}>
+                Updated Weekly
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* ── Interactive Spread Fee & Savings Calculator ── */}
       <section style={{ maxWidth: 1240, margin: "0 auto", padding: "12px 20px 64px" }}>
@@ -2287,72 +2462,68 @@ function RegistryIntelligenceConsole({ brokers, exposures, openDetail, toggleCom
 function BrokerCard({ b, onClick, onCompare, isCompared, rank }) {
   const isFlagged = b.flags && b.flags.length > 0;
   const score = Number(b.score || 0);
-  const scoreColor = score >= 8 ? "var(--c-verified)" : score >= 5 ? "var(--c-amber)" : "var(--c-alert)";
-  const ringPercent = Math.round(score * 10);
+  const scoreTone = score >= 8 ? "verified" : score >= 5 ? "amber" : "alert";
 
   return (
     <div className={`broker-card ${isFlagged ? "flagged" : ""} ${rank ? `rank-card rank-${rank}` : ""}`}>
-      {/* Accent glow bar on hover */}
       <div className="broker-card-glow-bar" />
 
       <div>
-        {/* Top Rank Badge if present */}
-        {rank && (
-          <div className="broker-rank-ribbon">
-            <span className="rank-number">#{rank}</span>
-            <span className="rank-label">BENCHMARK LEADER</span>
-          </div>
-        )}
-
-        {/* Header: Name, Country/Years, Rating, and Score Ring */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-          <div style={{ flex: 1, minWidth: 0, paddingRight: 12 }}>
+        {/* Header: Name, Country/Years, and Clean Score Pill */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 14 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {rank && (
+              <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--c-verified)", fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>
+                Rank #{rank} Benchmark
+              </div>
+            )}
             <h3 style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, fontWeight: 600,
-              lineHeight: 1.2, margin: "0 0 5px", color: "var(--c-paper)",
+              fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 19, fontWeight: 700,
+              lineHeight: 1.25, margin: "0 0 4px", color: "var(--c-paper)",
               whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             }}>{b.name}</h3>
             <div style={{
-              fontSize: 11.5, color: "var(--c-muted)",
-              fontFamily: "'IBM Plex Mono', monospace",
-              display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+              fontSize: 12, color: "var(--c-muted)",
+              fontFamily: "'Inter', sans-serif",
+              display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap",
             }}>
-              <span>{b.years}yr · {b.country}</span>
-              {b.userRating && (
-                <span style={{
-                  display: "inline-flex", alignItems: "center", gap: 3,
-                  color: "var(--c-amber)",
-                  background: "var(--c-amber-dim)",
-                  padding: "1px 6px", borderRadius: 4, fontSize: 11, fontWeight: 600,
-                }}>★ {b.userRating}</span>
-              )}
+              <span>{b.country}</span>
+              <span>·</span>
+              <span>{b.years} yrs track record</span>
             </div>
           </div>
 
-          {/* High-tech radial score ring */}
-          <div
-            className="broker-score-dial"
-            style={{
-              background: `conic-gradient(${scoreColor} ${ringPercent}%, var(--c-line-strong) 0)`
-            }}
-          >
-            <div className="broker-score-dial-inner">
-              <span className="score-num" style={{ color: scoreColor }}>{score.toFixed(1)}</span>
-              <span className="score-denom">/10</span>
+          {/* Simple, Professional Trust Score Badge */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 4,
+              padding: "4px 10px", borderRadius: 8,
+              background: `var(--c-${scoreTone}-dim)`,
+              border: `1px solid var(--c-${scoreTone})`,
+              color: `var(--c-${scoreTone})`,
+              fontWeight: 800, fontSize: 14,
+              fontFamily: "'IBM Plex Mono', monospace"
+            }}>
+              <span>{score.toFixed(1)}</span>
+              <span style={{ fontSize: 10, opacity: 0.7 }}>/10</span>
             </div>
+            <span style={{ fontSize: 10, color: "var(--c-muted)", marginTop: 2, fontWeight: 500 }}>
+              Trust Index
+            </span>
           </div>
         </div>
 
-        {/* Tags & Badges */}
-        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", margin: "10px 0 14px" }}>
+        {/* Clean Badges Row */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "10px 0 16px" }}>
           {b.licenseStatus && (
-            <Badge tone={b.licenseStatus === "Regulated" ? "reg" : b.licenseStatus === "Suspicious" || b.licenseStatus === "Unregulated Clone" ? "warn" : "pending"}>
+            <Badge tone={b.licenseStatus === "Regulated" ? "reg" : "warn"}>
               {b.licenseStatus}
             </Badge>
           )}
           <Badge tone="reg">{b.regulator}</Badge>
-          <Badge>{b.type}</Badge>
-          {b.flags.map((f, i) => <Badge key={i} tone="warn">{f}</Badge>)}
+          <Badge>{b.type || "ECN"}</Badge>
+          {b.fieldSurvey && <Badge tone="reg">📍 Office Verified</Badge>}
+          {b.flags?.map((f, i) => <Badge key={i} tone="warn">{f}</Badge>)}
         </div>
 
         {/* 3-Column Financial Parameters */}
@@ -3521,7 +3692,7 @@ function AdminPanel({ brokers, setBrokers, exposures, setExposures, news, setNew
                   <div key={post.id} style={{ ...cardStyle, opacity: post.hidden ? 0.5 : 1, transition: "opacity 0.3s", display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-                        <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--gradient-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#000" }}>{post.avatar}</div>
+                        <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--gradient-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff" }}>{post.avatar}</div>
                         <span style={{ fontWeight: 600 }}>{post.user}</span>
                         <Badge>{post.category}</Badge>
                         <span style={{ fontSize: 11, color: C.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{post.date}</span>
@@ -5376,7 +5547,7 @@ export default function App() {
 
       {view !== "admin" && <TickerTape pairs={marketPairs} />}
 
-      {view === "home" && <div className="view-transition-wrap"><Home brokers={brokers} exposures={exposures} setView={setView} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} isLight={isLight} setBrokerSearch={setBrokerSearch} /></div>}
+      {view === "home" && <div className="view-transition-wrap"><Home brokers={brokers} exposures={exposures} surveys={surveys} setView={setView} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} isLight={isLight} setBrokerSearch={setBrokerSearch} /></div>}
       {view === "brokers" && <div className="view-transition-wrap"><BrokersPage brokers={brokers} openDetail={setSelected} toggleCompare={toggleCompare} compareList={compareList} initialQuery={brokerSearch} /></div>}
       {view === "market" && <div className="view-transition-wrap"><MarketPage /></div>}
       {view === "rankings" && <div className="view-transition-wrap"><LeaderboardPage brokers={brokers} /></div>}
